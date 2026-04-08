@@ -17,25 +17,23 @@
  *                                                       and pass it to createContent
  */
 
+import { Toasty } from "@cloudflare/kumo";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { RouterProvider } from "@tanstack/react-router";
 import * as React from "react";
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render } from "vitest-browser-react";
-import { QueryClientProvider } from "@tanstack/react-query";
-import { RouterProvider } from "@tanstack/react-router";
-import { Toasty } from "@cloudflare/kumo";
 
+import type { AdminManifest } from "../src/lib/api";
 import { createAdminRouter } from "../src/router";
 import { createTestQueryClient, createMockFetch } from "./utils/test-helpers";
-import type { AdminManifest } from "../src/lib/api";
 
 // ---------------------------------------------------------------------------
 // Component mocks – keep layout plumbing out of these tests
 // ---------------------------------------------------------------------------
 
 vi.mock("../src/components/Shell", () => ({
-	Shell: ({ children }: { children: React.ReactNode }) => (
-		<div data-testid="shell">{children}</div>
-	),
+	Shell: ({ children }: { children: React.ReactNode }) => <div data-testid="shell">{children}</div>,
 }));
 
 vi.mock("../src/components/AdminCommandPalette", () => ({
@@ -43,11 +41,7 @@ vi.mock("../src/components/AdminCommandPalette", () => ({
 }));
 
 vi.mock("../src/components/ContentEditor", () => ({
-	ContentEditor: ({
-		onSave,
-	}: {
-		onSave: (payload: { data: Record<string, unknown> }) => void;
-	}) => (
+	ContentEditor: ({ onSave }: { onSave: (payload: { data: Record<string, unknown> }) => void }) => (
 		<form
 			data-testid="content-editor"
 			onSubmit={(e) => {
@@ -233,9 +227,7 @@ describe("ContentNewPage – locale passed to createContent", () => {
 		const screen = await render(<TestApp />);
 
 		// Wait for the editor to appear (manifest must have loaded)
-		await expect
-			.element(screen.getByRole("button", { name: "Save" }))
-			.toBeInTheDocument();
+		await expect.element(screen.getByRole("button", { name: "Save" })).toBeInTheDocument();
 
 		// Capture outgoing requests
 		const requests: { url: string; body: unknown }[] = [];
