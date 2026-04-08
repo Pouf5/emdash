@@ -75,8 +75,8 @@ const MANIFEST: AdminManifest = {
 	},
 	plugins: {},
 	i18n: {
-		defaultLocale: "en",
-		locales: ["en", "fr", "de"],
+		defaultLocale: "fr",
+		locales: ["fr", "en", "de"],
 	},
 };
 
@@ -128,16 +128,38 @@ describe("ContentListPage – locale forwarding to the new-content route", () =>
 		mockFetch.restore();
 	});
 
-	it("Add New link includes the active locale when a non-default locale is selected", async () => {
-		// Navigate to the content list with locale=fr selected in the switcher.
-		// After the fix the "Add New" <Link> must carry ?locale=fr so that
-		// ContentNewPage receives it and creates content in French, not English.
+	it("Add New link includes the active locale when a non-default locale (de) is selected", async () => {
+		// Navigate to the content list with locale=de selected in the switcher.
+		// The default locale is fr, so de is a non-default locale.
+		// The "Add New" <Link> must carry ?locale=de so that ContentNewPage
+		// receives it and creates content in German, not the default French.
 		const { router, TestApp } = buildRouter();
 
 		await router.navigate({
 			to: "/content/$collection",
 			params: { collection: "posts" },
-			search: { locale: "fr" },
+			search: { locale: "de" },
+		});
+
+		const screen = await render(<TestApp />);
+
+		const addNewLink = await screen.getByRole("link", { name: /add new/i });
+		await expect.element(addNewLink).toBeInTheDocument();
+
+		const href = addNewLink.element().getAttribute("href") ?? "";
+		expect(href).toContain("locale=de");
+	});
+
+	it("Add New link uses the default locale (fr) when no locale is set in the URL", async () => {
+		// Navigate to the content list without an explicit locale param.
+		// activeLocale falls back to the configured defaultLocale ("fr").
+		// The "Add New" <Link> must carry ?locale=fr so that ContentNewPage
+		// creates content in the correct default language.
+		const { router, TestApp } = buildRouter();
+
+		await router.navigate({
+			to: "/content/$collection",
+			params: { collection: "posts" },
 		});
 
 		const screen = await render(<TestApp />);
@@ -193,7 +215,7 @@ describe("ContentNewPage – locale passed to createContent", () => {
 						type: "posts",
 						slug: null,
 						status: "draft",
-						locale: "fr",
+						locale: "de",
 						translationGroup: null,
 						data: { title: "Test Post" },
 						authorId: null,
@@ -213,15 +235,15 @@ describe("ContentNewPage – locale passed to createContent", () => {
 		mockFetch.restore();
 	});
 
-	it("passes locale=fr to the API when ?locale=fr is in the URL", async () => {
-		// Bug: ContentNewPage has no validateSearch and never reads the locale param,
-		// so the POST body always omits locale regardless of what is in the URL.
+	it("passes locale=de to the API when ?locale=de is in the URL", async () => {
+		// The default locale is fr; navigating with ?locale=de tests that the
+		// non-default locale is read from search params and forwarded to createContent.
 		const { router, TestApp } = buildRouter();
 
 		await router.navigate({
 			to: "/content/$collection/new",
 			params: { collection: "posts" },
-			search: { locale: "fr" },
+			search: { locale: "de" },
 		});
 
 		const screen = await render(<TestApp />);
@@ -246,8 +268,8 @@ describe("ContentNewPage – locale passed to createContent", () => {
 
 		globalThis.fetch = origFetch;
 
-		// After the fix: the POST body must include locale: "fr"
+		// After the fix: the POST body must include locale: "de"
 		expect(requests).toHaveLength(1);
-		expect(requests[0]!.body).toMatchObject({ locale: "fr" });
+		expect(requests[0]!.body).toMatchObject({ locale: "de" });
 	});
 });
