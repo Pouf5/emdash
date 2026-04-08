@@ -143,7 +143,7 @@ describe("ContentListPage – locale forwarding to the new-content route", () =>
 
 		const screen = await render(<TestApp />);
 
-		const addNewLink = await screen.getByRole("link", { name: /add new/i });
+		const addNewLink = screen.getByRole("link", { name: /add new/i });
 		await expect.element(addNewLink).toBeInTheDocument();
 
 		const href = addNewLink.element().getAttribute("href") ?? "";
@@ -164,7 +164,7 @@ describe("ContentListPage – locale forwarding to the new-content route", () =>
 
 		const screen = await render(<TestApp />);
 
-		const addNewLink = await screen.getByRole("link", { name: /add new/i });
+		const addNewLink = screen.getByRole("link", { name: /add new/i });
 		await expect.element(addNewLink).toBeInTheDocument();
 
 		const href = addNewLink.element().getAttribute("href") ?? "";
@@ -184,7 +184,7 @@ describe("ContentListPage – locale forwarding to the new-content route", () =>
 
 		const screen = await render(<TestApp />);
 
-		const addNewLink = await screen.getByRole("link", { name: /add new/i });
+		const addNewLink = screen.getByRole("link", { name: /add new/i });
 		await expect.element(addNewLink).toBeInTheDocument();
 
 		const href = addNewLink.element().getAttribute("href") ?? "";
