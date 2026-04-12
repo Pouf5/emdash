@@ -1,6 +1,6 @@
 import Database from "better-sqlite3";
 import { Kysely, SqliteDialect, sql } from "kysely";
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 
 import { runMigrations } from "../../../src/database/migrations/runner.js";
 import type { Database as EmDashDatabase } from "../../../src/database/types.js";
@@ -583,6 +583,115 @@ describe("SchemaRegistry", () => {
 
 			const finalConfig = await ftsManager.getSearchConfig("articles");
 			expect(finalConfig?.weights).toEqual({ title: 10 });
+		});
+	});
+
+	describe("atomicity: rollback on FTS sync failure", () => {
+		afterEach(() => {
+			vi.restoreAllMocks();
+		});
+
+		it("rolls back updateCollection when FTS sync fails", async () => {
+			await registry.createCollection({
+				slug: "articles",
+				label: "Articles",
+				supports: ["drafts"],
+			});
+			await registry.createField("articles", {
+				slug: "title",
+				label: "Title",
+				type: "string",
+				searchable: true,
+			});
+
+			vi.spyOn(FTSManager.prototype, "enableSearch").mockRejectedValueOnce(
+				new Error("FTS sync sabotaged"),
+			);
+
+			await expect(
+				registry.updateCollection("articles", { supports: ["drafts", "search"] }),
+			).rejects.toThrow();
+
+			const collection = await registry.getCollection("articles");
+			expect(collection?.supports).toEqual(["drafts"]);
+		});
+
+		it("rolls back updateField when FTS sync fails", async () => {
+			await registry.createCollection({
+				slug: "articles",
+				label: "Articles",
+				supports: ["search"],
+			});
+			await registry.createField("articles", {
+				slug: "title",
+				label: "Title",
+				type: "string",
+				searchable: false,
+			});
+
+			vi.spyOn(FTSManager.prototype, "enableSearch").mockRejectedValueOnce(
+				new Error("FTS sync sabotaged"),
+			);
+
+			await expect(
+				registry.updateField("articles", "title", { searchable: true }),
+			).rejects.toThrow();
+
+			const field = await registry.getField("articles", "title");
+			expect(field?.searchable).toBe(false);
+		});
+
+		it("rolls back deleteField when FTS sync fails", async () => {
+			await registry.createCollection({
+				slug: "articles",
+				label: "Articles",
+				supports: ["search"],
+			});
+			await registry.createField("articles", {
+				slug: "title",
+				label: "Title",
+				type: "string",
+				searchable: true,
+			});
+			await registry.createField("articles", {
+				slug: "body",
+				label: "Body",
+				type: "text",
+				searchable: true,
+			});
+
+			vi.spyOn(FTSManager.prototype, "rebuildIndex").mockRejectedValueOnce(
+				new Error("FTS sync sabotaged"),
+			);
+
+			await expect(registry.deleteField("articles", "body")).rejects.toThrow();
+
+			const field = await registry.getField("articles", "body");
+			expect(field).not.toBeNull();
+		});
+
+		it("rolls back createField when FTS sync fails", async () => {
+			await registry.createCollection({
+				slug: "articles",
+				label: "Articles",
+				supports: ["search"],
+			});
+
+			vi.spyOn(FTSManager.prototype, "enableSearch").mockRejectedValueOnce(
+				new Error("FTS sync sabotaged"),
+			);
+
+			await expect(
+				registry.createField("articles", {
+					slug: "title",
+					label: "Title",
+					type: "string",
+					searchable: true,
+				}),
+			).rejects.toThrow();
+
+			const field = await registry.getField("articles", "title");
+			expect(field).toBeNull();
 		});
 	});
 });
