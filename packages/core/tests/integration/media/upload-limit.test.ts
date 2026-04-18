@@ -7,11 +7,7 @@
 
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
-import {
-	assertNodeVersion,
-	createTestServer,
-	type TestServerContext,
-} from "../server.js";
+import { assertNodeVersion, createTestServer, type TestServerContext } from "../server.js";
 
 const PORT = 4398;
 const ONE_MB = 1024 * 1024;
@@ -49,7 +45,7 @@ describe("direct multipart upload", () => {
 		});
 
 		expect(res.status).toBe(413);
-		const json = await res.json() as { error: { code: string } };
+		const json = (await res.json()) as { error: { code: string } };
 		expect(json.error.code).toBe("PAYLOAD_TOO_LARGE");
 	});
 
@@ -91,7 +87,7 @@ describe("signed-URL upload (upload-url endpoint)", () => {
 		});
 
 		expect(res.status).toBe(400);
-		const json = await res.json() as { error: { code: string } };
+		const json = (await res.json()) as { error: { code: string } };
 		expect(json.error.code).toBe("VALIDATION_ERROR");
 	});
 
