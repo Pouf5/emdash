@@ -16,7 +16,7 @@ import { ulid } from "ulidx";
 import { requirePerm } from "#api/authorize.js";
 import { apiError, apiSuccess, handleError } from "#api/error.js";
 import { isParseError, parseBody } from "#api/parse.js";
-import { mediaUploadUrlBody } from "#api/schemas.js";
+import { DEFAULT_MAX_UPLOAD_SIZE, mediaUploadUrlBody } from "#api/schemas.js";
 
 export const prerender = false;
 
@@ -59,7 +59,8 @@ export const POST: APIRoute = async ({ request, locals }) => {
 	}
 
 	try {
-		const body = await parseBody(request, mediaUploadUrlBody);
+		const maxSize = emdash.config.maxUploadSize ?? DEFAULT_MAX_UPLOAD_SIZE;
+		const body = await parseBody(request, mediaUploadUrlBody(maxSize));
 		if (isParseError(body)) return body;
 
 		// Validate content type
