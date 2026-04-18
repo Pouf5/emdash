@@ -86,7 +86,11 @@ export const POST: APIRoute = async ({ request, locals }) => {
 	}
 
 	try {
-		const maxUploadSize = emdash.config.maxUploadSize ?? DEFAULT_MAX_UPLOAD_SIZE;
+		const rawMax = emdash.config.maxUploadSize ?? DEFAULT_MAX_UPLOAD_SIZE;
+		if (!Number.isFinite(rawMax) || rawMax <= 0) {
+			return apiError("CONFIGURATION_ERROR", "Invalid maxUploadSize configuration", 500);
+		}
+		const maxUploadSize = rawMax;
 
 		// Best-effort size check before buffering the full multipart body
 		const contentLength = request.headers.get("Content-Length");
@@ -112,7 +116,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
 		if (file.size > maxUploadSize) {
 			return apiError(
 				"PAYLOAD_TOO_LARGE",
-				`File exceeds maximum size of ${Math.round(maxUploadSize / 1024 / 1024)}MB`,
+				`File exceeds maximum size of ${Math.floor(maxUploadSize / 1024 / 1024)}MB`,
 				413,
 			);
 		}

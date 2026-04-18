@@ -157,4 +157,16 @@ describe("mediaUploadUrlBody schema factory", () => {
 		expect(errorMessage).not.toBe("");
 		expect(errorMessage).not.toMatch(/\d+\.\d+MB/);
 	});
+
+	it("error message does not overstate the limit in MB", () => {
+		// 75_000_000 bytes / 1024 / 1024 ≈ 71.5 MB; floor gives 71, round gives 72
+		const schema = mediaUploadUrlBody(75_000_000);
+		let errorMessage = "";
+		try {
+			schema.parse({ filename: "a.jpg", contentType: "image/jpeg", size: 75_000_001 });
+		} catch (e) {
+			errorMessage = String(e);
+		}
+		expect(errorMessage).toContain("71MB");
+	});
 });
