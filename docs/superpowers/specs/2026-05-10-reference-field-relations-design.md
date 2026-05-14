@@ -25,11 +25,14 @@ The `reference` field type exists as a recognized type throughout the codebase b
 | i18n | Store target by `translation_group`. References auto-resolve to source's locale at read time, with fallback. |
 | Naming | `reciprocal_field_id` (DB) / `reciprocalFieldId` (TS). |
 | `allowMultiple` enforcement | Write-time validation only, like other field-validation rules. No DB-level cardinality constraint. |
+| Target status policy | Per-field `targetStatus` setting (`"all"` default, `"published_only"`, `"drafts_allowed"`). Governs both picker results and write-time validation. |
 | Approach | Reuse the `reference` field type, redesign internals. Static `reference()` helper throws — never functional, no compatibility burden. |
 
 ## Section 1 — Storage model
 
 A new system table `_emdash_references` holds every link. Each link is one row, accessed symmetrically from either side. No source/target asymmetry — the two endpoints are "A" and "B" and which-is-which is decided by the relation definition, not the row.
+
+**A/B canonicalization.** The application must always write the same A/B assignment for a given pair, regardless of which editor side initiates the write — otherwise the `UNIQUE(field_a_id, endpoint_a_group, endpoint_b_group)` dedupe is silently bypassed. The rule: **side A is the field that was created first by `createReferencePair`** (i.e. the side the user was configuring when they invoked the pair-creation flow). The schema-registry method returns `{ fieldA, fieldB }` and every subsequent reconciler resolves A/B by looking up which field id matches `fieldA`. Self-relations canonicalize on `id ASC` for stability since both sides come from the same `createReferencePair` call.
 
 ```sql
 CREATE TABLE _emdash_references (
@@ -96,11 +99,15 @@ Both sides hold a `reciprocal_field_id` pointing at each other. Either side can 
 4. Insert two `_emdash_fields` rows in one transaction: first with placeholder `reciprocal_field_id`, second with the first's id, then `UPDATE` the first to set its `reciprocal_field_id`.
 5. **No `ALTER TABLE` on the `ec_*` tables.** Reference fields no longer occupy a column — this is the key behavioral change from the existing `addField` path, which always adds a column.
 
-**`deleteReferencePair`:**
+**`deleteReferencePair`** (transactional — all three steps run inside one `withTransaction` block; a crash between steps would otherwise leave a dangling pair pointer that the schema-registry layer has no out-of-band recovery for):
 
 1. Delete all rows in `_emdash_references` matching either field id (cascade is application-level — keeps the option open to handle cross-DB deletion semantics consistently).
 2. Delete both `_emdash_fields` rows.
 3. Either side's "delete field" UI invokes this — deleting one half always deletes the mate. The confirmation dialog says so explicitly.
+
+**Routing from the existing `deleteField` API.** The schema-registry's `deleteField(fieldId)` method (used by the schema editor, CLI, and any other caller) detects `reciprocal_field_id IS NOT NULL` and delegates to `deleteReferencePair` instead of running its own column-drop path. This is the single chokepoint — direct DB deletion of one half is not a supported workflow, and the routing means non-UI callers don't need to know about pair semantics.
+
+**Concurrent-pair-creation race.** Two admins simultaneously creating the same pair (e.g. both adding `Lessons.chapter`) collide on the existing `_emdash_fields.UNIQUE(collection_id, slug)` constraint — the second writer's insert fails inside the transaction and rolls back cleanly. No additional locking is needed.
 
 **`updateReferencePair`** (label, `required`, `allowMultiple`):
 
@@ -118,7 +125,7 @@ Both sides hold a `reciprocal_field_id` pointing at each other. Either side can 
 type ResolvedReference = {
 	groupId: string;     // endpoint_*_group from the join table — stable identifier
 	id: string;          // resolved row id in the target's ec_* table for the source's locale
-	title: string;       // best-available title (data.title || data.name || slug || id)
+	title: string;       // best-available title (data.title || data.name || slug || t`Untitled`)
 	slug: string | null;
 	status: "draft" | "published" | "published_with_changes";
 	locale: string;      // the locale the resolution actually landed on (may differ from source)
@@ -140,7 +147,9 @@ Locale resolution at read time joins `_emdash_references` × target `ec_*` on `t
 1. Fetch current `_emdash_references` rows for `(field_id, source_group)`.
 2. Diff against desired list (preserving order from the request).
 3. Delete removed rows, insert added rows (with new `position_*`), update `position_*` on retained rows.
-4. Validate before each insert: `allowMultiple=false` cardinality on both sides, no self-loop, target group exists with at least one live row.
+4. Validate before each insert: `allowMultiple=false` cardinality on both sides, no self-loop, target group exists with at least one live row meeting the field's `targetStatus` policy (§3.6).
+
+**Max-references cap.** Reject any write whose array length exceeds **500** with `VALIDATION_ERROR / TOO_MANY_REFERENCES`. This is a hard ceiling — sites with legitimate need for larger sets should be modeling that as a separate collection, not a reference field. The cap is per-field-per-source, checked before any DB work so a malformed payload can't make the server do work proportional to its size.
 
 If validation fails the transaction rolls back — typed-column writes don't partially apply.
 
@@ -168,6 +177,8 @@ If validation fails the transaction rolls back — typed-column writes don't par
 
 Capped at 25 items per group with `more` reporting any overflow — preserves dialog readability. `totalCount` surfaces the headline number across all groups.
 
+**Per-collection read filtering.** The endpoint surfaces titles from collections other than the one whose item is being deleted (the items that *reference* the source). Each referencing item's collection is checked against the caller's read permission for *that* collection; items in collections the caller can't read are omitted from the `items[]` list but **still counted** in `more` and `totalCount`. This prevents leaking content the caller can't otherwise see while still surfacing the headline impact number ("3 things will be affected, 1 of which you don't have permission to view"). Drafts gating layers on top via the existing per-collection drafts check.
+
 ### 3.5 Trash and permanent-delete semantics
 
 - **Trash** (`POST /content/{collection}/{id}/trash`, existing): sets `deleted_at`, does **not** touch `_emdash_references`. Read enrichment filters out trashed targets. Restore brings them back automatically.
@@ -182,13 +193,32 @@ No new endpoint. `ContentPickerModal` uses `GET /content/{collection}` with two 
 
 The reference-field flow filters the source item out client-side to prevent self-loops.
 
+**Cursor encoding under `groupBy=translation_group`.** When the param is absent, cursors continue to encode `(orderValue, id)`. When `groupBy=translation_group` is set, cursors encode `(orderValue, translation_group)` instead — the row id can shift across requests as translations are added or trashed mid-pagination, but the group id is stable. The server returns the appropriate encoding for the query and `decodeCursor` infers the shape from request shape (no cross-request ambiguity because the param is bound to the cursor's issuing request). A client that switches param values mid-pagination must drop its cursor and restart.
+
+**`targetStatus` filtering.** When the picker is invoked from a reference field, the field's `targetStatus` value gates which rows are returned:
+
+- `"all"` (default) — current behavior. Drafts and published items both appear, status-badged.
+- `"published_only"` — only rows where `status = 'published'`. Drafts never appear in the picker for this field.
+- `"drafts_allowed"` — drafts and published, but no `status = 'pending_review'` or similar workflow-intermediate states (reserved for sites with editorial workflows where authors can link to drafts but not to pending peer reviews).
+
+The server enforces the same filter at write time (§3.3 step 4) — a client that bypasses the picker and POSTs a draft `translation_group` to a `"published_only"` field gets `VALIDATION_ERROR / TARGET_STATUS_NOT_ALLOWED`. Picker UI and validation share the same predicate to stay in sync.
+
 ### 3.7 Cardinality-impact endpoint (new)
 
 `GET /schema/fields/{id}/cardinality-impact` returns `{ violatingSourceCount: number }` — the number of source items whose current reference rows for this field exceed cardinality 1. Powers the "are you sure?" dialog when flipping `allowMultiple` from `true` → `false` (§4.1). Implemented as `SELECT COUNT(*) FROM (SELECT endpoint_X_group FROM _emdash_references WHERE field_X_id = ? GROUP BY endpoint_X_group HAVING COUNT(*) > 1)`. Read-only; no body, no side effects.
 
 ### 3.8 Authorization
 
-Reference writes inherit the source content item's permissions via the existing `requireOwnerPerm(user, sourceItem.authorId, "content:edit_own", "content:edit_any")` on the parent endpoint. The `incoming-references` endpoint requires read on the source's collection (drafts gate already in place). The `cardinality-impact` endpoint requires `schema:manage` (matches other schema-editing routes). **No new permission strings.**
+Reference writes inherit the source content item's permissions via the existing `requireOwnerPerm(user, sourceItem.authorId, "content:edit_own", "content:edit_any")` on the parent endpoint. The `incoming-references` endpoint requires read on the source's collection (drafts gate already in place); referencing items in other collections are further filtered per the per-collection read rule in §3.4. The `cardinality-impact` endpoint requires `schema:manage` (matches other schema-editing routes). **No new permission strings.**
+
+### 3.9 Collection-delete pre-flight (new)
+
+`DELETE /schema/collections/{id}` already exists. With reference fields targeting collections via `target_collection_id` (FK to `_emdash_collections.id`), naive deletion would either error with a foreign-key violation (Postgres) or cascade-delete fields in unexpected ways (depending on FK options). Two changes:
+
+1. The FK is declared **without** `ON DELETE CASCADE` — the DB rejects the delete instead of silently breaking reference fields.
+2. The collection-delete handler **pre-flights** by querying `SELECT id, slug, collection_id FROM _emdash_fields WHERE target_collection_id = ? AND reciprocal_field_id IS NOT NULL`. If any results, return `409 CONFLICT` with `BLOCKED_BY_REFERENCES` and a list of `{ collection, fieldSlug }` pairs the admin must delete first. The admin UI surfaces this as a dialog with deep links to each referencing field's editor.
+
+Auto-cascading reference-field deletion when a target collection is deleted is rejected: it makes a destructive action implicit and would surprise admins. The user must explicitly tear down the relations.
 
 ## Section 4 — Admin UI
 
@@ -237,24 +267,28 @@ Preview: Each Lesson has one Chapter. Each Chapter has many Lessons.
 - Label, cardinality, required: editable on either side.
 - Editing this side's pane updates this field; switching to "Edit reciprocal" navigates to the target collection's schema editor and opens its `FieldEditor` on that field. We don't try to render both sides as one editable form once they exist.
 
-**Cardinality flip warning.** When the user toggles `allowMultiple` from `true` → `false` on a side, the editor calls `GET /schema/fields/{id}/cardinality-impact` (new) which returns `{ violatingSourceCount: number }`. If non-zero, the dialog shows: "X items currently have multiple references. Saving won't remove them, but next time you save those items they'll fail validation until reduced to one." User can proceed or cancel.
+**Cardinality flip warning.** When the user toggles `allowMultiple` from `true` → `false` on a side, the editor calls `GET /schema/fields/{id}/cardinality-impact` (new) which returns `{ violatingSourceCount: number }`. If non-zero, the dialog shows: "X items currently have multiple references. Saving won't remove them, but next time you save those items they'll fail validation until reduced to one." User can proceed or cancel. The endpoint is called on **toggle-and-pause** (debounced 300ms) rather than on every keystroke or every render — it's a `COUNT(*)` over a `GROUP BY` subquery on `_emdash_references` and is cheap but not free.
+
+**Auto-fill is English-only.** The `pluralize(slug)` helper and the slug-derived label generator operate on ASCII slugs. In a non-English admin (e.g. Arabic), the auto-filled reciprocal slug is still `lessons` and the auto-filled label is still `Lessons` — the user is expected to edit the label to their preferred locale before saving. The label field is plain text, so this is a soft default rather than a constraint; documented here so admins aren't surprised.
 
 ### 4.2 ContentEditor reference widget
 
 A new `ReferenceField` component at `packages/admin/src/components/ReferenceField.tsx`, wired into `ContentEditor`'s `FieldRenderer` switch as `case "reference":`.
 
 **Single cardinality** (`allowMultiple=false`):
-- Empty: a single full-width row with target-collection icon + "No chapter selected" + a "Pick chapter" button on the end.
+- Empty: a single full-width row with target-collection icon + the field's `emptyLabel` (default: `` t`No ${labelSingular} selected` ``) + a "Pick {labelSingular}" button on the end. The field's `description` renders above the row when set.
 - Filled: a card showing title, slug, status badge, locale badge (when the resolution fell back to a non-source locale), with `Change` and `Clear` ghost-square actions.
 
 **Multi cardinality** (`allowMultiple=true`):
 - List of cards, each with a drag handle (Phosphor `DotsSixVertical`), title, slug, status badge, locale badge, and `Remove`. Drag-to-reorder updates the appropriate `position_*` on submit. Up/down arrow keys when focused move the row for keyboard a11y.
-- "Add reference" button below the list — opens the picker.
-- Empty state: a centered "No chapters selected" with the "Add reference" CTA.
+- "Add reference" button below the list — opens the picker with the field's `placeholder` as the picker's search-input placeholder.
+- Empty state: a centered `emptyLabel` (default: `` t`No ${labelPlural} selected` ``) with the "Add reference" CTA.
 
-**Status badges** map to existing `getDraftStatus` colors. **Locale badge** appears only when `resolvedLocale !== sourceLocale` and reads `t`Resolved from ${resolvedLocale}` ` so the editor knows the link fell back.
+**Status badges** map to existing `getDraftStatus` colors. **Locale badge** appears only when `resolvedLocale !== sourceLocale` and reads `` t`Resolved from ${resolvedLocale}` `` so the editor knows the link fell back.
 
-**Click target.** Clicking the card body (not the buttons) navigates to the target item via `RouterLinkButton` semantics. Cmd-click opens in a new tab because the card body is a real anchor wrapping the title.
+**Click target.** The card body is *not* a wrapping anchor — that would nest interactive elements inside an `<a>` (the `Change`/`Clear`/`Remove`/drag-handle buttons), which is invalid HTML and breaks Cmd-click on the buttons. Instead: the card is a `<div>` with `role="link"` and `tabIndex={0}`, and the title inside it is a real `<a>` (rendered via `RouterLinkButton`). The wrapping div listens for `click` on areas outside the action buttons and delegates to the inner anchor's `href` via programmatic navigation. Cmd-click on the title anchor opens in a new tab natively; Cmd-click on the card body uses `event.metaKey` to open via `window.open`. Action buttons stop propagation so they never trigger navigation.
+
+**Ordering is group-level, not per-locale.** Reordering refs in the EN editor changes the order in the FR/DE/etc. editors too, because `position_a`/`position_b` are stored on the join row keyed by `endpoint_*_group` (§1) — not per-locale. This is intentional: the relation is at the group level, and translations of the same source item conceptually share the same set of references. The editor surfaces this with a small `t`Order is shared across all translations` ` hint under the list in multi mode.
 
 **No locale toggle in the widget.** Even though references resolve via translation_group, the editor only displays the resolved row's title/slug from the source's locale (or fallback). The user is editing a single locale's view, not a group-level relation manager.
 
@@ -308,7 +342,7 @@ A single new migration `NNN_reference_field_redesign.ts` does everything atomica
 
 2. **Create `_emdash_references`** with the schema and indexes from §1 (lookup indexes + the static `UNIQUE(field_a_id, endpoint_a_group, endpoint_b_group)` dedupe).
 
-3. **Convert existing reference fields to text:** for every `_emdash_fields` row with `type = 'reference'`, set `type = 'text'`. `column_type` was already `TEXT`, so no DDL on `ec_*` tables — the data column stays put with whatever raw strings users typed. `validation` JSON is preserved as-is.
+3. **Convert existing reference fields to text:** for every `_emdash_fields` row with `type = 'reference'`, set `type = 'text'`. `column_type` was already `TEXT`, so no DDL on `ec_*` tables — the data column stays put with whatever raw strings users typed. The migration also strips the now-meaningless `options.collection` and `options.allowMultiple` keys from the `options` JSON column (other keys are preserved) — leaving them in place would create permanent confusing artifacts when future readers grep for these names.
 
 4. **Forward-only `down`.** Per project rules, migrations are forward-only; the `down` handler reverses schema additions (drops the new columns and `_emdash_references`) but does not attempt to recreate `type = 'reference'` rows. Since the prior reference field was never functional, the rollback target isn't a meaningful state to restore to.
 
@@ -350,8 +384,18 @@ Why throw rather than soft-deprecate:
 | `options.collection` | `_emdash_fields.target_collection_id` (column) |
 | `options.allowMultiple` | `_emdash_fields.validation.allowMultiple` (JSON) |
 | (none) | `_emdash_fields.reciprocal_field_id` (column) |
+| (none) | `_emdash_fields.validation.targetStatus` (JSON, default `"all"`) |
 
-`FieldValidation` gains `allowMultiple?: boolean`. The `Field` TypeScript interface gains `targetCollectionId?: string` and `reciprocalFieldId?: string`. These flow through `CreateFieldInput` / `UpdateFieldInput`, but the actual wiring goes through the new `createReferencePair` / `updateReferencePair` registry methods — which compute these atomically rather than letting clients set them directly.
+`FieldValidation` gains `allowMultiple?: boolean` and `targetStatus?: "all" | "published_only" | "drafts_allowed"`. The `Field` TypeScript interface gains `targetCollectionId?: string` and `reciprocalFieldId?: string`. These flow through `CreateFieldInput` / `UpdateFieldInput`, but the actual wiring goes through the new `createReferencePair` / `updateReferencePair` registry methods — which compute these atomically rather than letting clients set them directly.
+
+**Standard field affordances apply.** Reference fields support the same `description`, `placeholder`, and `defaultValue` that other field types do — no special-casing in the editor renderer. Concretely:
+
+- `description` — rendered above the picker / list in `ReferenceField` (§4.2). Honors `t`/`<Trans>` already.
+- `placeholder` — passed through to the picker's search-input placeholder when the user opens the picker (§4.2).
+- `emptyLabel` — new optional string on the field's `widget` config (lives in `options`, not validation, since it's purely a render hint). Falls back to `` t`No ${labelSingular} selected` `` for single, `` t`No ${labelPlural} selected` `` for multi.
+- `defaultValue` — already typed as `unknown` on `Field`. For reference fields the runtime accepts `string` (one target group id) for `allowMultiple=false`, `string[]` (ordered list of group ids) for `allowMultiple=true`. Validation runs the value through the same target-exists + status + cardinality checks as a manual write before persisting — an invalid default is rejected at field-create time, not silently swallowed.
+
+`cssClass` is deliberately not added — the existing field types don't have it, and the spec's scope is to make reference fields *match* the others, not extend the field-affordance surface area.
 
 ### 5.4 Changeset
 
@@ -364,10 +408,14 @@ Single changeset entry tagged for `emdash` with `minor` bump (pre-1.0; breaks ar
 
 Reimplements the reference field as a bidirectional relation. Reference fields are
 now created in pairs through the schema editor, with reciprocal fields auto-created
-on the target collection. The static `reference()` helper now throws — convert
-static collections to DB-managed ones, or use `string()` with a validation pattern
-for raw ID storage. Existing reference fields in DB-managed collections are converted
-to text fields automatically; their stored values are preserved as raw strings.
+on the target collection. Fields support a `targetStatus` policy (`"all"` default,
+`"published_only"`, `"drafts_allowed"`), plus the same `description`, `placeholder`,
+and `defaultValue` affordances as other field types. The static `reference()` helper
+now throws — convert static collections to DB-managed ones, or use `string()` with a
+validation pattern for raw ID storage. Existing reference fields in DB-managed
+collections are converted to text fields automatically; their stored values are
+preserved as raw strings, and now-obsolete `options.collection` /
+`options.allowMultiple` keys are stripped during migration.
 ```
 
 ## Section 6 — i18n behavior and edge cases
@@ -459,9 +507,16 @@ Run all of the above through `describeEachDialect` so SQLite and Postgres parity
 - Read enrichment: GET returns the resolved-target shape from §3.1; trashed targets filtered out; locale fallback runs through §6.1 precedence.
 - Write reconciliation: covers add, remove, reorder, replace; transaction rolls back if any step fails.
 - Validation: cardinality on insert (`allowMultiple=false` rejects a second row); no-self-loop; target-group-not-found rejection.
+- Max-references cap: payload with >500 entries rejected with `TOO_MANY_REFERENCES` before any DB work.
+- `targetStatus` enforcement: `"published_only"` field rejects writes pointing at draft targets with `TARGET_STATUS_NOT_ALLOWED`; picker omits the same targets via `groupBy=translation_group` + `targetStatus` query params.
+- A/B canonicalization: writing from the A-side and from the B-side produces the same join row (same `field_a_id`, same endpoint ordering); the `UNIQUE` dedupe fires on the second.
 - `incoming-references` endpoint: returns the `groups` shape, caps items per group at 25 with `more` counting overflow, `totalCount` accurate, returns empty array on no incoming.
+- `incoming-references` per-collection read filter: caller without read on a referencing collection sees the items omitted from `items[]` but still counted in `totalCount`.
 - Trash → restore round-trip: trashing hides target from reads; restore brings it back; join rows untouched.
 - Permanent delete: last-live-row-in-group purges join rows in the same transaction; with-surviving-locales doesn't.
+- `deleteReferencePair` atomicity: triggering an error between step 1 and step 2 (via a test-only fault injection) rolls back the entire pair removal.
+- Collection delete blocked by references (§3.9): attempting to delete a collection with live `target_collection_id` references returns `409 BLOCKED_BY_REFERENCES` with the list of blocking fields.
+- `deleteField` delegation: calling the existing `deleteField(fieldId)` on a reference field invokes `deleteReferencePair` (both halves removed; join rows cleaned).
 - Concurrent-write race documented with a deliberately skipped test (`it.skip` plus a comment) — useful for future hardening but out of scope to fix.
 
 **i18n** (`tests/integration/content-references-i18n.test.ts`, new):
@@ -527,5 +582,8 @@ If the reviewer prefers a single PR, the test surface and file count are large b
 - A standalone "Referenced by" sidebar — incoming references already surface as the reciprocal field on the target's editor; a separate panel would duplicate.
 - Fixing the concurrent-write cardinality race (documented in §6.7 / §7.1).
 - Changing target collection on an existing pair (forces delete-and-recreate per §4.1).
+- `reciprocalVisibility: "editable" | "readonly" | "hidden"` (per masonjames feedback on discussion #386). The use case — letting schema designers hide the many-side reciprocal field from the admin when it's editorial noise — is real, but `hidden`/`readonly` interacts with permissions, drag-reorder, and the delete-warning dialog in ways that need their own design pass.
+- Stable per-relation `relationKey` identifier (per masonjames feedback). The `reciprocal_field_id`-on-each-side model already gives the relation a stable identity via either field's slug + collection; a separate key would duplicate that without new capability.
+- Auto-cascading reference-field cleanup when a target collection is deleted (§3.9 chooses a hard-block pre-flight instead).
 
 Each is a follow-up Discussion candidate, not part of this spec.
