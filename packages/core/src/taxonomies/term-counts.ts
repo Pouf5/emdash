@@ -37,6 +37,15 @@ interface CountRow {
  * join on `taxonomies.id` — the anchor row (id == group) can be deleted while
  * sibling translations survive, and a plain join on `translation_group` would
  * multiply counts by the number of locales.
+ *
+ * `CROSS JOIN` (with the join predicate in `WHERE`) is a join-order hint, not a
+ * cartesian product: it pins the pivot as the outer table. Written as an
+ * `INNER JOIN`, stats-blind SQLite/D1 drives from `ec_*` instead and re-runs
+ * the whole `taxonomy_id IN (...)` list as a pivot-PK probe for every entry in
+ * the collection, so a single call reads `entries × terms` rows (#2237). Seeked
+ * from the pivot it is one `(taxonomy_id, collection)` index seek per term plus
+ * one primary-key touch per assignment. Postgres has statistics and reorders
+ * freely — `CROSS JOIN` there is a plain inner join.
  */
 function collectionBranch(
 	db: Kysely<Database>,
@@ -46,8 +55,9 @@ function collectionBranch(
 	return sql`
 		SELECT ct.taxonomy_id AS taxonomy_id, COUNT(*) AS count
 		FROM content_taxonomies AS ct
-		INNER JOIN ${sql.ref(`ec_${collection}`)} AS e ON e.id = ct.entry_id
-		WHERE ct.collection = ${collection}
+		CROSS JOIN ${sql.ref(`ec_${collection}`)} AS e
+		WHERE e.id = ct.entry_id
+			AND ct.collection = ${collection}
 			AND ct.taxonomy_id IN (SELECT translation_group FROM taxonomies WHERE name = ${taxonomyName})
 			AND ${buildStatusCondition(db, "published", "e")}
 			AND e.deleted_at IS NULL
