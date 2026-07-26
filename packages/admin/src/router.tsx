@@ -310,13 +310,7 @@ function DashboardPage() {
 }
 
 // Content list route
-//
-// The whole list view — page, search, filters, sort — lives in the URL rather
-// than in component state, so opening an entry and hitting back returns the
-// editor to the view they left instead of an unfiltered page 1.
-//
-// Defaults are never serialized: a pristine list is `/content/posts` with no
-// query string, and clearing a control drops its param again.
+// List view state lives in URL search params so back/forward restore it.
 
 const DEFAULT_SORT: ContentListSort = { field: "updatedAt", direction: "desc" };
 const DEFAULT_DATE_FIELD: ContentDateField = "createdAt";
@@ -421,11 +415,6 @@ function ContentListPage() {
 		},
 		[navigate, collection],
 	);
-
-	// Every control resets `page`: page 4 of one filter set means nothing in
-	// another, and the cursor chain restarts from a fresh first page anyway.
-	// Discrete controls push a history entry (so back steps through them);
-	// debounced/keystroke-driven ones replace, to keep history usable.
 
 	// Sort is part of the query key, so changing direction invalidates the
 	// current cursor chain.
@@ -730,9 +719,8 @@ function ContentListPage() {
 		return <ErrorScreen error={error.message} />;
 	}
 
-	// Filters and sort carry across a locale switch — they describe how the
-	// editor wants to look at the collection, not at one language. The page
-	// can't: it indexes a different result set.
+	// Filters and sort survive a locale switch; the page can't, since it indexes
+	// a different result set.
 	const handleLocaleChange = (locale: string) => {
 		updateSearch({ locale: locale || undefined, page: undefined });
 	};
