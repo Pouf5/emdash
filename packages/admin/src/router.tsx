@@ -321,8 +321,6 @@ const DATE_FIELDS: ContentDateField[] = ["createdAt", "updatedAt", "publishedAt"
 /** `YYYY-MM-DD`, the shape the date inputs emit. */
 const CALENDAR_DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/;
 
-// Routes link here supplying only the params they care about, so making any
-// key required breaks those links.
 export interface ContentListSearch {
 	locale?: string | undefined;
 	/** 1-based, and only ever set when past the first page. */
