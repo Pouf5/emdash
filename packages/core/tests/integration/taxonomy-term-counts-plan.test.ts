@@ -1,16 +1,7 @@
 /**
- * Query-plan shape of the consolidated term-count query (#2237).
- *
- * On stats-blind SQLite/D1 (no ANALYZE, no `sqlite_stat1`) an `INNER JOIN`
- * between the pivot and the content table let the planner drive from `ec_*` and
- * re-run the `taxonomy_id IN (...)` term list as a pivot-PK probe for every
- * entry in the collection — `entries × terms` rows read per branch. Seeking the
- * pivot first makes it one index seek per term plus one primary-key touch per
- * assignment.
- *
- * This asserts the plan, not the output (output is covered by
- * unit/taxonomies/term-counts). SQLite-only: `EXPLAIN QUERY PLAN` is a SQLite
- * concern and, being stats-blind here, the plan is schema-driven — matching D1.
+ * SQLite query-plan regression guard for the consolidated term-count query.
+ * Output correctness is covered by unit/taxonomies/term-counts; this asserts
+ * the planner drives from content_taxonomies, not from ec_*.
  */
 
 import Database from "better-sqlite3";
@@ -56,9 +47,7 @@ beforeEach(async () => {
 	const content = new ContentRepository(anyDb);
 	const tax = new TaxonomyRepository(anyDb);
 
-	// Many terms and many entries: the shape the bad plan multiplies together.
-	// The plan is stats-blind so the counts are immaterial — they only make the
-	// two access paths distinguishable to a reader.
+	// Enough rows to make the two access paths visually distinct.
 	const terms = [];
 	for (let i = 0; i < 5; i++) {
 		terms.push(
@@ -107,11 +96,8 @@ async function countQueryPlan(): Promise<string> {
 it("seeks the terms on a content_taxonomies index rather than probing the pivot per entry", async () => {
 	const plan = await countQueryPlan();
 
-	// The pivot is entered on a `taxonomy_id`-leading index, once per term.
+	// The pivot must be entered on a taxonomy_id-leading index.
 	expect(plan).toMatch(/SEARCH ct USING (COVERING )?INDEX idx_content_taxonomies/);
-	// The pivot's primary key is `(collection, entry_id, taxonomy_id)`. Reaching
-	// the pivot through it means the planner is driving from `ec_*` and probing
-	// the whole term list per entry — the #2237 blowup.
 	expect(plan).not.toContain("sqlite_autoindex_content_taxonomies_1");
 	expect(plan).not.toContain("SCAN ct");
 });

@@ -38,14 +38,9 @@ interface CountRow {
  * sibling translations survive, and a plain join on `translation_group` would
  * multiply counts by the number of locales.
  *
- * `CROSS JOIN` (with the join predicate in `WHERE`) is a join-order hint, not a
- * cartesian product: it pins the pivot as the outer table. Written as an
- * `INNER JOIN`, stats-blind SQLite/D1 drives from `ec_*` instead and re-runs
- * the whole `taxonomy_id IN (...)` list as a pivot-PK probe for every entry in
- * the collection, so a single call reads `entries × terms` rows (#2237). Seeked
- * from the pivot it is one `(taxonomy_id, collection)` index seek per term plus
- * one primary-key touch per assignment. Postgres has statistics and reorders
- * freely — `CROSS JOIN` there is a plain inner join.
+ * CROSS JOIN with the join predicate in WHERE keeps stats-blind SQLite/D1 from
+ * reordering content_taxonomies out of the outer position; it touches ec_* only
+ * by primary key. Postgres treats this as an ordinary inner join and plans freely.
  */
 function collectionBranch(
 	db: Kysely<Database>,
