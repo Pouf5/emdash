@@ -78,10 +78,13 @@ export function useHasApplicableTaxonomies(collection: string): boolean {
 
 /**
  * Fetch terms for a taxonomy, scoped to the entry's locale so only the matching
- * translation variants are offered.
+ * translation variants are offered. The picker shows no usage counts, so it
+ * opts out of the per-collection count aggregate the endpoint runs by default.
  */
 async function fetchTerms(taxonomyName: string, locale?: string): Promise<TaxonomyTerm[]> {
-	const res = await apiFetch(withLocale(`/_emdash/api/taxonomies/${taxonomyName}/terms`, locale));
+	const res = await apiFetch(
+		withLocale(`/_emdash/api/taxonomies/${taxonomyName}/terms?includeCounts=false`, locale),
+	);
 	const data = await parseApiResponse<{ terms: TaxonomyTerm[] }>(
 		res,
 		i18n._(msg`Failed to fetch terms`),
