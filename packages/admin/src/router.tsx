@@ -310,7 +310,6 @@ function DashboardPage() {
 }
 
 // Content list route
-// List view state lives in URL search params so back/forward restore it.
 
 const DEFAULT_SORT: ContentListSort = { field: "updatedAt", direction: "desc" };
 const DEFAULT_DATE_FIELD: ContentDateField = "createdAt";
@@ -456,8 +455,7 @@ function ContentListPage() {
 		[navigate, collection],
 	);
 
-	// Filter state (#1288). All are part of the query key so changing any of
-	// them restarts the cursor chain from a filtered first page.
+	// Changing a filter restarts the cursor chain from a filtered first page.
 	const statusFilter: ContentStatusFilter = search.status ?? "all";
 	const handleStatusFilterChange = React.useCallback(
 		(status: ContentStatusFilter) =>
