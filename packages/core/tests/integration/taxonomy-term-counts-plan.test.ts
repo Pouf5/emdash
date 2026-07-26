@@ -36,7 +36,7 @@ beforeEach(async () => {
 		},
 	});
 
-	// Deliberately no ANALYZE: matches D1, which never maintains sqlite_stat1.
+	// No ANALYZE: D1 never maintains sqlite_stat1.
 	await runMigrations(db);
 	const registry = new SchemaRegistry(db);
 	await registry.createCollection({ slug: "post", label: "Posts", labelSingular: "Post" });
