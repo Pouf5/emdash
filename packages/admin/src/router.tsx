@@ -351,8 +351,6 @@ function readCalendarDate(value: unknown): string | undefined {
 }
 
 export function parseContentListSearch(search: Record<string, unknown>): ContentListSearch {
-	// `dir` alone says nothing about which column to order by, so it only
-	// survives alongside a valid `sort`.
 	const sort = readOneOf(search.sort, SORT_FIELDS);
 
 	const rawPage = Number(search.page);
@@ -397,10 +395,6 @@ function ContentListPage() {
 	// Default to defaultLocale when i18n is enabled and no locale specified
 	const activeLocale = i18n ? (search.locale ?? i18n.defaultLocale) : undefined;
 
-	// Patch the URL in place. The updater form reads the live search params, so
-	// this callback stays referentially stable — ContentList's debounced-search
-	// effect depends on `onSearchChange`, and a new identity each render would
-	// re-fire it (and re-navigate) forever.
 	const updateSearch = React.useCallback(
 		(patch: Partial<ContentListSearch>, options?: { replace?: boolean }) => {
 			void navigate({
@@ -413,8 +407,6 @@ function ContentListPage() {
 		[navigate, collection],
 	);
 
-	// Sort is part of the query key, so changing direction invalidates the
-	// current cursor chain.
 	const sort: ContentListSort = React.useMemo(
 		() => ({
 			field: search.sort ?? DEFAULT_SORT.field,
@@ -435,8 +427,6 @@ function ContentListPage() {
 		[updateSearch],
 	);
 
-	// Server-side search term (debounced inside ContentList). Part of the query
-	// key so a new term restarts the cursor chain from a filtered first page.
 	const searchTerm = search.q ?? "";
 	const handleSearchChange = React.useCallback(
 		(q: string) => {
@@ -453,7 +443,6 @@ function ContentListPage() {
 		[navigate, collection],
 	);
 
-	// Changing a filter restarts the cursor chain from a filtered first page.
 	const statusFilter: ContentStatusFilter = search.status ?? "all";
 	const handleStatusFilterChange = React.useCallback(
 		(status: ContentStatusFilter) =>
@@ -715,8 +704,6 @@ function ContentListPage() {
 		return <ErrorScreen error={error.message} />;
 	}
 
-	// Filters and sort survive a locale switch; the page can't, since it indexes
-	// a different result set.
 	const handleLocaleChange = (locale: string) => {
 		updateSearch({ locale: locale || undefined, page: undefined });
 	};
@@ -745,7 +732,7 @@ function ContentListPage() {
 			page={page}
 			onPageChange={handlePageChange}
 			total={total}
-			initialSearchQuery={searchTerm}
+			searchQuery={searchTerm}
 			onSearchChange={handleSearchChange}
 			statusFilter={statusFilter}
 			onStatusFilterChange={handleStatusFilterChange}

@@ -100,11 +100,12 @@ export interface ContentListProps {
 	page?: number;
 	onPageChange?: (page: number) => void;
 	/**
-	 * Seeds the search box on mount, for callers that restore the query from
-	 * somewhere durable (the URL). The input stays internally controlled after
-	 * that, so typing isn't lagged by the debounce round-trip.
+	 * The search term the caller holds (the URL, typically). The input keeps
+	 * its own state while typing so keystrokes aren't lagged by the debounce
+	 * round-trip, and re-syncs whenever this changes on its own — a deep link
+	 * or a back-navigation to a different query.
 	 */
-	initialSearchQuery?: string;
+	searchQuery?: string;
 	/**
 	 * Total rows matching the current filters (ignoring pagination). When
 	 * set, the pagination denominator reflects this stable count instead of
@@ -191,7 +192,7 @@ export function ContentList({
 	onSortChange,
 	page: controlledPage,
 	onPageChange,
-	initialSearchQuery = "",
+	searchQuery: controlledSearchQuery = "",
 	total,
 	onSearchChange,
 	statusFilter = "all",
@@ -207,7 +208,7 @@ export function ContentList({
 }: ContentListProps) {
 	const { t } = useLingui();
 	const [activeTab, setActiveTab] = React.useState<ViewTab>("all");
-	const [searchQuery, setSearchQuery] = React.useState(initialSearchQuery);
+	const [searchQuery, setSearchQuery] = React.useState(controlledSearchQuery);
 	const [internalPage, setInternalPage] = React.useState(0);
 	const page = controlledPage ?? internalPage;
 	const setPage = onPageChange ?? setInternalPage;
@@ -223,9 +224,20 @@ export function ContentList({
 	// loaded page" bug for non-title columns).
 	const serverSearch = !!onSearchChange;
 	const debouncedSearch = useDebouncedValue(searchQuery, 300);
+	const reportedQuery = React.useRef(controlledSearchQuery);
 	React.useEffect(() => {
-		if (onSearchChange) onSearchChange(debouncedSearch.trim());
+		reportedQuery.current = debouncedSearch.trim();
+		if (onSearchChange) onSearchChange(reportedQuery.current);
 	}, [debouncedSearch, onSearchChange]);
+
+	// Adopt a query the caller changed on its own. Comparing against what we
+	// last reported keeps the caller's echo of our own term from resetting the
+	// input mid-word.
+	React.useEffect(() => {
+		if (controlledSearchQuery === reportedQuery.current) return;
+		reportedQuery.current = controlledSearchQuery;
+		setSearchQuery(controlledSearchQuery);
+	}, [controlledSearchQuery]);
 
 	// Reset page when search changes. Guarded because `setPage` may write to
 	// the URL, and an unconditional reset would push a history entry per

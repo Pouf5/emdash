@@ -806,9 +806,8 @@ describe("ContentListPage – view state survives back-navigation", () => {
 		await router.navigate({ to: "/content/$collection", params: { collection: "posts" } });
 		const screen = await render(<TestApp />);
 
-		// Assertions target the row links and the page indicator: the mocked
-		// editor also renders an entry's title, so a bare text match would still
-		// pass while sitting on the edit screen.
+		// The mocked editor renders the entry title too, so assert on the page
+		// indicator and row links rather than bare item text.
 		await expect.element(screen.getByText("1 / 3", { exact: true })).toBeInTheDocument();
 
 		await screen.getByRole("button", { name: "Next page" }).click();
@@ -819,8 +818,6 @@ describe("ContentListPage – view state survives back-navigation", () => {
 
 		router.history.back();
 
-		// The bug: `page` lived in ContentList's useState, so unmounting the list
-		// to open an entry threw it away and back landed on page 1.
 		await expect.element(screen.getByText("2 / 3", { exact: true })).toBeInTheDocument();
 		await expect.element(screen.getByRole("link", { name: "Post 21", exact: true })).toBeVisible();
 	});
@@ -837,8 +834,6 @@ describe("ContentListPage – view state survives back-navigation", () => {
 
 		await expect.element(screen.getByText("Post 1", { exact: true })).toBeInTheDocument();
 
-		// Sorting by Title is doubly non-default (the list defaults to
-		// updatedAt), so a reset would show `none` on this column.
 		await screen.getByRole("button", { name: "Title" }).click();
 		await screen.getByRole("link", { name: "Post 1", exact: true }).click();
 		await expect.element(screen.getByTestId("content-editor")).toBeInTheDocument();
@@ -891,5 +886,29 @@ describe("ContentListPage – view state survives back-navigation", () => {
 		await new Promise((resolve) => setTimeout(resolve, 800));
 		expect(router.state.location.search).toMatchObject({ page: 2, q: "Post" });
 		await expect.element(screen.getByText("2 / 3", { exact: true })).toBeInTheDocument();
+	});
+
+	it("follows a search term that changes in the URL while the list stays mounted", async () => {
+		const { router, TestApp } = buildRouter();
+
+		await router.navigate({
+			to: "/content/$collection",
+			params: { collection: "posts" },
+			search: { q: "Post" },
+		});
+		const screen = await render(<TestApp />);
+
+		await expect.element(screen.getByRole("searchbox")).toHaveValue("Post");
+
+		await router.navigate({
+			to: "/content/$collection",
+			params: { collection: "posts" },
+			search: {},
+		});
+
+		await expect.element(screen.getByRole("searchbox")).toHaveValue("");
+
+		await new Promise((resolve) => setTimeout(resolve, 800));
+		expect(router.state.location.searchStr).toBe("");
 	});
 });
