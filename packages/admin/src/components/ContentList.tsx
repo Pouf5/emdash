@@ -211,7 +211,15 @@ export function ContentList({
 	const [searchQuery, setSearchQuery] = React.useState(controlledSearchQuery);
 	const [internalPage, setInternalPage] = React.useState(0);
 	const page = controlledPage ?? internalPage;
-	const setPage = onPageChange ?? setInternalPage;
+	const requestedPage = React.useRef(controlledPage);
+	const setPage = React.useCallback(
+		(next: number) => {
+			requestedPage.current = next;
+			if (onPageChange) onPageChange(next);
+			else setInternalPage(next);
+		},
+		[onPageChange],
+	);
 	const [selectedIds, setSelectedIds] = React.useState<Set<string>>(() => new Set());
 
 	// Bulk selection is opt-in: the checkbox column + toolbar only render when
@@ -238,6 +246,16 @@ export function ContentList({
 		reportedQuery.current = controlledSearchQuery;
 		setSearchQuery(controlledSearchQuery);
 	}, [controlledSearchQuery]);
+
+	// A page the caller moved on its own (back/forward, a deep link) replaces
+	// the view wholesale, so an edit still waiting out the debounce belongs to
+	// a view that is gone. Re-seeding the input drops the pending timer with it.
+	React.useEffect(() => {
+		if (controlledPage === undefined || controlledPage === requestedPage.current) return;
+		requestedPage.current = controlledPage;
+		reportedQuery.current = controlledSearchQuery;
+		setSearchQuery(controlledSearchQuery);
+	}, [controlledPage, controlledSearchQuery]);
 
 	// Reset page when search changes. Guarded because `setPage` may write to
 	// the URL, and an unconditional reset would push a history entry per

@@ -347,7 +347,12 @@ function readOneOf<T extends string>(value: unknown, allowed: readonly T[]): T |
 
 function readCalendarDate(value: unknown): string | undefined {
 	const raw = readString(value);
-	return raw && CALENDAR_DATE_REGEX.test(raw) ? raw : undefined;
+	if (!raw || !CALENDAR_DATE_REGEX.test(raw)) return undefined;
+	// `Date` rolls impossible days forward — `2025-02-31` becomes March 3 —
+	// so only the round-trip rejects a date the calendar doesn't have.
+	const parsed = new Date(`${raw}T00:00:00.000Z`);
+	if (Number.isNaN(parsed.getTime())) return undefined;
+	return parsed.toISOString().startsWith(raw) ? raw : undefined;
 }
 
 export function parseContentListSearch(search: Record<string, unknown>): ContentListSearch {

@@ -888,6 +888,29 @@ describe("ContentListPage – view state survives back-navigation", () => {
 		await expect.element(screen.getByText("2 / 3", { exact: true })).toBeInTheDocument();
 	});
 
+	it("lets back-navigation win over a search edit still inside the debounce", async () => {
+		const { router, TestApp } = buildRouter();
+
+		await router.navigate({ to: "/content/$collection", params: { collection: "posts" } });
+		const screen = await render(<TestApp />);
+
+		await screen.getByRole("button", { name: "Next page" }).click();
+		await expect.element(screen.getByText("2 / 3", { exact: true })).toBeInTheDocument();
+
+		// Typing sends the list back to page 1; back undoes that while the term
+		// is still sitting in the debounce.
+		await screen.getByRole("searchbox").fill("Post 3");
+		await waitFor(() => {
+			expect(router.state.location.searchStr).toBe("");
+		});
+		router.history.back();
+
+		await new Promise((resolve) => setTimeout(resolve, 800));
+		expect(router.state.location.searchStr).toBe("?page=2");
+		await expect.element(screen.getByText("2 / 3", { exact: true })).toBeInTheDocument();
+		await expect.element(screen.getByRole("searchbox")).toHaveValue("");
+	});
+
 	it("follows a search term that changes in the URL while the list stays mounted", async () => {
 		const { router, TestApp } = buildRouter();
 

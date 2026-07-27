@@ -114,6 +114,19 @@ describe("parseContentListSearch", () => {
 		expect(parseContentListSearch({ dateTo: "2025-03-31T00:00:00Z" }).dateTo).toBeUndefined();
 	});
 
+	it("rejects dates that fit the format but never happened", () => {
+		// The API rejects these, and `2025-02-31` would otherwise reach it
+		// widened to a `2025-03-03` boundary.
+		expect(parseContentListSearch({ dateFrom: "2025-99-99" }).dateFrom).toBeUndefined();
+		expect(parseContentListSearch({ dateFrom: "2025-13-01" }).dateFrom).toBeUndefined();
+		expect(parseContentListSearch({ dateTo: "2025-02-31" }).dateTo).toBeUndefined();
+		expect(parseContentListSearch({ dateTo: "2025-02-29" }).dateTo).toBeUndefined();
+	});
+
+	it("keeps a leap day the calendar actually has", () => {
+		expect(parseContentListSearch({ dateFrom: "2024-02-29" }).dateFrom).toBe("2024-02-29");
+	});
+
 	it("treats empty strings as absent so a blank param never filters the list", () => {
 		// `?locale=` left as "" would beat the defaultLocale fallback and fetch
 		// every locale's rows while the switcher claims one is active.
