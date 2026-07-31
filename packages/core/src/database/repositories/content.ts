@@ -16,6 +16,7 @@ import type {
 	FindManyResult,
 	ContentItem,
 	ContentDateField,
+	ContentBylineFilter,
 } from "./types.js";
 import {
 	EmDashValidationError,
@@ -529,6 +530,7 @@ export class ContentRepository {
 
 		query = this.applySearchFilter(query, options.where, type);
 		query = this.applyDateFilter(query, options.where);
+		query = this.applyBylineFilter(query, options.where, type);
 
 		// Handle cursor pagination — decodeCursor throws InvalidCursorError
 		// on malformed input; let it propagate so handlers surface a
@@ -937,6 +939,92 @@ export class ContentRepository {
 	}
 
 	/**
+	 * Apply the optional byline filter as a correlated (NOT) EXISTS against
+	 * `_emdash_content_bylines`.
+	 *
+	 * The shape is load-bearing. Correlating from the content table lets the
+	 * outer query keep its sort-ordered composite index — so `LIMIT` still
+	 * short-circuits — while each probe is an index-only seek on the
+	 * `(collection_slug, content_id, byline_id)` unique index. Driving the
+	 * other way (`FROM _emdash_content_bylines JOIN ec_*`) cannot use that
+	 * index for the byline and forces a temp B-tree for the ORDER BY.
+	 *
+	 * `mode: "none"` tests the junction rather than `primary_byline_id`. The
+	 * two agree — both junction write paths stamp the column in the same call
+	 * — but they are not written atomically (D1 has no transactions), so the
+	 * junction stays authoritative, as migration 051 treats the denormalized
+	 * taxonomy columns.
+	 */
+	private applyBylineFilter<QB extends { where: (cb: (eb: any) => unknown) => QB }>(
+		query: QB,
+		where: { bylineFilter?: ContentBylineFilter } | undefined,
+		type: string,
+	): QB {
+		const filter = where?.bylineFilter;
+		if (!filter) return query;
+		const tableName = getTableName(type);
+		const idColumn = `${tableName}.id`;
+		const authorColumn = `${tableName}.author_id`;
+		const localeColumn = `${tableName}.locale`;
+
+		const credited = (eb: any, bylineIds?: string[]) => {
+			let sub = eb
+				.selectFrom("_emdash_content_bylines as cb")
+				.select("cb.id")
+				.where("cb.collection_slug", "=", type)
+				.whereRef("cb.content_id", "=", idColumn);
+			if (bylineIds) sub = sub.where("cb.byline_id", "in", bylineIds);
+			return eb.exists(sub);
+		};
+
+		// The entry's author owns a byline row at the entry's own locale —
+		// the same strict-locale rule `hydrateBylinesMany` applies before it
+		// renders an inferred credit.
+		const authorHasByline = (eb: any) =>
+			eb.exists(
+				eb
+					.selectFrom("_emdash_bylines as b")
+					.select("b.id")
+					.whereRef("b.user_id", "=", authorColumn)
+					.whereRef("b.locale", "=", localeColumn),
+			);
+
+		if (filter.mode === "none") {
+			return query.where((eb: any) => {
+				const uncredited = eb.not(credited(eb));
+				// With inference on, "no byline" means none is rendered, so an
+				// entry whose author resolves to a byline is excluded too.
+				return filter.includeInferred
+					? eb.and([uncredited, eb.not(authorHasByline(eb))])
+					: uncredited;
+			});
+		}
+
+		const bylineIds = filter.bylineIds ?? [];
+		const inferredAuthorIds = filter.includeInferred ? (filter.inferredAuthorIds ?? []) : [];
+		if (bylineIds.length === 0 && inferredAuthorIds.length === 0) {
+			// A filter that resolved to no ids must match nothing rather than
+			// silently degrade to "no filter" and return the whole collection.
+			// `1 = 0` rather than a bound `false`: better-sqlite3 refuses to
+			// bind JS booleans.
+			return query.where(() => sql<boolean>`1 = 0`);
+		}
+
+		return query.where((eb: any) => {
+			const branches = [];
+			if (bylineIds.length > 0) branches.push(credited(eb, bylineIds));
+			if (inferredAuthorIds.length > 0) {
+				// Inference applies only where no explicit credit exists, so an
+				// entry credited to someone else never matches on its author.
+				branches.push(
+					eb.and([eb.not(credited(eb)), eb(authorColumn as any, "in", inferredAuthorIds)]),
+				);
+			}
+			return branches.length === 1 ? branches[0] : eb.or(branches);
+		});
+	}
+
+	/**
 	 * Count content items
 	 */
 	async count(type: string, where?: FindManyOptions["where"]): Promise<number> {
@@ -961,6 +1049,7 @@ export class ContentRepository {
 
 		query = this.applySearchFilter(query, where, type);
 		query = this.applyDateFilter(query, where);
+		query = this.applyBylineFilter(query, where, type);
 
 		const result = await query.executeTakeFirst();
 		return Number(result?.count || 0);

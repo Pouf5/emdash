@@ -145,6 +145,35 @@ export interface ContentDateFilter {
 	to?: string;
 }
 
+/**
+ * Byline filter for a content list.
+ *
+ * `mode: "any"` matches entries credited to at least one of `bylineIds`;
+ * `mode: "none"` matches entries with no credit at all.
+ *
+ * `bylineIds` are `translation_group` values — what
+ * `_emdash_content_bylines.byline_id` stores since migration 040 — so a filter
+ * matches a byline across every locale variant.
+ *
+ * By default only explicit credits count. `includeInferred` widens the filter
+ * to the byline the list actually renders, which for an entry with no credits
+ * is the one linked to its `author_id` (see `hydrateBylinesMany`). It is off by
+ * default because filtering usually means "who is credited", not "whose name
+ * happens to show".
+ */
+export interface ContentBylineFilter {
+	mode: "any" | "none";
+	/** Ignored when `mode` is `"none"`. An empty list matches nothing. */
+	bylineIds?: string[];
+	includeInferred?: boolean;
+	/**
+	 * Users whose linked byline falls in `bylineIds`, resolved by the handler
+	 * so the repository stays free of byline lookups. Only read when
+	 * `includeInferred` is set and `mode` is `"any"`.
+	 */
+	inferredAuthorIds?: string[];
+}
+
 export interface FindManyOptions {
 	where?: {
 		status?: string;
@@ -168,6 +197,8 @@ export interface FindManyOptions {
 		useFts?: boolean;
 		/** Inclusive date range over a whitelisted timestamp column. */
 		dateFilter?: ContentDateFilter;
+		/** Restrict to entries by their byline credits. */
+		bylineFilter?: ContentBylineFilter;
 	};
 	orderBy?: {
 		field: string;
