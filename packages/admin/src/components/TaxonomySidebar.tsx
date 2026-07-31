@@ -337,8 +337,10 @@ function TaxonomySection({
 	const [newCategoryLabel, setNewCategoryLabel] = React.useState("");
 	const [showCategoryInput, setShowCategoryInput] = React.useState(false);
 
+	// The count mode belongs in the key: the Taxonomies settings page reads the
+	// same endpoint with counts and must not be served this count-free list.
 	const { data: terms = EMPTY_TERMS } = useQuery({
-		queryKey: ["taxonomy-terms", taxonomy.name, entryLocale],
+		queryKey: ["taxonomy-terms", taxonomy.name, entryLocale, { includeCounts: false }],
 		queryFn: () => fetchTerms(taxonomy.name, entryLocale),
 	});
 
