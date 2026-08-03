@@ -332,13 +332,7 @@ describeEachDialect("visible term counts (#581)", (dialect) => {
 	});
 });
 
-/**
- * #2330: counts were built as one UNION ALL branch per declared collection.
- * Past D1's compound-SELECT ceiling the statement is rejected outright, and
- * because the counts decorate the admin term list, the whole list 500s — the
- * taxonomy becomes unmanageable while its terms are perfectly intact.
- */
-describe("visible term counts past the compound-SELECT ceiling (#2330)", () => {
+describe("visible term counts past the compound-SELECT ceiling", () => {
 	let db: Kysely<DatabaseSchema>;
 
 	beforeEach(async () => {
