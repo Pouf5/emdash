@@ -90,6 +90,33 @@ describeEachDialect("reference children handlers", (dialect) => {
 		expect(set.data.children[0]?.locale).toBe("en");
 	});
 
+	it("a resolved child carries the translation group of the variant it resolved to", async () => {
+		const rel = await makeRelation();
+		const content = new ContentRepository(ctx.db);
+		const parent = await content.create({
+			type: "post",
+			slug: "p",
+			data: { title: "P" },
+			locale: "fr",
+		});
+		const en = await content.create({ type: "page", slug: "a", data: { title: "A" } });
+		const fr = await content.create({
+			type: "page",
+			slug: "a-fr",
+			data: { title: "A (fr)" },
+			locale: "fr",
+			translationOf: en.id,
+		});
+
+		const set = await handleReferenceChildrenSet(ctx.db, "post", parent.id, rel.id, [en.id]);
+		if (!set.success) return;
+		// The edge is keyed by group, so a `fr` parent resolves the `fr` variant —
+		// a different row id than the one that was linked. The group is what stays
+		// stable across those variants, so it rides along on the ref.
+		expect(set.data.children[0]?.id).toBe(fr.id);
+		expect(set.data.children[0]?.translationGroup).toBe(en.id);
+	});
+
 	it("children GET paginates with a cursor", async () => {
 		const rel = await makeRelation();
 		const content = new ContentRepository(ctx.db);

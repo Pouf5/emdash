@@ -36,6 +36,8 @@ export interface PickedContentEntry {
 	title: string;
 	/** Locale of the picked variant, so links/badges keep locale context before hydration. */
 	locale?: string;
+	/** Translation group of the picked variant — the locale-stable entry identity. */
+	translationGroup?: string | null;
 }
 
 interface ContentPickerModalProps {
@@ -48,7 +50,11 @@ interface ContentPickerModalProps {
 	collection?: string;
 	/** Allow staging several entries before confirming. Defaults to single-select. */
 	multiple?: boolean;
-	/** Ids already linked in the target field — rendered checked and disabled. */
+	/**
+	 * Entries already linked in the target field — rendered checked and disabled.
+	 * Keyed the same way rows are: by translation group when `locale` is set
+	 * (reference fields), by row id otherwise (menus).
+	 */
 	selectedIds?: ReadonlySet<string>;
 	/** Emit the chosen entries. Single-select emits a one-element array. */
 	onConfirm: (rows: PickedContentEntry[]) => void;
@@ -59,7 +65,8 @@ interface ContentPickerModalProps {
 	 * same entry collapse to one row, preferring this locale and falling back to
 	 * another when the entry has no variant here — mirroring how the reference
 	 * list resolves edges (`resolveEntries`/`pickVariant`). Edges are keyed by
-	 * translation group, so a cross-locale target is still a valid pick.
+	 * translation group, so a cross-locale target is still a valid pick, and
+	 * `selectedIds` is matched by group for the same reason.
 	 */
 	locale?: string;
 }
@@ -159,6 +166,12 @@ export function ContentPickerModal({
 		return order.map((key) => byGroup.get(key)!);
 	}, [data, locale]);
 
+	// A collapsed row stands for a translation group, not a row, so an entry
+	// already linked through a sibling locale (its edge resolves to whichever
+	// variant matches the editor's locale) must still read as linked here.
+	const selectionKey = (item: ContentItem) =>
+		locale ? (item.translationGroup ?? item.id) : item.id;
+
 	const togglePicked = (item: ContentItem) => {
 		setPicked((prev) => {
 			const next = { ...prev };
@@ -171,6 +184,7 @@ export function ContentPickerModal({
 					slug: item.slug,
 					title: getItemTitle(item),
 					locale: item.locale,
+					translationGroup: item.translationGroup,
 				};
 			}
 			return next;
@@ -185,6 +199,7 @@ export function ContentPickerModal({
 				slug: item.slug,
 				title: getItemTitle(item),
 				locale: item.locale,
+				translationGroup: item.translationGroup,
 			},
 		]);
 		onOpenChange(false);
@@ -272,7 +287,7 @@ export function ContentPickerModal({
 						<div className="space-y-1">
 							{items.map((item) => {
 								const status = getDraftStatus(item);
-								const alreadyLinked = selectedIds.has(item.id);
+								const alreadyLinked = selectedIds.has(selectionKey(item));
 								const isPicked = alreadyLinked || !!picked[item.id];
 								const statusDot = (
 									<span

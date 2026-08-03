@@ -237,6 +237,12 @@ export type EntryRef = {
 	title: string | null;
 	/** The actual locale of the resolved variant — see `pickVariant`. */
 	locale: string | null;
+	/**
+	 * The edge's target: the translation group `id` was resolved from. Stable
+	 * across locales, unlike `id`, so callers comparing a ref against a content
+	 * row (the admin's picker) match the entry rather than one of its variants.
+	 */
+	translationGroup: string | null;
 	sortOrder?: number;
 };
 
@@ -317,6 +323,7 @@ export async function resolveEntries(
 			collection,
 			title: entryTitle(entry.data),
 			locale: entry.locale,
+			translationGroup: entry.translationGroup,
 			sortOrder: edge.sortOrder,
 		});
 	}

@@ -101,6 +101,9 @@ export const entryRefSchema = z
 		// this field makes that substitution explicit instead of silently
 		// presenting a wrong-locale entry under the requested context.
 		locale: z.string().nullable(),
+		// The translation group the ref resolved from — the locale-stable identity
+		// of the referenced entry, which `id` is not.
+		translationGroup: z.string().nullable(),
 		sortOrder: z.number().int().optional(),
 	})
 	.meta({ id: "ReferenceEntryRef" });

@@ -110,6 +110,12 @@ export type ReferenceEntryRow = {
 	slug: string | null;
 	title?: string;
 	locale?: string | null;
+	/**
+	 * The referenced entry's translation group. `id` is whichever locale variant
+	 * the server resolved for this editor's locale, so the group is what the
+	 * picker matches against to recognize an entry that is already linked.
+	 */
+	translationGroup?: string | null;
 };
 
 type ReferenceGroupState = {
@@ -136,6 +142,7 @@ function seedReferenceState(item?: ContentItem | null): Record<string, Reference
 			slug: c.slug,
 			title: c.title ?? undefined,
 			locale: c.locale,
+			translationGroup: c.translationGroup,
 		}));
 		out[group] = { baseline: rows, current: rows, nextCursor: page.nextCursor, loading: false };
 	}
@@ -555,6 +562,7 @@ export function ContentEditor({
 					slug: c.slug,
 					title: c.title ?? undefined,
 					locale: c.locale,
+					translationGroup: c.translationGroup,
 				}));
 				setReferenceState((prev) => {
 					const cur = prev[group];
@@ -1688,6 +1696,11 @@ function referenceRowLabel(row: ReferenceEntryRow): string {
 	return row.title || row.slug || row.id;
 }
 
+/** Identity of a staged row for selection/dedupe: the entry, not the variant. */
+function referenceRowKey(row: ReferenceEntryRow): string {
+	return row.translationGroup ?? row.id;
+}
+
 /**
  * Reference field editor. Renders the staged selections with remove/reorder
  * controls and a picker to add more. All mutations flow through `onChange`
@@ -1733,7 +1746,10 @@ function ReferenceFieldRenderer({
 		if (nextCursor && !loading && !loadError) onLoadMore();
 	}, [nextCursor, loading, loadError, onLoadMore]);
 
-	const selectedIds = React.useMemo(() => new Set(rows.map((r) => r.id)), [rows]);
+	// Keyed by translation group to match the picker's collapsed rows: a hydrated
+	// row's `id` is the variant resolved for this entry's locale, which need not
+	// be the variant the picker shows for the same entry.
+	const selectedIds = React.useMemo(() => new Set(rows.map((r) => referenceRowKey(r))), [rows]);
 
 	const move = (index: number, delta: number) => {
 		const target = index + delta;
@@ -1754,10 +1770,11 @@ function ReferenceFieldRenderer({
 			slug: p.slug,
 			title: p.title,
 			locale: p.locale,
+			translationGroup: p.translationGroup,
 		}));
 		if (multiple) {
-			const existing = new Set(rows.map((r) => r.id));
-			onChange([...rows, ...additions.filter((a) => !existing.has(a.id))]);
+			const existing = new Set(rows.map((r) => referenceRowKey(r)));
+			onChange([...rows, ...additions.filter((a) => !existing.has(referenceRowKey(a)))]);
 		} else {
 			// Single-value: the picked entry replaces the current selection.
 			onChange(additions.slice(0, 1));

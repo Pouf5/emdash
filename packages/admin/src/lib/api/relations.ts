@@ -22,6 +22,8 @@ export interface EntryRef {
 	/** Display label from the entry's title/name field; null when neither is set. */
 	title: string | null;
 	locale: string | null;
+	/** The translation group `id` resolved from — locale-stable entry identity. */
+	translationGroup: string | null;
 	sortOrder?: number;
 }
 
