@@ -543,8 +543,8 @@ export class RelationRepository {
 	 * Remove every edge where `group` is the parent OR the child — i.e. ensure no
 	 * orphaned reference edges survive when a content entry is deleted. The
 	 * application-layer cascade that group-linking precludes at the SQL level.
-	 * Wiring this into the content-delete path is a later (handler) slice.
-	 * Returns the number of edges removed.
+	 * Callers must be sure the whole group is gone: edges outlive any single
+	 * locale row. Returns the number of edges removed.
 	 */
 	async clearReferencesForGroup(group: string): Promise<number> {
 		const result = await this.db

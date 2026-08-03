@@ -1432,6 +1432,7 @@ export async function handleContentPermanentDelete(
 		// Wrap content delete + SEO/comment cleanup in a transaction
 		const deleted = await withTransaction(db, async (trx) => {
 			const trxRepo = new ContentRepository(trx);
+			const item = await trxRepo.findByIdIncludingTrashed(collection, resolvedId);
 			const wasDeleted = await trxRepo.permanentDelete(collection, resolvedId);
 
 			if (wasDeleted) {
@@ -1444,6 +1445,18 @@ export async function handleContentPermanentDelete(
 				// Clean up revisions for permanently deleted content
 				const revisionRepo = new RevisionRepository(trx);
 				await revisionRepo.deleteByEntry(collection, resolvedId);
+				// Reference edges are keyed by translation_group, so they belong to the
+				// group rather than to this row — drop them only once no sibling
+				// (trashed ones included, they can still be restored) is left to own them.
+				if (item?.translationGroup) {
+					const groupSurvives = await trxRepo.hasTranslationsIncludingTrashed(
+						collection,
+						item.translationGroup,
+					);
+					if (!groupSurvives) {
+						await new RelationRepository(trx).clearReferencesForGroup(item.translationGroup);
+					}
+				}
 			}
 
 			return wasDeleted;

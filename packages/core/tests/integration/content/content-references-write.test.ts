@@ -2,8 +2,10 @@ import { expect, it } from "vitest";
 
 import {
 	handleContentCreate,
+	handleContentDelete,
 	handleContentDuplicate,
 	handleContentGet,
+	handleContentPermanentDelete,
 } from "../../../src/api/handlers/content.js";
 import { setReferenceChildren } from "../../../src/api/handlers/relations.js";
 import { ContentRepository } from "../../../src/database/repositories/content.js";
@@ -390,6 +392,129 @@ describeEachDialect("handleContentDuplicate copies reference edges", (dialect) =
 				childA.data.item.id,
 				childB.data.item.id,
 			]);
+		} finally {
+			await teardownForDialect(ctx);
+		}
+	});
+});
+
+describeEachDialect("handleContentPermanentDelete clears reference edges", (dialect) => {
+	let ctx: DialectTestContext;
+
+	async function setupPostsWithRelation(db: DialectTestContext["db"]) {
+		const registry = new SchemaRegistry(db);
+		await registry.createCollection({ slug: "posts", label: "Posts", labelSingular: "Post" });
+		await registry.createField("posts", { slug: "title", label: "Title", type: "string" });
+
+		const relationRepo = new RelationRepository(db);
+		const relation = await relationRepo.create({
+			name: "related_posts",
+			parentCollection: "posts",
+			childCollection: "posts",
+			parentLabel: "Related posts",
+			childLabel: "Related to",
+		});
+		return { relationRepo, relation };
+	}
+
+	it("removes edges on both sides when the last row of a translation group is purged", async () => {
+		ctx = await setupForDialect(dialect);
+		try {
+			const { relationRepo, relation } = await setupPostsWithRelation(ctx.db);
+
+			const parent = await handleContentCreate(ctx.db, "posts", { data: { title: "Parent" } });
+			const middle = await handleContentCreate(ctx.db, "posts", { data: { title: "Middle" } });
+			const child = await handleContentCreate(ctx.db, "posts", { data: { title: "Child" } });
+			expect(parent.success && middle.success && child.success).toBe(true);
+			if (!parent.success || !middle.success || !child.success) return;
+
+			// The purged entry sits in the middle of a chain: parent → middle → child,
+			// so both its outgoing and incoming edges must go.
+			expect(
+				(
+					await setReferenceChildren(
+						ctx.db,
+						"posts",
+						parent.data.item.id,
+						relation.translationGroup,
+						[middle.data.item.id],
+					)
+				).success,
+			).toBe(true);
+			expect(
+				(
+					await setReferenceChildren(
+						ctx.db,
+						"posts",
+						middle.data.item.id,
+						relation.translationGroup,
+						[child.data.item.id],
+					)
+				).success,
+			).toBe(true);
+
+			expect((await handleContentDelete(ctx.db, "posts", middle.data.item.id)).success).toBe(true);
+			const purged = await handleContentPermanentDelete(ctx.db, "posts", middle.data.item.id);
+			expect(purged.success).toBe(true);
+
+			const outgoing = await relationRepo.getChildrenPage(
+				relation.translationGroup,
+				middle.data.item.id,
+			);
+			expect(outgoing.items).toEqual([]);
+			const incoming = await relationRepo.getParentsPage(
+				relation.translationGroup,
+				middle.data.item.id,
+			);
+			expect(incoming.items).toEqual([]);
+		} finally {
+			await teardownForDialect(ctx);
+		}
+	});
+
+	it("keeps the group's edges when a translation sibling survives the purge", async () => {
+		ctx = await setupForDialect(dialect);
+		try {
+			const { relationRepo, relation } = await setupPostsWithRelation(ctx.db);
+
+			const parent = await handleContentCreate(ctx.db, "posts", { data: { title: "Parent" } });
+			const child = await handleContentCreate(ctx.db, "posts", { data: { title: "Child" } });
+			expect(parent.success && child.success).toBe(true);
+			if (!parent.success || !child.success) return;
+
+			const translation = await handleContentCreate(ctx.db, "posts", {
+				data: { title: "Parent (fr)" },
+				locale: "fr",
+				translationOf: parent.data.item.id,
+			});
+			expect(translation.success).toBe(true);
+			if (!translation.success) return;
+
+			expect(
+				(
+					await setReferenceChildren(
+						ctx.db,
+						"posts",
+						parent.data.item.id,
+						relation.translationGroup,
+						[child.data.item.id],
+					)
+				).success,
+			).toBe(true);
+
+			// Edges are keyed by translation_group, so purging one locale row must not
+			// strip references still owned by its surviving sibling.
+			expect((await handleContentDelete(ctx.db, "posts", translation.data.item.id)).success).toBe(
+				true,
+			);
+			const purged = await handleContentPermanentDelete(ctx.db, "posts", translation.data.item.id);
+			expect(purged.success).toBe(true);
+
+			const page = await relationRepo.getChildrenPage(
+				relation.translationGroup,
+				parent.data.item.id,
+			);
+			expect(page.items.map((i) => i.childGroup)).toEqual([child.data.item.id]);
 		} finally {
 			await teardownForDialect(ctx);
 		}
