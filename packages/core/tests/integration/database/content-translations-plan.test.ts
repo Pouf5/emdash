@@ -14,6 +14,7 @@ import { runMigrations } from "../../../src/database/migrations/runner.js";
 import { ContentRepository } from "../../../src/database/repositories/content.js";
 import type { Database as DatabaseSchema } from "../../../src/database/types.js";
 import { SchemaRegistry } from "../../../src/schema/registry.js";
+import { SQL_BATCH_SIZE } from "../../../src/utils/chunks.js";
 
 interface CapturedQuery {
 	sql: string;
@@ -65,25 +66,37 @@ it("seeks a single translation group through the translation_group index", async
 	const query = translationQuery();
 	const plan = explain(query);
 	expect(contentAccess(plan)).toMatch(
-		/SEARCH ec_post USING (?:COVERING )?INDEX idx_ec_post_tg_locale \(translation_group=\?\)/,
+		/SEARCH ec_post USING (?:COVERING )?INDEX idx_ec_post_tg_locale \(deleted_at=\? AND translation_group=\?\)/,
 	);
 	expect(plan).not.toContain("SCAN ec_post");
 	expect(plan).not.toContain("idx_ec_post_loc_crt");
 	expect(plan).not.toContain("idx_ec_post_loc_upd");
 });
 
-it("seeks batched translation groups through the translation_group index", async () => {
-	const items = await repo.findTranslationsForGroups("post", ["tg-0005", "tg-0006"]);
+it.each([
+	{ groupCount: 2, publishedOnly: false },
+	{ groupCount: 2, publishedOnly: true },
+	{ groupCount: SQL_BATCH_SIZE, publishedOnly: false },
+	{ groupCount: SQL_BATCH_SIZE, publishedOnly: true },
+])(
+	"seeks $groupCount batched translation groups through the translation_group index (publishedOnly=$publishedOnly)",
+	async ({ groupCount, publishedOnly }) => {
+		const groups = Array.from(
+			{ length: groupCount },
+			(_, index) => `tg-${String(index + 1).padStart(4, "0")}`,
+		);
 
-	expect(items).toHaveLength(4);
+		const items = await repo.findTranslationsForGroups("post", groups, { publishedOnly });
 
-	const query = translationQuery();
-	const plan = explain(query);
-	expect(contentAccess(plan)).toContain("INDEX idx_ec_post_tg_locale");
-	expect(plan).not.toContain("SCAN ec_post");
-	expect(plan).not.toContain("idx_ec_post_loc_crt");
-	expect(plan).not.toContain("idx_ec_post_loc_upd");
-});
+		expect(items).toHaveLength(groupCount * 2);
+
+		const plan = explain(translationQuery());
+		expect(contentAccess(plan)).toContain("INDEX idx_ec_post_tg_locale");
+		expect(plan).not.toContain("SCAN ec_post");
+		expect(plan).not.toContain("idx_ec_post_loc_crt");
+		expect(plan).not.toContain("idx_ec_post_loc_upd");
+	},
+);
 
 it("migrates a pre-055 table off the single-column translation_group index", async () => {
 	sqlite.exec(`DROP INDEX idx_ec_post_tg_locale`);
@@ -98,7 +111,7 @@ it("migrates a pre-055 table off the single-column translation_group index", asy
 	captured = [];
 	await repo.findTranslations("post", "tg-0005");
 	expect(contentAccess(explain(translationQuery()))).toMatch(
-		/SEARCH ec_post USING (?:COVERING )?INDEX idx_ec_post_tg_locale \(translation_group=\?\)/,
+		/SEARCH ec_post USING (?:COVERING )?INDEX idx_ec_post_tg_locale \(deleted_at=\? AND translation_group=\?\)/,
 	);
 });
 

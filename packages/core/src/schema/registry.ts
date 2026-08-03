@@ -988,7 +988,7 @@ export class SchemaRegistry {
 		// tables that already exist.
 		await sql`
 			CREATE INDEX ${sql.ref(`idx_${tableName}_tg_locale`)}
-			ON ${sql.ref(tableName)} (translation_group, locale)
+			ON ${sql.ref(tableName)} (deleted_at, translation_group, locale)
 		`.execute(conn);
 
 		// Composite indexes for optimized query performance (see migration 033)

@@ -4,17 +4,21 @@ import { sql } from "kysely";
 import { listTablesLike } from "../dialect-helpers.js";
 
 /**
- * Migration: widen the content `translation_group` index to cover the locale sort.
+ * Migration: widen the content `translation_group` index to cover the whole
+ * translation-group read.
  *
- * Translation-group reads filter `translation_group = ?` / `IN (...)` with
- * `deleted_at IS NULL` and `ORDER BY locale ASC`. Seeking migration 041's
+ * Translation-group reads filter `deleted_at IS NULL` with `translation_group =
+ * ?` / `IN (...)` and `ORDER BY locale ASC`. Seeking migration 041's
  * `(deleted_at, locale, ...)` composites on `deleted_at` alone already returns
  * rows in locale order, so a stats-blind planner prefers them over the
  * single-column `translation_group` index and reads every non-deleted row in
- * the table. D1 never has `sqlite_stat1`, so the index shape is the only lever.
+ * the table. A batched read is worse still: the `IN (...)` list multiplies the
+ * planner's row estimate for a `translation_group`-leading index, so it falls
+ * back to a `deleted_at` composite from a handful of groups onward. D1 never
+ * has `sqlite_stat1`, so the index shape is the only lever.
  *
- * `(translation_group, locale)` serves both the equality seek and the sort, so
- * it wins on the planner's own cost terms without statistics.
+ * `(deleted_at, translation_group, locale)` matches the read term for term, so
+ * it wins on the planner's own cost terms without statistics at any batch size.
  *
  * Forward-only and idempotent (`IF NOT EXISTS`).
  *
@@ -32,7 +36,7 @@ export async function up(db: Kysely<unknown>): Promise<void> {
 		// translation_group-leading index in place.
 		await sql`
 			CREATE INDEX IF NOT EXISTS ${sql.ref(`idx_${tableName}_tg_locale`)}
-			ON ${sql.ref(tableName)} (translation_group, locale)
+			ON ${sql.ref(tableName)} (deleted_at, translation_group, locale)
 		`.execute(db);
 
 		await sql`DROP INDEX IF EXISTS ${sql.ref(`idx_${tableName}_translation_group`)}`.execute(db);
