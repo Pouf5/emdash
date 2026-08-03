@@ -272,6 +272,7 @@ export interface EmDashHandlers {
 			locale?: string;
 			translationOf?: string;
 			taxonomies?: Record<string, string[]>;
+			references?: Record<string, string[]>;
 			createdAt?: string | null;
 			publishedAt?: string | null;
 		},
@@ -295,6 +296,7 @@ export interface EmDashHandlers {
 				noIndex?: boolean;
 			};
 			taxonomies?: Record<string, string[]>;
+			references?: Record<string, string[]>;
 			publishedAt?: string | null;
 			_rev?: string;
 		},
