@@ -121,6 +121,40 @@ export async function teardownTestDatabase(db: Kysely<DatabaseSchema>): Promise<
 	await db.destroy();
 }
 
+/**
+ * Number of terms Cloudflare D1 allows in a compound SELECT
+ * (SQLITE_LIMIT_COMPOUND_SELECT). Measured against a real D1: five
+ * `UNION ALL` branches compile, six are rejected.
+ */
+export const D1_COMPOUND_SELECT_LIMIT = 5;
+
+/**
+ * Test database that enforces D1's compound-SELECT ceiling.
+ *
+ * better-sqlite3 uses SQLite's upstream default of 500 and offers no way to
+ * lower it, so query shapes that D1 rejects run happily in tests. The ceiling
+ * is imposed when a statement is prepared — where SQLite itself raises it —
+ * with D1's error text, so code that inspects the message behaves the same.
+ */
+export async function setupTestDatabaseWithCompoundSelectLimit(
+	limit = D1_COMPOUND_SELECT_LIMIT,
+): Promise<Kysely<DatabaseSchema>> {
+	resetSchemaCachesForTests();
+	const sqlite = new Database(":memory:");
+	const prepare = sqlite.prepare.bind(sqlite);
+	sqlite.prepare = ((source: string) => {
+		const terms = source.split(/\b(?:UNION|INTERSECT|EXCEPT)\b/i).length;
+		if (terms > limit) {
+			throw new Error("too many terms in compound SELECT: SQLITE_ERROR");
+		}
+		return prepare(source);
+	}) as typeof sqlite.prepare;
+
+	const db = new Kysely<DatabaseSchema>({ dialect: new SqliteDialect({ database: sqlite }) });
+	await runMigrations(db);
+	return db;
+}
+
 // ---------------------------------------------------------------------------
 // PostgreSQL helpers
 // ---------------------------------------------------------------------------

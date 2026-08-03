@@ -6,19 +6,25 @@
  * declared collections.
  */
 
+import type { Kysely } from "kysely";
 import { sql } from "kysely";
 import { ulid } from "ulidx";
-import { afterEach, beforeEach, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { handleTermGet, handleTermList } from "../../../src/api/handlers/taxonomies.js";
 import { ContentRepository } from "../../../src/database/repositories/content.js";
 import { TaxonomyRepository } from "../../../src/database/repositories/taxonomy.js";
+import type { Database as DatabaseSchema } from "../../../src/database/types.js";
 import { runWithContext } from "../../../src/request-context.js";
+import { SchemaRegistry } from "../../../src/schema/registry.js";
 import { fetchVisibleTermCounts } from "../../../src/taxonomies/term-counts.js";
 import {
+	D1_COMPOUND_SELECT_LIMIT,
 	describeEachDialect,
 	setupForDialectWithCollections,
+	setupTestDatabaseWithCompoundSelectLimit,
 	teardownForDialect,
+	teardownTestDatabase,
 	type DialectTestContext,
 } from "../../utils/test-db.js";
 
@@ -323,5 +329,89 @@ describeEachDialect("visible term counts (#581)", (dialect) => {
 
 		const counts = await fetchVisibleTermCounts(ctx.db, "empty_tax", []);
 		expect(counts.size).toBe(0);
+	});
+});
+
+/**
+ * #2330: counts were built as one UNION ALL branch per declared collection.
+ * Past D1's compound-SELECT ceiling the statement is rejected outright, and
+ * because the counts decorate the admin term list, the whole list 500s — the
+ * taxonomy becomes unmanageable while its terms are perfectly intact.
+ */
+describe("visible term counts past the compound-SELECT ceiling (#2330)", () => {
+	let db: Kysely<DatabaseSchema>;
+
+	beforeEach(async () => {
+		db = await setupTestDatabaseWithCompoundSelectLimit();
+	});
+
+	afterEach(async () => {
+		await teardownTestDatabase(db);
+	});
+
+	/**
+	 * Declare `collections` on a taxonomy, create a table and one published,
+	 * term-tagged entry for each of `existing`, and return the term.
+	 */
+	async function seedTaxonomy(collections: string[], existing: string[]) {
+		const registry = new SchemaRegistry(db);
+		const contentRepo = new ContentRepository(db);
+		const taxRepo = new TaxonomyRepository(db);
+
+		for (const slug of existing) {
+			await registry.createCollection({ slug, label: slug, labelSingular: slug });
+			await registry.createField(slug, { slug: "title", label: "Title", type: "string" });
+		}
+
+		const defId = ulid();
+		await db
+			.insertInto("_emdash_taxonomy_defs")
+			.values({
+				id: defId,
+				name: "topic",
+				label: "Topics",
+				label_singular: null,
+				hierarchical: 0,
+				collections: JSON.stringify(collections),
+				locale: "en",
+				translation_group: defId,
+			})
+			.execute();
+
+		const term = await taxRepo.create({ name: "topic", slug: "science", label: "Science" });
+		for (const slug of existing) {
+			const entry = await contentRepo.create({
+				type: slug,
+				slug: `${slug}-entry`,
+				status: "published",
+				data: { title: slug },
+			});
+			await taxRepo.attachToEntry(slug, entry.id, term.id);
+		}
+		return term;
+	}
+
+	function collectionSlugs(count: number): string[] {
+		return Array.from({ length: count }, (_, i) => `coll_${String(i)}`);
+	}
+
+	it("aggregates every declared collection when there are more than one statement can carry", async () => {
+		const slugs = collectionSlugs(D1_COMPOUND_SELECT_LIMIT + 1);
+		const term = await seedTaxonomy(slugs, slugs);
+
+		const counts = await fetchVisibleTermCounts(db, "topic", slugs);
+		expect(counts.get(term.translationGroup ?? term.id)).toBe(slugs.length);
+
+		const list = await handleTermList(db, "topic");
+		if (!list.success) throw new Error(list.error.code);
+		expect(list.data.terms[0]!.count).toBe(slugs.length);
+	});
+
+	it("still skips a missing ec_* table when it falls beyond the first batch", async () => {
+		const existing = collectionSlugs(D1_COMPOUND_SELECT_LIMIT);
+		const term = await seedTaxonomy([...existing, "ghost"], existing);
+
+		const counts = await fetchVisibleTermCounts(db, "topic", [...existing, "ghost"]);
+		expect(counts.get(term.translationGroup ?? term.id)).toBe(existing.length);
 	});
 });

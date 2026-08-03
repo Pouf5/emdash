@@ -11,8 +11,8 @@
  * visibility at query time rather than trusting a literal status value.
  *
  * The public render path is latency-sensitive on D1, so per-collection counts
- * are combined into a single round-trip with UNION ALL — one query per
- * taxonomy, never one per collection.
+ * are combined with UNION ALL — one query per taxonomy, never one per
+ * collection, up to the backend's compound-SELECT ceiling.
  */
 
 import type { Kysely } from "kysely";
@@ -21,6 +21,7 @@ import { sql } from "kysely";
 import { buildStatusCondition } from "../database/dialect-helpers.js";
 import type { Database } from "../database/types.js";
 import { validateIdentifier } from "../database/validate.js";
+import { chunks, SQL_COMPOUND_SELECT_LIMIT } from "../utils/chunks.js";
 import { isMissingTableError } from "../utils/db-errors.js";
 
 interface CountRow {
@@ -76,6 +77,36 @@ async function runCounts(
 	return counts;
 }
 
+function addCounts(into: Map<string, number>, from: Map<string, number>): void {
+	for (const [group, count] of from) into.set(group, (into.get(group) ?? 0) + count);
+}
+
+/**
+ * Counts for one batch of collections, degrading to a query per collection
+ * when a declared collection has no ec_* table so the rest still contribute.
+ */
+async function runBatch(
+	db: Kysely<Database>,
+	taxonomyName: string,
+	collections: string[],
+): Promise<Map<string, number>> {
+	try {
+		return await runCounts(db, taxonomyName, collections);
+	} catch (error) {
+		if (!isMissingTableError(error)) throw error;
+	}
+
+	const counts = new Map<string, number>();
+	for (const collection of collections) {
+		try {
+			addCounts(counts, await runCounts(db, taxonomyName, [collection]));
+		} catch (error) {
+			if (!isMissingTableError(error)) throw error;
+		}
+	}
+	return counts;
+}
+
 /**
  * Count publicly-visible term assignments for one taxonomy, keyed by the
  * term's translation_group (what `content_taxonomies.taxonomy_id` stores).
@@ -87,9 +118,15 @@ async function runCounts(
  * rather than a throw.
  *
  * One database round-trip for the whole taxonomy (UNION ALL across
- * collections). Callers on the public render path should go through the
- * request-cached wrapper in `taxonomies/index.ts` so a page rendering both the
- * widget and a term detail shares one computation.
+ * collections), or one per SQL_COMPOUND_SELECT_LIMIT collections beyond the
+ * point where a single statement can carry them all — D1 rejects a compound
+ * SELECT with more terms than that, so a taxonomy declaring enough
+ * collections would otherwise take down every path that shows counts.
+ * Per-collection sums are commutative, so batching cannot change the total.
+ *
+ * Callers on the public render path should go through the request-cached
+ * wrapper in `taxonomies/index.ts` so a page rendering both the widget and a
+ * term detail shares one computation.
  */
 export async function fetchVisibleTermCounts(
 	db: Kysely<Database>,
@@ -100,23 +137,11 @@ export async function fetchVisibleTermCounts(
 	for (const collection of unique) validateIdentifier(collection, "collection slug");
 	if (unique.length === 0) return new Map();
 
-	try {
-		return await runCounts(db, taxonomyName, unique);
-	} catch (error) {
-		if (!isMissingTableError(error)) throw error;
-	}
+	const batches = await Promise.all(
+		chunks(unique, SQL_COMPOUND_SELECT_LIMIT).map((batch) => runBatch(db, taxonomyName, batch)),
+	);
 
-	// A declared collection has no ec_* table — retry per collection so the
-	// existing tables still contribute (still scheduled-aware + deleted_at).
 	const counts = new Map<string, number>();
-	for (const collection of unique) {
-		try {
-			for (const [group, count] of await runCounts(db, taxonomyName, [collection])) {
-				counts.set(group, (counts.get(group) ?? 0) + count);
-			}
-		} catch (error) {
-			if (!isMissingTableError(error)) throw error;
-		}
-	}
+	for (const batch of batches) addCounts(counts, batch);
 	return counts;
 }
