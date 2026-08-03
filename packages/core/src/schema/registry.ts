@@ -984,10 +984,8 @@ export class SchemaRegistry {
 			ON ${sql.ref(tableName)} (locale)
 		`.execute(conn);
 
-		// Composite so translation-group reads seek here rather than falling into
-		// the `loc_*` composites below, which a stats-blind planner otherwise
-		// prefers because `deleted_at` alone already yields locale order (see
-		// migration 055). Keep this name identical to migration 055.
+		// Name must stay identical to migration 055, which creates this index on
+		// tables that already exist.
 		await sql`
 			CREATE INDEX ${sql.ref(`idx_${tableName}_tg_locale`)}
 			ON ${sql.ref(tableName)} (translation_group, locale)

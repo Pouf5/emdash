@@ -1158,10 +1158,8 @@ export class ContentRepository {
 	 * groups the flat result by `translationGroup` itself.
 	 *
 	 * `translation_group` leads the sort so the ordering is an exact prefix of
-	 * `idx_{table}_tg_locale`. Sorting on `locale` alone makes a stats-blind
-	 * planner scan every non-deleted row via migration 041's `(deleted_at,
-	 * locale, ...)` composites instead. Within a group the locale order callers
-	 * rely on is unchanged.
+	 * `idx_{table}_tg_locale`; callers group by `translationGroup`, so the
+	 * per-group locale order they rely on is preserved.
 	 *
 	 * `publishedOnly` restricts the result to `status = 'published'` — reference
 	 * reads pass this for callers without `content:read_drafts` so draft/scheduled
