@@ -87,6 +87,7 @@ describe("i18n (Integration)", () => {
 			const indexNames = result.rows.map((r) => r.name);
 			expect(indexNames).toContain("idx_ec_post_locale");
 			expect(indexNames).toContain("idx_ec_post_tg_locale");
+			expect(indexNames).toContain("idx_ec_post_del_tg_locale");
 		});
 	});
 

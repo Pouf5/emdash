@@ -13,9 +13,9 @@ import {
 /**
  * The longest collection slug `SchemaRegistry` can create on Postgres: at 47
  * characters the `deleted_updated_id` and `deleted_status` index names collide
- * once Postgres truncates identifiers to 63 bytes. `idx_{table}_tg_locale` is
- * truncated at this length too, so the migration's create and drop must still
- * name two different indexes.
+ * once Postgres truncates identifiers to 63 bytes. `idx_{table}_tg_locale` and
+ * `idx_{table}_del_tg_locale` are truncated at this length too, so the
+ * migration's creates and drop must still name three different indexes.
  */
 const LONG_SLUG = `t${"o".repeat(45)}`;
 const TABLE_NAME = `ec_${LONG_SLUG}`;
@@ -29,6 +29,7 @@ describeEachDialect("translation_group index replacement for long collection slu
 		await registry.createCollection({ slug: LONG_SLUG, label: "Long", labelSingular: "Long" });
 
 		await sql`DROP INDEX IF EXISTS ${sql.ref(`idx_${TABLE_NAME}_tg_locale`)}`.execute(ctx.db);
+		await sql`DROP INDEX IF EXISTS ${sql.ref(`idx_${TABLE_NAME}_del_tg_locale`)}`.execute(ctx.db);
 		await sql`
 			CREATE INDEX ${sql.ref(`idx_${TABLE_NAME}_translation_group`)}
 			ON ${sql.ref(TABLE_NAME)} (translation_group)
@@ -39,13 +40,16 @@ describeEachDialect("translation_group index replacement for long collection slu
 		await teardownForDialect(ctx);
 	});
 
-	it("leaves the table with the composite index, not with none", async () => {
+	it("leaves the table with both composite indexes, not with one or none", async () => {
 		await migration055.up(ctx.db);
 
-		const covering = (await translationIndexColumns()).filter((columns) =>
-			columns.includes("translation_group"),
-		);
-		expect(covering).toEqual(["deleted_at, translation_group, locale"]);
+		const covering = (await translationIndexColumns())
+			.filter((columns) => columns.includes("translation_group"))
+			.toSorted();
+		expect(covering).toEqual([
+			"deleted_at, translation_group, locale",
+			"translation_group, locale",
+		]);
 	});
 
 	async function translationIndexColumns(): Promise<string[]> {

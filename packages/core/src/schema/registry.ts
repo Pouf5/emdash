@@ -984,10 +984,17 @@ export class SchemaRegistry {
 			ON ${sql.ref(tableName)} (locale)
 		`.execute(conn);
 
-		// Name must stay identical to migration 055, which creates this index on
-		// tables that already exist.
+		// Names must stay identical to migration 055, which creates these indexes
+		// on tables that already exist. Lookups that don't constrain `deleted_at`
+		// (menu and reference resolution) need the first; reads that do need the
+		// second.
 		await sql`
 			CREATE INDEX ${sql.ref(`idx_${tableName}_tg_locale`)}
+			ON ${sql.ref(tableName)} (translation_group, locale)
+		`.execute(conn);
+
+		await sql`
+			CREATE INDEX ${sql.ref(`idx_${tableName}_del_tg_locale`)}
 			ON ${sql.ref(tableName)} (deleted_at, translation_group, locale)
 		`.execute(conn);
 

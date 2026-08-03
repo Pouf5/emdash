@@ -1158,7 +1158,7 @@ export class ContentRepository {
 	 * groups the flat result by `translationGroup` itself.
 	 *
 	 * `translation_group` leads the sort so the ordering follows
-	 * `idx_{table}_tg_locale` past its `deleted_at` equality; callers group by
+	 * `idx_{table}_del_tg_locale` past its `deleted_at` equality; callers group by
 	 * `translationGroup`, so the per-group locale order they rely on is preserved.
 	 *
 	 * `publishedOnly` restricts the result to `status = 'published'` — reference

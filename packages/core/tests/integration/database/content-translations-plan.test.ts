@@ -13,6 +13,7 @@ import * as migration055 from "../../../src/database/migrations/055_content_tran
 import { runMigrations } from "../../../src/database/migrations/runner.js";
 import { ContentRepository } from "../../../src/database/repositories/content.js";
 import type { Database as DatabaseSchema } from "../../../src/database/types.js";
+import { getMenuWithDb } from "../../../src/menus/index.js";
 import { SchemaRegistry } from "../../../src/schema/registry.js";
 import { SQL_BATCH_SIZE } from "../../../src/utils/chunks.js";
 
@@ -66,7 +67,7 @@ it("seeks a single translation group through the translation_group index", async
 	const query = translationQuery();
 	const plan = explain(query);
 	expect(contentAccess(plan)).toMatch(
-		/SEARCH ec_post USING (?:COVERING )?INDEX idx_ec_post_tg_locale \(deleted_at=\? AND translation_group=\?\)/,
+		/SEARCH ec_post USING (?:COVERING )?INDEX idx_ec_post_del_tg_locale \(deleted_at=\? AND translation_group=\?\)/,
 	);
 	expect(plan).not.toContain("SCAN ec_post");
 	expect(plan).not.toContain("idx_ec_post_loc_crt");
@@ -91,15 +92,42 @@ it.each([
 		expect(items).toHaveLength(groupCount * 2);
 
 		const plan = explain(translationQuery());
-		expect(contentAccess(plan)).toContain("INDEX idx_ec_post_tg_locale");
+		expect(contentAccess(plan)).toContain("INDEX idx_ec_post_del_tg_locale");
 		expect(plan).not.toContain("SCAN ec_post");
 		expect(plan).not.toContain("idx_ec_post_loc_crt");
 		expect(plan).not.toContain("idx_ec_post_loc_upd");
 	},
 );
 
+/**
+ * Menu references resolve a translation group without a `deleted_at` filter, so
+ * they need an index that leads with `translation_group`. `fr` has no `ec_post`
+ * row, which exercises the any-locale fallback as well as the direct lookup.
+ */
+it.each([
+	{ locale: "en", url: "/post/slug-10" },
+	{ locale: "fr", url: "/post/slug-9" },
+])("seeks a menu content reference resolved for $locale", async ({ locale, url }) => {
+	await seedMenuReference("tg-0005");
+
+	const menu = await getMenuWithDb("primary", db, { locale });
+
+	expect(menu?.items.map((item) => item.url)).toEqual([url]);
+
+	const queries = translationQueries();
+	expect(queries.length).toBeGreaterThan(0);
+	for (const query of queries) {
+		const plan = explain(query);
+		expect(contentAccess(plan)).toContain("INDEX idx_ec_post_tg_locale");
+		expect(plan).not.toContain("SCAN ec_post");
+		expect(plan).not.toContain("idx_ec_post_loc_crt");
+		expect(plan).not.toContain("idx_ec_post_loc_upd");
+	}
+});
+
 it("migrates a pre-055 table off the single-column translation_group index", async () => {
 	sqlite.exec(`DROP INDEX idx_ec_post_tg_locale`);
+	sqlite.exec(`DROP INDEX idx_ec_post_del_tg_locale`);
 	sqlite.exec(`CREATE INDEX idx_ec_post_translation_group ON ec_post (translation_group)`);
 	captured = [];
 	await repo.findTranslations("post", "tg-0005");
@@ -111,8 +139,12 @@ it("migrates a pre-055 table off the single-column translation_group index", asy
 	captured = [];
 	await repo.findTranslations("post", "tg-0005");
 	expect(contentAccess(explain(translationQuery()))).toMatch(
-		/SEARCH ec_post USING (?:COVERING )?INDEX idx_ec_post_tg_locale \(deleted_at=\? AND translation_group=\?\)/,
+		/SEARCH ec_post USING (?:COVERING )?INDEX idx_ec_post_del_tg_locale \(deleted_at=\? AND translation_group=\?\)/,
 	);
+
+	await seedMenuReference("tg-0005");
+	await getMenuWithDb("primary", db, { locale: "en" });
+	expect(contentAccess(explain(translationQuery()))).toContain("INDEX idx_ec_post_tg_locale");
 });
 
 function indexNames(): string[] {
@@ -123,8 +155,41 @@ function indexNames(): string[] {
 	).map((row) => row.name);
 }
 
+async function seedMenuReference(referenceGroup: string): Promise<void> {
+	for (const locale of ["en", "fr"]) {
+		await db
+			.insertInto("_emdash_menus")
+			.values({ id: `menu-${locale}`, name: "primary", label: "Primary", locale })
+			.execute();
+		await db
+			.insertInto("_emdash_menu_items")
+			.values({
+				id: `item-${locale}`,
+				menu_id: `menu-${locale}`,
+				parent_id: null,
+				sort_order: 0,
+				type: "post",
+				reference_collection: "post",
+				reference_id: referenceGroup,
+				custom_url: null,
+				label: "Post",
+				title_attr: null,
+				target: null,
+				css_classes: null,
+				locale,
+				translation_group: null,
+			})
+			.execute();
+	}
+	captured = [];
+}
+
+function translationQueries(): CapturedQuery[] {
+	return captured.filter((query) => query.sql.includes("translation_group"));
+}
+
 function translationQuery(): CapturedQuery {
-	const queries = captured.filter((query) => query.sql.includes("translation_group"));
+	const queries = translationQueries();
 	expect(queries).toHaveLength(1);
 	return queries[0]!;
 }
