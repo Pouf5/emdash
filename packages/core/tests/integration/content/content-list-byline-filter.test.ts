@@ -1,3 +1,4 @@
+import { sql } from "kysely";
 import { beforeEach, afterEach, expect, it } from "vitest";
 
 import { handleContentCreate, handleContentList } from "../../../src/api/handlers/content.js";
@@ -139,6 +140,46 @@ describeEachDialect("content list byline filter", (dialect) => {
 			includeInferredBylines: true,
 		});
 		expect(slugsOf(result)).toEqual([]);
+	});
+
+	it("resolves inferred credits at the locale the list is scoped to", async () => {
+		// A byline translated into `fr` starts with a null user_id (the
+		// translations route makes linking an explicit step), so the Turing
+		// byline is user-linked at the default locale only. Move `inferred`
+		// to `fr` and the list renders no byline against it — the author
+		// fallback is strict per locale. The filter has to agree, or it
+		// returns an entry the list shows as uncredited.
+		const id = await idOfSlug("inferred");
+		const bylines = new BylineRepository(ctx.db);
+		const turing = await bylines.findBySlug("turing");
+		if (!turing) throw new Error("turing byline missing");
+		await bylines.create({
+			slug: "turing-fr",
+			displayName: "Alan Turing",
+			locale: "fr",
+			translationOf: turing.id,
+		});
+		await sql`UPDATE ${sql.ref("ec_posts")} SET locale = 'fr' WHERE id = ${id}`.execute(ctx.db);
+
+		const list = await handleContentList(ctx.db, "posts", { locale: "fr" });
+		if (!list.success) throw new Error("list failed");
+		expect(list.data.items.find((i) => i.slug === "inferred")?.bylines).toEqual([]);
+
+		const matched = await handleContentList(ctx.db, "posts", {
+			locale: "fr",
+			bylines: [turingGroup],
+			includeInferredBylines: true,
+		});
+		expect(slugsOf(matched)).toEqual([]);
+
+		// The same entry must not fall through the gap either: with nothing
+		// rendered against it, it belongs under "no byline".
+		const none = await handleContentList(ctx.db, "posts", {
+			locale: "fr",
+			bylinesNone: true,
+			includeInferredBylines: true,
+		});
+		expect(slugsOf(none)).toEqual(["inferred"]);
 	});
 
 	it("composes with the status filter", async () => {

@@ -413,40 +413,24 @@ function normalizeDateBound(value: string | undefined, edge: "start" | "end"): s
 }
 
 /**
- * Build the repository's byline filter from the wire params, resolving the
- * users behind the selected bylines when inferred credits are opted in.
+ * Build the repository's byline filter from the wire params.
  *
- * The extra lookup runs only for `includeInferredBylines`, so the default
- * explicit-only filter costs no additional query.
+ * `locale` is the locale the list is scoped to, which is the locale an
+ * inferred credit has to resolve at — the admin list is always scoped to the
+ * locale picked in its switcher.
  */
-async function resolveBylineFilter(
-	db: Kysely<Database>,
+function resolveBylineFilter(
 	params: { bylines?: string[]; bylinesNone?: boolean; includeInferredBylines?: boolean },
-): Promise<ContentBylineFilter | undefined> {
+	locale: string | undefined,
+): ContentBylineFilter | undefined {
 	const includeInferred = params.includeInferredBylines === true;
 
-	if (params.bylinesNone) return { mode: "none", includeInferred };
+	if (params.bylinesNone) return { mode: "none", includeInferred, locale };
 
 	const bylineIds = params.bylines ?? [];
 	if (bylineIds.length === 0) return undefined;
 
-	const filter: ContentBylineFilter = { mode: "any", bylineIds, includeInferred };
-	if (!includeInferred) return filter;
-
-	// A byline's `user_id` is shared across its locale siblings, so selecting
-	// by translation_group and de-duplicating gives every user whose implicit
-	// credit should match.
-	const rows = await db
-		.selectFrom("_emdash_bylines")
-		.select("user_id")
-		.where("translation_group", "in", bylineIds)
-		.where("user_id", "is not", null)
-		.execute();
-	filter.inferredAuthorIds = [
-		...new Set(rows.map((row) => row.user_id).filter((id): id is string => id !== null)),
-	];
-
-	return filter;
+	return { mode: "any", bylineIds, includeInferred, locale };
 }
 
 /**
@@ -476,10 +460,11 @@ export async function handleContentList(
 		const repo = new ContentRepository(db);
 		const where: FindManyOptions["where"] = {};
 		if (params.status) where.status = params.status;
-		if (params.locale) where.locale = resolveConfiguredLocale(params.locale);
+		const locale = params.locale ? resolveConfiguredLocale(params.locale) : undefined;
+		if (locale) where.locale = locale;
 		if (params.authorId) where.authorId = params.authorId;
 
-		const bylineFilter = await resolveBylineFilter(db, params);
+		const bylineFilter = resolveBylineFilter(params, locale);
 		if (bylineFilter) where.bylineFilter = bylineFilter;
 
 		// A date range requires a target column; ignore stray from/to without

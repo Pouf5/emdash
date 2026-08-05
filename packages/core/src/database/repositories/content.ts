@@ -977,17 +977,25 @@ export class ContentRepository {
 			return eb.exists(sub);
 		};
 
-		// The entry's author owns a byline row at the entry's own locale —
-		// the same strict-locale rule `hydrateBylinesMany` applies before it
-		// renders an inferred credit.
-		const authorHasByline = (eb: any) =>
-			eb.exists(
-				eb
-					.selectFrom("_emdash_bylines as b")
-					.select("b.id")
-					.whereRef("b.user_id", "=", authorColumn)
-					.whereRef("b.locale", "=", localeColumn),
-			);
+		// The entry's author owns a byline row — optionally within a given set
+		// of translation groups — at the locale the list is scoped to. Matching
+		// the locale is what keeps the filter agreeing with the list: an
+		// inferred credit renders only when the author's byline has a row at
+		// that locale (`hydrateBylinesMany` -> `findByUserIds`), and byline
+		// translations start life with a null `user_id`, so a group translated
+		// into the locale but not re-linked resolves to no credit. `locale`
+		// falls back to each entry's own when the list spans locales.
+		const authorHasByline = (eb: any, bylineIds?: string[]) => {
+			let sub = eb
+				.selectFrom("_emdash_bylines as b")
+				.select("b.id")
+				.whereRef("b.user_id", "=", authorColumn);
+			sub = filter.locale
+				? sub.where("b.locale", "=", filter.locale)
+				: sub.whereRef("b.locale", "=", localeColumn);
+			if (bylineIds) sub = sub.where("b.translation_group", "in", bylineIds);
+			return eb.exists(sub);
+		};
 
 		if (filter.mode === "none") {
 			return query.where((eb: any) => {
@@ -1001,8 +1009,7 @@ export class ContentRepository {
 		}
 
 		const bylineIds = filter.bylineIds ?? [];
-		const inferredAuthorIds = filter.includeInferred ? (filter.inferredAuthorIds ?? []) : [];
-		if (bylineIds.length === 0 && inferredAuthorIds.length === 0) {
+		if (bylineIds.length === 0) {
 			// A filter that resolved to no ids must match nothing rather than
 			// silently degrade to "no filter" and return the whole collection.
 			// `1 = 0` rather than a bound `false`: better-sqlite3 refuses to
@@ -1011,16 +1018,13 @@ export class ContentRepository {
 		}
 
 		return query.where((eb: any) => {
-			const branches = [];
-			if (bylineIds.length > 0) branches.push(credited(eb, bylineIds));
-			if (inferredAuthorIds.length > 0) {
-				// Inference applies only where no explicit credit exists, so an
-				// entry credited to someone else never matches on its author.
-				branches.push(
-					eb.and([eb.not(credited(eb)), eb(authorColumn as any, "in", inferredAuthorIds)]),
-				);
-			}
-			return branches.length === 1 ? branches[0] : eb.or(branches);
+			if (!filter.includeInferred) return credited(eb, bylineIds);
+			// Inference applies only where no explicit credit exists, so an
+			// entry credited to someone else never matches on its author.
+			return eb.or([
+				credited(eb, bylineIds),
+				eb.and([eb.not(credited(eb)), authorHasByline(eb, bylineIds)]),
+			]);
 		});
 	}
 

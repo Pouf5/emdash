@@ -167,11 +167,11 @@ export interface ContentBylineFilter {
 	bylineIds?: string[];
 	includeInferred?: boolean;
 	/**
-	 * Users whose linked byline falls in `bylineIds`, resolved by the handler
-	 * so the repository stays free of byline lookups. Only read when
-	 * `includeInferred` is set and `mode` is `"any"`.
+	 * Locale an inferred credit has to resolve at — the locale the list is
+	 * scoped to. Only read when `includeInferred` is set. Defaults to each
+	 * entry's own locale when the list spans locales.
 	 */
-	inferredAuthorIds?: string[];
+	locale?: string;
 }
 
 export interface FindManyOptions {

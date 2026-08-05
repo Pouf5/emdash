@@ -1,4 +1,5 @@
 import { Badge, Button, Checkbox, Input, Popover, Switch } from "@cloudflare/kumo";
+import { plural } from "@lingui/core/macro";
 import { useLingui } from "@lingui/react/macro";
 import { CaretDown } from "@phosphor-icons/react";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
@@ -103,8 +104,8 @@ export function BylineFilter({ value, onChange, locale }: BylineFilterProps) {
 		: value.bylineIds.length === 0
 			? t`All bylines`
 			: value.bylineIds.length === 1
-				? (labels[value.bylineIds[0]!] ?? t`1 byline`)
-				: t`${value.bylineIds.length} bylines`;
+				? (labels[value.bylineIds[0]!] ?? plural(1, { one: "# byline", other: "# bylines" }))
+				: plural(value.bylineIds.length, { one: "# byline", other: "# bylines" });
 
 	const atLimit = value.bylineIds.length >= MAX_SELECTED;
 
