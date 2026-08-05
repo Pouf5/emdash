@@ -942,18 +942,10 @@ export class ContentRepository {
 	 * Apply the optional byline filter as a correlated (NOT) EXISTS against
 	 * `_emdash_content_bylines`.
 	 *
-	 * The shape is load-bearing. Correlating from the content table lets the
-	 * outer query keep its sort-ordered composite index — so `LIMIT` still
-	 * short-circuits — while each probe is an index-only seek on the
-	 * `(collection_slug, content_id, byline_id)` unique index. Driving the
-	 * other way (`FROM _emdash_content_bylines JOIN ec_*`) cannot use that
-	 * index for the byline and forces a temp B-tree for the ORDER BY.
-	 *
-	 * `mode: "none"` tests the junction rather than `primary_byline_id`. The
-	 * two agree — both junction write paths stamp the column in the same call
-	 * — but they are not written atomically (D1 has no transactions), so the
-	 * junction stays authoritative, as migration 051 treats the denormalized
-	 * taxonomy columns.
+	 * Correlating from the content table preserves the outer sort index so
+	 * `LIMIT` can short-circuit. `mode: "none"` tests the junction rather than
+	 * `primary_byline_id` because the two are written in the same call but
+	 * are not atomically consistent, so the junction is authoritative.
 	 */
 	private applyBylineFilter<QB extends { where: (cb: (eb: any) => unknown) => QB }>(
 		query: QB,
