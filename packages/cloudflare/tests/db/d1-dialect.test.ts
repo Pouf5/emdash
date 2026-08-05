@@ -115,7 +115,7 @@ describe("EmDashD1Dialect (session path keeps the mutex)", () => {
 	});
 });
 
-describe("D1 compound-SELECT ceiling (#2330)", () => {
+describe("D1 compound-SELECT ceiling", () => {
 	it.each([
 		["raw binding", RawBindingD1Dialect],
 		["session", EmDashD1Dialect],
