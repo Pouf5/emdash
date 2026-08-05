@@ -334,10 +334,17 @@ describeEachDialect("visible term counts (#581)", (dialect) => {
 
 describe("visible term counts past the compound-SELECT ceiling", () => {
 	let db: Kysely<DatabaseSchema>;
+	let statements: string[];
 
-	beforeEach(async () => {
-		db = await setupTestDatabaseWithCompoundSelectLimit();
-	});
+	/** Back the test by a database that declares `limit` (null: no ceiling). */
+	async function useDatabase(limit: number | null): Promise<void> {
+		({ db, statements } = await setupTestDatabaseWithCompoundSelectLimit(limit));
+	}
+
+	/** How many statements the count query took; its subquery alias is unique to it. */
+	function countStatements(): number {
+		return statements.filter((source) => source.includes("per_collection")).length;
+	}
 
 	afterEach(async () => {
 		await teardownTestDatabase(db);
@@ -390,11 +397,13 @@ describe("visible term counts past the compound-SELECT ceiling", () => {
 	}
 
 	it("aggregates every declared collection when there are more than one statement can carry", async () => {
+		await useDatabase(D1_COMPOUND_SELECT_LIMIT);
 		const slugs = collectionSlugs(D1_COMPOUND_SELECT_LIMIT + 1);
 		const term = await seedTaxonomy(slugs, slugs);
 
 		const counts = await fetchVisibleTermCounts(db, "topic", slugs);
 		expect(counts.get(term.translationGroup ?? term.id)).toBe(slugs.length);
+		expect(countStatements()).toBe(2);
 
 		const list = await handleTermList(db, "topic");
 		if (!list.success) throw new Error(list.error.code);
@@ -402,10 +411,21 @@ describe("visible term counts past the compound-SELECT ceiling", () => {
 	});
 
 	it("still skips a missing ec_* table when it falls beyond the first batch", async () => {
+		await useDatabase(D1_COMPOUND_SELECT_LIMIT);
 		const existing = collectionSlugs(D1_COMPOUND_SELECT_LIMIT);
 		const term = await seedTaxonomy([...existing, "ghost"], existing);
 
 		const counts = await fetchVisibleTermCounts(db, "topic", [...existing, "ghost"]);
 		expect(counts.get(term.translationGroup ?? term.id)).toBe(existing.length);
+	});
+
+	it("takes a single statement on a backend that declares no ceiling", async () => {
+		await useDatabase(null);
+		const slugs = collectionSlugs(D1_COMPOUND_SELECT_LIMIT + 1);
+		const term = await seedTaxonomy(slugs, slugs);
+
+		const counts = await fetchVisibleTermCounts(db, "topic", slugs);
+		expect(counts.get(term.translationGroup ?? term.id)).toBe(slugs.length);
+		expect(countStatements()).toBe(1);
 	});
 });

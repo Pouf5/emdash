@@ -15,11 +15,3 @@ export function chunks<T>(arr: T[], size: number): T[][] {
 
 /** Conservative default chunk size for SQL IN clauses (well within D1's limit). */
 export const SQL_BATCH_SIZE = 50;
-
-/**
- * Maximum number of terms one compound SELECT (`UNION ALL`, `INTERSECT`,
- * `EXCEPT`) may have. SQLite's own default is 500, but Cloudflare D1 sets
- * SQLITE_LIMIT_COMPOUND_SELECT to 5 and rejects anything larger with
- * "too many terms in compound SELECT". Split into separate statements past it.
- */
-export const SQL_COMPOUND_SELECT_LIMIT = 5;

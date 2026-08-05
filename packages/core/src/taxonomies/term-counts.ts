@@ -12,16 +12,16 @@
  *
  * The public render path is latency-sensitive on D1, so per-collection counts
  * are combined with UNION ALL — one query per taxonomy, never one per
- * collection, up to the backend's compound-SELECT ceiling.
+ * collection, split only where the backend caps compound-SELECT terms.
  */
 
 import type { Kysely } from "kysely";
 import { sql } from "kysely";
 
-import { buildStatusCondition } from "../database/dialect-helpers.js";
+import { buildStatusCondition, compoundSelectLimit } from "../database/dialect-helpers.js";
 import type { Database } from "../database/types.js";
 import { validateIdentifier } from "../database/validate.js";
-import { chunks, SQL_COMPOUND_SELECT_LIMIT } from "../utils/chunks.js";
+import { chunks } from "../utils/chunks.js";
 import { isMissingTableError } from "../utils/db-errors.js";
 
 interface CountRow {
@@ -118,11 +118,11 @@ async function runBatch(
  * rather than a throw.
  *
  * One database round-trip for the whole taxonomy (UNION ALL across
- * collections), or one per SQL_COMPOUND_SELECT_LIMIT collections beyond the
- * point where a single statement can carry them all — D1 rejects a compound
- * SELECT with more terms than that, so a taxonomy declaring enough
- * collections would otherwise take down every path that shows counts.
- * Per-collection sums are commutative, so batching cannot change the total.
+ * collections). On a backend that caps compound-SELECT terms — D1 allows five
+ * — the branches are split into one statement per batch, since a taxonomy
+ * declaring more collections than that would otherwise take down every path
+ * that shows counts. Per-collection sums are commutative, so batching cannot
+ * change the total.
  *
  * Callers on the public render path should go through the request-cached
  * wrapper in `taxonomies/index.ts` so a page rendering both the widget and a
@@ -137,9 +137,9 @@ export async function fetchVisibleTermCounts(
 	for (const collection of unique) validateIdentifier(collection, "collection slug");
 	if (unique.length === 0) return new Map();
 
-	const batches = await Promise.all(
-		chunks(unique, SQL_COMPOUND_SELECT_LIMIT).map((batch) => runBatch(db, taxonomyName, batch)),
-	);
+	const limit = compoundSelectLimit(db);
+	const batched = limit === null ? [unique] : chunks(unique, limit);
+	const batches = await Promise.all(batched.map((batch) => runBatch(db, taxonomyName, batch)));
 
 	const counts = new Map<string, number>();
 	for (const batch of batches) addCounts(counts, batch);

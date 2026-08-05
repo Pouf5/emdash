@@ -38,6 +38,32 @@ export function isPostgres(db: Kysely<any>): boolean {
 }
 
 /**
+ * Declared by an adapter whose backend caps the number of terms in a compound
+ * SELECT (`UNION ALL`, `INTERSECT`, `EXCEPT`). SQLite's own
+ * SQLITE_LIMIT_COMPOUND_SELECT default is 500 — high enough that no query
+ * EmDash builds approaches it — but Cloudflare D1 sets it to 5 and rejects
+ * anything larger with "too many terms in compound SELECT".
+ */
+export interface CompoundSelectLimitedAdapter {
+	readonly compoundSelectLimit: number;
+}
+
+/**
+ * The backend's compound-SELECT ceiling, or null when it has none worth
+ * splitting statements for. Only the adapter knows: the limit is a property of
+ * the SQLite build behind the dialect, not of the SQL flavour, so two "sqlite"
+ * dialects can answer differently.
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- accepts any Kysely instance
+export function compoundSelectLimit(db: Kysely<any>): number | null {
+	const adapter: object = db.getExecutor().adapter;
+	if ("compoundSelectLimit" in adapter && typeof adapter.compoundSelectLimit === "number") {
+		return adapter.compoundSelectLimit;
+	}
+	return null;
+}
+
+/**
  * Default timestamp expression for column defaults.
  * Wrapped in parens for use in CREATE TABLE ... DEFAULT (...).
  *
