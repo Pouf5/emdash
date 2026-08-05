@@ -33,7 +33,6 @@ import { useDebouncedValue } from "../lib/hooks.js";
 import { contentUrl } from "../lib/url.js";
 import { cn } from "../lib/utils";
 import { CaretNext, CaretPrev } from "./ArrowIcons.js";
-import { BulkBylineApply } from "./BulkBylineApply.js";
 import {
 	BylineFilter,
 	EMPTY_BYLINE_FILTER,
@@ -147,8 +146,6 @@ export interface ContentListProps {
 	onBulkPublish?: BulkActionHandler;
 	onBulkUnpublish?: BulkActionHandler;
 	onBulkDelete?: BulkActionHandler;
-	/** Replaces every selected entry's credits with the picked bylines (row ids). */
-	onBulkSetBylines?: (ids: string[], bylineIds: string[]) => Promise<string[]>;
 }
 
 type BulkActionHandler = (ids: string[]) => Promise<string[]>;
@@ -207,7 +204,6 @@ export function ContentList({
 	onBulkPublish,
 	onBulkUnpublish,
 	onBulkDelete,
-	onBulkSetBylines,
 }: ContentListProps) {
 	const { t } = useLingui();
 	const [activeTab, setActiveTab] = React.useState<ViewTab>("all");
@@ -217,7 +213,7 @@ export function ContentList({
 
 	// Bulk selection is opt-in: the checkbox column + toolbar only render when
 	// the parent wired at least one bulk handler.
-	const bulkEnabled = !!(onBulkPublish || onBulkUnpublish || onBulkDelete || onBulkSetBylines);
+	const bulkEnabled = !!(onBulkPublish || onBulkUnpublish || onBulkDelete);
 
 	// Server-side search mode: the caller refetches based on the (debounced)
 	// query, so `items`/`total` already reflect the filter and we must not
@@ -449,14 +445,6 @@ export function ContentList({
 									>
 										{t`Set to draft`}
 									</Button>
-								)}
-								{onBulkSetBylines && (
-									<BulkBylineApply
-										count={selectedCount}
-										disabled={bulkBusy}
-										locale={activeLocale ?? undefined}
-										onApply={(bylineIds) => runBulk((ids) => onBulkSetBylines(ids, bylineIds))}
-									/>
 								)}
 								{onBulkDelete && (
 									<Dialog.Root disablePointerDismissal>

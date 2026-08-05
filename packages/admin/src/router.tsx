@@ -563,35 +563,6 @@ function ContentListPage() {
 		return data?.pages.flatMap((page) => page.items) || [];
 	}, [data]);
 
-	// Bulk byline apply: temporary tooling for exercising the byline filter, not
-	// part of the shipped feature. The picked bylines replace each entry's whole
-	// credit set — merging client-side isn't sound, because list items hydrate
-	// credits with strict locale matching and an entry whose byline has no row
-	// in its locale comes back with an empty `bylines` array.
-	const bulkSetBylinesMutation = useMutation({
-		mutationFn: async ({ ids, bylineIds }: { ids: string[]; bylineIds: string[] }) => {
-			const bylines = bylineIds.map((bylineId) => ({ bylineId }));
-			const { failedIds } = await runBulkAction(ids, (id) =>
-				updateContent(collection, id, { bylines }, { locale: activeLocale }),
-			);
-			return { total: ids.length, failedIds };
-		},
-		onSuccess: ({ total, failedIds }) => {
-			if (failedIds.length === 0) {
-				toastManager.add({ title: t`Updated bylines on ${total} items`, type: "success" });
-			} else {
-				toastManager.add({
-					title: t`Failed to update bylines`,
-					description: t`${failedIds.length} of ${total} could not be updated`,
-					type: "error",
-				});
-			}
-		},
-		onSettled: () => {
-			void queryClient.invalidateQueries({ queryKey: ["content", collection] });
-		},
-	});
-
 	// Server returns `total` on every page; the first page is authoritative
 	// because filters don't change within a fetch cycle. Fall back to the
 	// loaded count so old servers (pre-total) still render a denominator.
@@ -660,9 +631,6 @@ function ContentListPage() {
 			onBulkPublish={(ids) => bulkPublishMutation.mutateAsync(ids).then((r) => r.failedIds)}
 			onBulkUnpublish={(ids) => bulkUnpublishMutation.mutateAsync(ids).then((r) => r.failedIds)}
 			onBulkDelete={(ids) => bulkDeleteMutation.mutateAsync(ids).then((r) => r.failedIds)}
-			onBulkSetBylines={(ids, bylineIds) =>
-				bulkSetBylinesMutation.mutateAsync({ ids, bylineIds }).then((r) => r.failedIds)
-			}
 		/>
 	);
 }
