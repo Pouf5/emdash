@@ -45,6 +45,7 @@ export function isPostgres(db: Kysely<any>): boolean {
  * anything larger with "too many terms in compound SELECT".
  */
 export interface CompoundSelectLimitedAdapter {
+	/** Maximum terms per compound SELECT. Must be a positive integer. */
 	readonly compoundSelectLimit: number;
 }
 
@@ -53,14 +54,25 @@ export interface CompoundSelectLimitedAdapter {
  * splitting statements for. Only the adapter knows: the limit is a property of
  * the SQLite build behind the dialect, not of the SQL flavour, so two "sqlite"
  * dialects can answer differently.
+ *
+ * A declared ceiling must be a positive integer — callers batch by it, and
+ * every other value silently misbehaves rather than failing: 0 and negatives
+ * never advance the batch cursor, fractions overlap batches and double-count,
+ * NaN yields an empty batch. A malformed declaration throws here, where the
+ * message can name the adapter.
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- accepts any Kysely instance
 export function compoundSelectLimit(db: Kysely<any>): number | null {
 	const adapter: object = db.getExecutor().adapter;
-	if ("compoundSelectLimit" in adapter && typeof adapter.compoundSelectLimit === "number") {
-		return adapter.compoundSelectLimit;
+	if (!("compoundSelectLimit" in adapter)) return null;
+
+	const limit: unknown = adapter.compoundSelectLimit;
+	if (typeof limit !== "number" || !Number.isInteger(limit) || limit < 1) {
+		throw new Error(
+			`${adapter.constructor.name} declares compoundSelectLimit ${String(limit)}; it must be a positive integer.`,
+		);
 	}
-	return null;
+	return limit;
 }
 
 /**
