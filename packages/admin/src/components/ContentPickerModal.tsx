@@ -27,6 +27,7 @@ import { fetchCollections, fetchContentList, getDraftStatus } from "../lib/api";
 import type { ContentItem } from "../lib/api";
 import { useDebouncedValue } from "../lib/hooks";
 import { cn } from "../lib/utils";
+import { ContentStatusLabel, type ContentStatusState } from "./ContentStatusBadge.js";
 
 /** A chosen content entry, carrying its collection and a display title. */
 export interface PickedContentEntry {
@@ -289,28 +290,15 @@ export function ContentPickerModal({
 								const status = getDraftStatus(item);
 								const alreadyLinked = selectedIds.has(selectionKey(item));
 								const isPicked = alreadyLinked || !!picked[item.id];
-								const statusDot = (
-									<span
-										className={cn(
-											"inline-block h-2 w-2 rounded-full",
-											status === "published"
-												? "bg-kumo-success"
-												: status === "published_with_changes"
-													? "bg-kumo-warning"
-													: "bg-kumo-fill",
-										)}
-									/>
-								);
-								const statusLabel =
+								const statusState: ContentStatusState =
 									status === "published"
-										? t`Published`
+										? "published"
 										: status === "published_with_changes"
-											? t`Modified`
-											: t`Draft`;
+											? "pendingChanges"
+											: "draft";
 								const meta = (
 									<div className="text-sm text-kumo-subtle flex items-center gap-2">
-										{statusDot}
-										{statusLabel}
+										<ContentStatusLabel state={statusState} />
 										{item.slug && (
 											<>
 												<span className="text-kumo-subtle/50">/</span>

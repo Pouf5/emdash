@@ -25,9 +25,11 @@ import type {
 	UserListItem,
 } from "../lib/api";
 import { fetchBylines } from "../lib/api";
+import { fromDatetimeLocalInputValue, toDatetimeLocalInputValue } from "../lib/datetime-local.js";
 import { useDebouncedValue } from "../lib/hooks.js";
 import { cn, slugify } from "../lib/utils";
 import type { CurrentUserInfo } from "./ContentEditor.js";
+import { ContentStatusBadge, isContentStatusState } from "./ContentStatusBadge.js";
 import { DocumentOutline } from "./editor/DocumentOutline";
 import { GalleryDetailPanel } from "./editor/GalleryDetailPanel";
 import type { GalleryAttributes } from "./editor/GalleryNode";
@@ -187,14 +189,14 @@ export function PublishActions({
 	if (!isLive) {
 		return (
 			<Button type="button" variant="primary" size={size} onClick={onPublish} icon={<Upload />}>
-				{t`Publish ${itemLabel}`}
+				{t`Publish`}
 			</Button>
 		);
 	}
 	if (hasPendingChanges) {
 		return (
 			<Button type="button" variant="primary" size={size} onClick={onPublish} icon={<Upload />}>
-				{t`Publish updates`}
+				{t`Publish`}
 			</Button>
 		);
 	}
@@ -303,6 +305,8 @@ export interface ContentSettingsPanelProps {
 	onSchedule?: (scheduledAt: string) => void;
 	onUnschedule?: () => void;
 	isScheduling?: boolean;
+	onPublishedAtChange?: (publishedAt: string) => void;
+	isUpdatingPublishedAt?: boolean;
 	onDiscardDraft?: () => void;
 	onDelete?: () => void;
 	isDeleting?: boolean;
@@ -356,6 +360,8 @@ export const ContentSettingsPanel = React.memo(function ContentSettingsPanel({
 	onSchedule,
 	onUnschedule,
 	isScheduling,
+	onPublishedAtChange,
+	isUpdatingPublishedAt,
 	onDiscardDraft,
 	onDelete,
 	isDeleting,
@@ -383,9 +389,17 @@ export const ContentSettingsPanel = React.memo(function ContentSettingsPanel({
 
 	const [scheduleDate, setScheduleDate] = React.useState<string>("");
 	const [showScheduler, setShowScheduler] = React.useState(false);
+	const storedPublishedDate = toDatetimeLocalInputValue(item?.publishedAt);
+	const [publishedDate, setPublishedDate] = React.useState(storedPublishedDate);
 	const [isReorderingSections, setIsReorderingSections] = React.useState(false);
 	const showDiscard = !isNew && supportsDrafts && hasPendingChanges && !!onDiscardDraft;
 	const hasApplicableTaxonomies = useHasApplicableTaxonomies(collection);
+	const canUpdatePublishedDate =
+		item?.publishedAt != null && (currentUser?.role ?? 0) >= ROLE_EDITOR && !!onPublishedAtChange;
+
+	React.useEffect(() => {
+		setPublishedDate(storedPublishedDate);
+	}, [item?.id, storedPublishedDate]);
 
 	const handleScheduleSubmit = () => {
 		if (scheduleDate && onSchedule) {
@@ -393,6 +407,12 @@ export const ContentSettingsPanel = React.memo(function ContentSettingsPanel({
 			onSchedule(date.toISOString());
 			setShowScheduler(false);
 			setScheduleDate("");
+		}
+	};
+
+	const handlePublishedDateSubmit = () => {
+		if (publishedDate && onPublishedAtChange) {
+			onPublishedAtChange(fromDatetimeLocalInputValue(publishedDate));
 		}
 	};
 
@@ -450,11 +470,13 @@ export const ContentSettingsPanel = React.memo(function ContentSettingsPanel({
 									<Label>{t`Status`}</Label>
 									{supportsDrafts ? (
 										<>
-											{isLive && <Badge variant="success">{t`Published`}</Badge>}
-											{hasPendingChanges && <Badge variant="secondary">{t`Pending changes`}</Badge>}
-											{!isLive && !hasSchedule && <Badge variant="secondary">{t`Draft`}</Badge>}
-											{hasSchedule && <Badge variant="outline">{t`Scheduled`}</Badge>}
+											{isLive && <ContentStatusBadge state="published" />}
+											{hasPendingChanges && <ContentStatusBadge state="pendingChanges" />}
+											{!isLive && !hasSchedule && <ContentStatusBadge state="draft" />}
+											{hasSchedule && <ContentStatusBadge state="scheduled" />}
 										</>
+									) : isContentStatusState(status) ? (
+										<ContentStatusBadge state={status} />
 									) : (
 										<Badge variant="secondary">
 											{status.charAt(0).toUpperCase() + status.slice(1)}
@@ -525,6 +547,32 @@ export const ContentSettingsPanel = React.memo(function ContentSettingsPanel({
 											{t`Schedule for later`}
 										</Button>
 									)}
+								</div>
+							)}
+
+							{canUpdatePublishedDate && (
+								<div className="space-y-2 pt-2">
+									<Input
+										label={t`Publish date`}
+										type="datetime-local"
+										value={publishedDate}
+										onChange={(event) => setPublishedDate(event.target.value)}
+										disabled={isUpdatingPublishedAt}
+									/>
+									<Button
+										type="button"
+										variant="outline"
+										size="sm"
+										onClick={handlePublishedDateSubmit}
+										disabled={
+											!publishedDate ||
+											publishedDate === storedPublishedDate ||
+											isUpdatingPublishedAt
+										}
+										icon={isUpdatingPublishedAt ? <Loader size="sm" /> : undefined}
+									>
+										{t`Update publish date`}
+									</Button>
 								</div>
 							)}
 						</div>

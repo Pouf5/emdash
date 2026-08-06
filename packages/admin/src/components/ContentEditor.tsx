@@ -231,6 +231,10 @@ export interface ContentEditorProps {
 	onUnschedule?: () => void;
 	/** Whether scheduling is in progress */
 	isScheduling?: boolean;
+	/** Callback to change the timestamp of published content */
+	onPublishedAtChange?: (publishedAt: string) => void;
+	/** Whether the publish timestamp is being updated */
+	isUpdatingPublishedAt?: boolean;
 	/** Whether this collection supports drafts */
 	supportsDrafts?: boolean;
 	/** Whether this collection supports revisions */
@@ -301,6 +305,8 @@ export function ContentEditor({
 	onSchedule,
 	onUnschedule,
 	isScheduling,
+	onPublishedAtChange,
+	isUpdatingPublishedAt,
 	supportsDrafts = false,
 	supportsRevisions = false,
 	supportsPreview = false,
@@ -1086,6 +1092,8 @@ export function ContentEditor({
 							onSchedule={onSchedule}
 							onUnschedule={onUnschedule}
 							isScheduling={isScheduling}
+							onPublishedAtChange={onPublishedAtChange}
+							isUpdatingPublishedAt={isUpdatingPublishedAt}
 							onDiscardDraft={onDiscardDraft}
 							onDelete={onDelete}
 							isDeleting={isDeleting}

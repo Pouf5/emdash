@@ -569,8 +569,24 @@ export async function applySeed(
 											entryId: existing.id,
 											data: columnData,
 										});
-										await trxContentRepo.setDraftRevision(collectionSlug, existing.id, draft.id);
-										await trxContentRepo.publish(collectionSlug, existing.id);
+										try {
+											await trxContentRepo.setDraftRevision(collectionSlug, existing.id, draft.id);
+											await trxContentRepo.publish(collectionSlug, existing.id);
+										} catch (error) {
+											try {
+												await trxRevisionRepo.deleteIfUnreferenced(
+													collectionSlug,
+													existing.id,
+													draft.id,
+												);
+											} catch (cleanupError) {
+												console.error(
+													`[seed] Failed to clean up unstaged revision ${draft.id}:`,
+													cleanupError,
+												);
+											}
+											throw error;
+										}
 									}
 								});
 							} catch (error) {
