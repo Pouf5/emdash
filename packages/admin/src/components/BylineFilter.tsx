@@ -47,10 +47,6 @@ interface BylineFilterProps {
 /**
  * Multi-select byline filter. Selecting several bylines matches entries
  * credited to any of them; "No byline" matches entries with no credit at all.
- *
- * Bylines are searched server-side rather than listed exhaustively — the
- * directory can be far longer than one page, and this is the one query in the
- * feature that isn't index-served.
  */
 export function BylineFilter({ value, onChange, locale }: BylineFilterProps) {
 	const { t } = useLingui();
