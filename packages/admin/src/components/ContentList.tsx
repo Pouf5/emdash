@@ -731,7 +731,7 @@ interface FilterBarProps {
 
 /**
  * Filter controls for the content list: status, author, byline, and a date
- * range over a chosen timestamp column (#1288). All controls report changes to
+ * range over a chosen timestamp column. All controls report changes to
  * the parent, which owns the state and refetches. Filtering happens
  * server-side, so it works across the whole collection rather than the loaded
  * page.
