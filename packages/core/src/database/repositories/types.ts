@@ -157,9 +157,7 @@ export interface ContentDateFilter {
  *
  * By default only explicit credits count. `includeInferred` widens the filter
  * to the byline the list actually renders, which for an entry with no credits
- * is the one linked to its `author_id` (see `hydrateBylinesMany`). It is off by
- * default because filtering usually means "who is credited", not "whose name
- * happens to show".
+ * is the one linked to its `author_id` (see `hydrateBylinesMany`).
  */
 export interface ContentBylineFilter {
 	mode: "any" | "none";
