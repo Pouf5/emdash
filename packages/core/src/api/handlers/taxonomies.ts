@@ -10,7 +10,7 @@
 import type { Kysely, Selectable } from "kysely";
 import { ulid } from "ulidx";
 
-import { TaxonomyRepository } from "../../database/repositories/taxonomy.js";
+import { TaxonomyRepository, type Taxonomy } from "../../database/repositories/taxonomy.js";
 import type { Database, TaxonomyDefTable } from "../../database/types.js";
 import { resolveConfiguredLocale } from "../../i18n/config.js";
 import { invalidateTaxonomyDefsCache, invalidateTermCache } from "../../taxonomies/index.js";
@@ -57,6 +57,10 @@ export interface TermWithCount extends TermData {
 
 export interface TermListResponse {
 	terms: TermWithCount[];
+}
+
+export interface TermReorderResponse {
+	terms: TermData[];
 }
 
 export interface TermResponse {
@@ -430,6 +434,122 @@ export async function handleTermList(
 			error: { code: "TERM_LIST_ERROR", message: "Failed to list terms" },
 		};
 	}
+}
+
+/**
+ * Set the manual order of one sibling group.
+ *
+ * `ids` must be exactly the group's current membership, in the desired order:
+ * partial lists are rejected (`REORDER_MISMATCH`) rather than applied, so a
+ * client working from a stale list can't silently bury the terms it didn't
+ * know about. Reordering never reparents — moving a term under a different
+ * parent is a term update.
+ *
+ * The group is `(taxonomy, locale, parentId)`. `parentId` is the parent's
+ * translation_group (a row id is accepted and resolved), and `null` selects
+ * the top level — which for a flat taxonomy is every term.
+ *
+ * Membership is resolved the way `buildTree` resolves it for `handleTermList`,
+ * so the group is exactly what the client saw: a term whose parent has no row
+ * in this locale is listed at the top level, and so belongs to the `null` group
+ * here too.
+ */
+export async function handleTermReorder(
+	db: Kysely<Database>,
+	taxonomyName: string,
+	input: { parentId?: string | null; ids: string[] },
+	options: { locale?: string } = {},
+): Promise<ApiResult<TermReorderResponse>> {
+	try {
+		const lookup = await requireTaxonomyDef(db, taxonomyName);
+		if (!lookup.success) return lookup;
+
+		const { ids } = input;
+		if (new Set(ids).size !== ids.length) {
+			return {
+				success: false,
+				error: { code: "REORDER_MISMATCH", message: "Reorder input contains duplicate term ids" },
+			};
+		}
+
+		const repo = new TaxonomyRepository(db);
+		const locale = options.locale ? resolveConfiguredLocale(options.locale) : undefined;
+
+		let parentId = input.parentId === "" || input.parentId === undefined ? null : input.parentId;
+		if (parentId !== null) {
+			// Children store the parent's translation_group, so a caller passing a
+			// row id still addresses the right group. A parent whose anchor row is
+			// gone keeps the value as given (see TaxonomyRepository.resolveParentRef).
+			const parent = await repo.findById(parentId);
+			if (parent) parentId = parent.translationGroup ?? parent.id;
+		}
+
+		const siblings = siblingGroup(await repo.findByName(taxonomyName, { locale }), parentId);
+		const siblingIds = new Set(siblings.map((term) => term.id));
+		if (siblingIds.size !== ids.length || ids.some((id) => !siblingIds.has(id))) {
+			return {
+				success: false,
+				error: {
+					code: "REORDER_MISMATCH",
+					message: `Reorder input must list all ${siblingIds.size} term(s) of this group exactly once; got ${ids.length}`,
+				},
+			};
+		}
+
+		await repo.reorder(
+			taxonomyName,
+			ids,
+			new Map(siblings.map((term) => [term.id, term.sortOrder])),
+		);
+		invalidateTermCache();
+
+		// The rows are already loaded and `ids` is their exact membership, so the
+		// response is sorted in memory rather than re-read from the database.
+		const positions = new Map(ids.map((id, position) => [id, position]));
+		const ordered = siblings.toSorted(
+			(a, b) => (positions.get(a.id) ?? 0) - (positions.get(b.id) ?? 0),
+		);
+		return {
+			success: true,
+			data: {
+				terms: ordered.map((term) => ({
+					id: term.id,
+					name: term.name,
+					slug: term.slug,
+					label: term.label,
+					parentId: term.parentId,
+					description:
+						typeof term.data?.description === "string" ? term.data.description : undefined,
+					locale: term.locale,
+					translationGroup: term.translationGroup,
+				})),
+			},
+		};
+	} catch (error) {
+		console.error("[taxonomies] term reorder failed:", error);
+		return {
+			success: false,
+			error: { code: "TERM_REORDER_ERROR", message: "Failed to reorder terms" },
+		};
+	}
+}
+
+/**
+ * Terms of one sibling group, from every term of a taxonomy in one locale.
+ *
+ * Mirrors `buildTree`: a term's parent counts only when a row for it exists in
+ * the same locale, so a child whose parent isn't translated here belongs to the
+ * top level — the same place the term list renders it.
+ */
+function siblingGroup(terms: Taxonomy[], parentId: string | null): Taxonomy[] {
+	const present = new Set(
+		terms.map((term) => `${term.locale}::${term.translationGroup ?? term.id}`),
+	);
+	return terms.filter((term) => {
+		const parent =
+			term.parentId && present.has(`${term.locale}::${term.parentId}`) ? term.parentId : null;
+		return parent === parentId;
+	});
 }
 
 /**

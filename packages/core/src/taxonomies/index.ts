@@ -301,6 +301,7 @@ async function loadTaxonomyTerms(
 		.selectFrom("taxonomies")
 		.selectAll()
 		.where("name", "=", def.name)
+		.orderBy("sort_order", "asc")
 		.orderBy("label", "asc");
 	if (locale !== undefined) termsQuery = termsQuery.where("locale", "=", locale);
 
@@ -419,6 +420,7 @@ async function loadTerm(
 		// Children store the parent's translation_group in parent_id (not a row
 		// id), so a translated parent still owns its children in its own locale.
 		.where("parent_id", "=", row.translation_group ?? row.id)
+		.orderBy("sort_order", "asc")
 		.orderBy("label", "asc");
 	const termLocale = row.locale;
 	if (termLocale) childrenQuery = childrenQuery.where("locale", "=", termLocale);
@@ -599,6 +601,7 @@ export async function getTermsForEntries(
 					.where("taxonomies.name", "=", taxonomyName)
 					// Match the order getAllTermsForEntries (the cache primer) uses, so
 					// cache-hit and DB-miss entries in one result are ordered consistently.
+					.orderBy("taxonomies.sort_order", "asc")
 					.orderBy("taxonomies.label", "asc");
 				if (locale !== undefined) query = query.where("taxonomies.locale", "=", locale);
 				rows = await query.execute();
@@ -678,6 +681,7 @@ export async function getAllTermsForEntries(
 				])
 				.where("content_taxonomies.collection", "=", collection)
 				.where("content_taxonomies.entry_id", "in", chunk)
+				.orderBy("taxonomies.sort_order", "asc")
 				.orderBy("taxonomies.label", "asc");
 			if (locale !== undefined) query = query.where("taxonomies.locale", "=", locale);
 			rows = await query.execute();

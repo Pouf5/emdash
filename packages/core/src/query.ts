@@ -1162,8 +1162,16 @@ async function hydrateEntryTerms<D>(
 			const data = entryData(entry);
 			const folded = Reflect.get(data, FOLDED_TERMS);
 			const rows = Array.isArray(folded) ? folded : [];
+			// Match getAllTermsForEntries' ORDER BY sort_order, label (dropped from
+			// the aggregate since SQLite and Postgres order it differently). Sorting
+			// the flat rows first leaves every group sorted once they're split out.
+			const sortedRows = rows.toSorted(
+				(a, b) =>
+					Number(a?.sort_order ?? 0) - Number(b?.sort_order ?? 0) ||
+					String(a?.label).localeCompare(String(b?.label)),
+			);
 			const grouped: Record<string, TaxonomyTerm[]> = {};
-			for (const r of rows) {
+			for (const r of sortedRows) {
 				const name = String(r?.name);
 				(grouped[name] ??= []).push({
 					id: r?.id,
@@ -1175,11 +1183,6 @@ async function hydrateEntryTerms<D>(
 					locale: r?.locale,
 					translationGroup: r?.translation_group,
 				});
-			}
-			// Match getAllTermsForEntries' ORDER BY label (dropped from the
-			// aggregate since SQLite and Postgres order it differently).
-			for (const [name, arr] of Object.entries(grouped)) {
-				grouped[name] = arr.toSorted((a, b) => String(a.label).localeCompare(String(b.label)));
 			}
 			data.terms = grouped;
 			const entryId = dataStr(data, "id");

@@ -187,6 +187,37 @@ export async function updateTerm(
 }
 
 /**
+ * Set the manual order of one sibling group.
+ *
+ * `ids` must be the group's exact membership in the desired order — the server
+ * rejects a partial or stale list rather than applying it. `parentId` is the
+ * parent's translation group; null orders the top level, which for a flat
+ * taxonomy is every term.
+ *
+ * The group comes back in its new order, flat — the endpoint reorders one group
+ * and returns that group, so its members carry no `children`.
+ */
+export async function reorderTerms(
+	taxonomyName: string,
+	input: { parentId: string | null; ids: string[] },
+	options: LocaleOptions = {},
+): Promise<Omit<TaxonomyTerm, "children">[]> {
+	const response = await apiFetch(
+		withLocale(`${API_BASE}/taxonomies/${taxonomyName}/reorder`, options.locale),
+		{
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify(input),
+		},
+	);
+	const data = await parseApiResponse<{ terms: Omit<TaxonomyTerm, "children">[] }>(
+		response,
+		"Failed to reorder terms",
+	);
+	return data.terms;
+}
+
+/**
  * Delete a term
  */
 export async function deleteTerm(

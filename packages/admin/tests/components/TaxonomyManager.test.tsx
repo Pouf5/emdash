@@ -3,7 +3,12 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import * as React from "react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
-import { getAvailableParentTerms, TaxonomyManager } from "../../src/components/TaxonomyManager";
+import {
+	getAvailableParentTerms,
+	replaceSiblingGroup,
+	TaxonomyManager,
+} from "../../src/components/TaxonomyManager";
+import type { TaxonomyTerm } from "../../src/lib/api/taxonomies.js";
 import { render } from "../utils/render.tsx";
 
 const taxonomyResponse = JSON.stringify({
@@ -76,6 +81,55 @@ const hierarchicalTermsResponse = JSON.stringify({
 								count: 0,
 							},
 						],
+						count: 0,
+					},
+				],
+				count: 1,
+			},
+			{
+				id: "development",
+				name: "development",
+				slug: "development",
+				label: "Development",
+				parentId: null,
+				translationGroup: "development-group",
+				children: [],
+				count: 4,
+			},
+		],
+	},
+});
+
+/** Two siblings under one parent, so a nested group can actually be reordered. */
+const nestedSiblingsTermsResponse = JSON.stringify({
+	data: {
+		terms: [
+			{
+				id: "design",
+				name: "design",
+				slug: "design",
+				label: "Design",
+				parentId: null,
+				translationGroup: "design-group",
+				children: [
+					{
+						id: "fonts",
+						name: "fonts",
+						slug: "fonts",
+						label: "Fonts",
+						parentId: "design-group",
+						translationGroup: "fonts-group",
+						children: [],
+						count: 0,
+					},
+					{
+						id: "colour",
+						name: "colour",
+						slug: "colour",
+						label: "Colour",
+						parentId: "design-group",
+						translationGroup: "colour-group",
+						children: [],
 						count: 0,
 					},
 				],
@@ -286,6 +340,88 @@ describe("TaxonomyManager", () => {
 		await expect.element(screen.getByText(DELETE_TECHNOLOGY_DESC_REGEX)).toBeInTheDocument();
 		await expect.element(screen.getByRole("button", { name: "Delete" })).toBeInTheDocument();
 		await expect.element(screen.getByRole("button", { name: "Cancel" })).toBeInTheDocument();
+	});
+
+	/** Parsed body of the reorder request, or undefined if none was sent. */
+	function reorderRequestBody(): unknown {
+		const call = vi
+			.mocked(apiFetch)
+			.mock.calls.find(([url]) => typeof url === "string" && url.includes("/reorder"));
+		const body = call?.[1]?.body;
+		return typeof body === "string" ? JSON.parse(body) : undefined;
+	}
+
+	it("moving a term sends the whole sibling group in its new order", async () => {
+		const screen = await render(<TaxonomyManager taxonomyName="categories" />, {
+			wrapper: Wrapper,
+		});
+
+		await expect.element(screen.getByText("Technology", { exact: true })).toBeInTheDocument();
+
+		await screen.getByRole("button", { name: "Move Technology down" }).click();
+
+		expect(reorderRequestBody()).toEqual({ parentId: null, ids: ["2", "1"] });
+	});
+
+	it("cannot move the first term up or the last term down", async () => {
+		const screen = await render(<TaxonomyManager taxonomyName="categories" />, {
+			wrapper: Wrapper,
+		});
+
+		await expect.element(screen.getByText("Technology", { exact: true })).toBeInTheDocument();
+
+		await expect.element(screen.getByRole("button", { name: "Move Technology up" })).toBeDisabled();
+		await expect.element(screen.getByRole("button", { name: "Move Science down" })).toBeDisabled();
+		await expect
+			.element(screen.getByRole("button", { name: "Move Technology down" }))
+			.toBeEnabled();
+	});
+
+	it("reorders the top level while nested rows are on screen", async () => {
+		mockApiFetch(hierarchicalTermsResponse);
+		const screen = await render(<TaxonomyManager taxonomyName="categories" />, {
+			wrapper: Wrapper,
+		});
+
+		await expect.element(screen.getByText("Test", { exact: true })).toBeInTheDocument();
+
+		await screen.getByRole("button", { name: "Move Design down" }).click();
+
+		expect(reorderRequestBody()).toEqual({ parentId: null, ids: ["development", "design"] });
+	});
+
+	it("reorders a nested group under its own parent, leaving the roots alone", async () => {
+		mockApiFetch(nestedSiblingsTermsResponse);
+		const screen = await render(<TaxonomyManager taxonomyName="categories" />, {
+			wrapper: Wrapper,
+		});
+
+		await expect.element(screen.getByText("Fonts", { exact: true })).toBeInTheDocument();
+
+		await screen.getByRole("button", { name: "Move Fonts down" }).click();
+
+		expect(reorderRequestBody()).toEqual({
+			parentId: "design-group",
+			ids: ["colour", "fonts"],
+		});
+	});
+
+	it("splices a reordered child group into its parent, leaving the roots alone", () => {
+		const terms: TaxonomyTerm[] = JSON.parse(nestedSiblingsTermsResponse).data.terms;
+		const [fonts, colour] = terms[0]!.children;
+
+		const next = replaceSiblingGroup(terms, "design-group", [colour!, fonts!]);
+
+		expect(next.map((term) => term.label)).toEqual(["Design", "Development"]);
+		expect(next[0]!.children.map((term) => term.label)).toEqual(["Colour", "Fonts"]);
+	});
+
+	it("replaces the root list when ordering the top level", () => {
+		const terms: TaxonomyTerm[] = JSON.parse(nestedSiblingsTermsResponse).data.terms;
+
+		const next = replaceSiblingGroup(terms, null, [terms[1]!, terms[0]!]);
+
+		expect(next.map((term) => term.label)).toEqual(["Development", "Design"]);
 	});
 
 	it("shows empty state when no terms", async () => {

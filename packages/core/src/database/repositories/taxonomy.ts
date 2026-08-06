@@ -3,6 +3,7 @@ import { ulid } from "ulidx";
 
 import { invalidateTaxonomyObjectCache } from "../../object-cache/index.js";
 import { isMissingTableError } from "../../utils/db-errors.js";
+import { withTransaction } from "../transaction.js";
 import type { Database, TaxonomyTable } from "../types.js";
 import { validateIdentifier } from "../validate.js";
 
@@ -29,6 +30,13 @@ const EMPTY_DENORM: PivotDenorm = {
 	created_at: null,
 };
 
+/**
+ * The value `taxonomies.locale` takes when an insert omits it (migration 036's
+ * column DEFAULT). `create` lets the DB apply it, so anything that has to reason
+ * about the row's locale *before* the insert has to use the same value.
+ */
+const COLUMN_DEFAULT_LOCALE = "en";
+
 export interface Taxonomy {
 	id: string;
 	name: string;
@@ -38,6 +46,7 @@ export interface Taxonomy {
 	data: Record<string, unknown> | null;
 	locale: string;
 	translationGroup: string | null;
+	sortOrder: number;
 }
 
 export interface CreateTaxonomyInput {
@@ -98,10 +107,19 @@ export class TaxonomyRepository {
 		const parentId = parentInput ? await this.resolveParentRef(parentInput) : null;
 
 		let translationGroup = id;
+		// A translation copies the source's position so a translated tree keeps
+		// the order its source was given, rather than being appended.
+		let sortOrder: number | null = null;
 		if (input.translationOf) {
 			const source = await this.findById(input.translationOf);
 			if (source?.translationGroup) translationGroup = source.translationGroup;
+			if (source) sortOrder = source.sortOrder;
 		}
+		sortOrder ??= await this.nextSortOrder(
+			input.name,
+			parentId,
+			input.locale ?? COLUMN_DEFAULT_LOCALE,
+		);
 
 		await this.db
 			.insertInto("taxonomies")
@@ -112,6 +130,7 @@ export class TaxonomyRepository {
 				label: input.label,
 				parent_id: parentId,
 				data: input.data ? JSON.stringify(input.data) : null,
+				sort_order: sortOrder,
 				// When omitted, the DB DEFAULT 'en' is used — keeps behaviour
 				// consistent with ContentRepository and lets higher layers
 				// supply an explicit locale from request context.
@@ -155,15 +174,18 @@ export class TaxonomyRepository {
 	/**
 	 * Get all terms for a taxonomy (e.g., all categories).
 	 *
-	 * `id asc` is a stable tiebreaker for terms that share a label. Without it
-	 * the SQL ordering is implementation-defined when labels match, which
-	 * breaks keyset pagination over `(label, id)`.
+	 * `sort_order` carries the manual order set from the admin; it is 0 for
+	 * terms nobody has reordered, so an untouched taxonomy still comes back
+	 * alphabetically. `id asc` is a stable tiebreaker for terms that share both
+	 * — without it the SQL ordering is implementation-defined when they match,
+	 * which breaks keyset pagination over `(label, id)`.
 	 */
 	async findByName(name: string, options: FindOptions = {}): Promise<Taxonomy[]> {
 		let query = this.db
 			.selectFrom("taxonomies")
 			.selectAll()
 			.where("name", "=", name)
+			.orderBy("sort_order", "asc")
 			.orderBy("label", "asc")
 			.orderBy("id", "asc");
 
@@ -196,6 +218,7 @@ export class TaxonomyRepository {
 			.selectFrom("taxonomies")
 			.selectAll()
 			.where("parent_id", "=", group)
+			.orderBy("sort_order", "asc")
 			.orderBy("label", "asc")
 			.orderBy("id", "asc");
 		if (locale !== undefined) query = query.where("locale", "=", locale);
@@ -242,6 +265,71 @@ export class TaxonomyRepository {
 		}
 
 		return this.findById(id);
+	}
+
+	/**
+	 * Persist a manual order for one sibling group: `ids` in order become
+	 * `sort_order` 0..n-1. Callers must have already checked that `ids` is
+	 * exactly the group's membership — this only guards that every id belongs
+	 * to `name`, so an id from another taxonomy can never be renumbered.
+	 *
+	 * `current` is each term's stored `sort_order`; rows already at their target
+	 * position are left alone. Every write here is a round trip, and the common
+	 * move is one swap in an already-ordered group — without this a taxonomy
+	 * with hundreds of terms would rewrite all of them to move one.
+	 */
+	async reorder(name: string, ids: string[], current?: ReadonlyMap<string, number>): Promise<void> {
+		const changed = ids
+			.map((id, position) => ({ id, position }))
+			.filter(({ id, position }) => current?.get(id) !== position);
+		if (changed.length === 0) return;
+
+		await withTransaction(this.db, async (trx) => {
+			for (const { id, position } of changed) {
+				await trx
+					.updateTable("taxonomies")
+					.set({ sort_order: position })
+					.where("id", "=", id)
+					.where("name", "=", name)
+					.execute();
+			}
+		});
+
+		invalidateTaxonomyObjectCache();
+	}
+
+	/**
+	 * Position for a term being added to a sibling group.
+	 *
+	 * A group nobody has ordered has every `sort_order` equal (0 for anything
+	 * predating migration 055), and a new term joins it at that same value so
+	 * the group stays alphabetical — the behaviour before terms were sortable.
+	 * Once a group has been ordered its values differ, and a new term goes to
+	 * the end.
+	 *
+	 * `locale` is the locale the new row lands in, never `undefined`: bounds
+	 * taken across every locale would let an order set in one locale decide
+	 * where a term in another one goes.
+	 */
+	private async nextSortOrder(
+		name: string,
+		parentId: string | null,
+		locale: string,
+	): Promise<number> {
+		let query = this.db
+			.selectFrom("taxonomies")
+			.select((eb) => [eb.fn.min("sort_order").as("min"), eb.fn.max("sort_order").as("max")])
+			.where("name", "=", name)
+			.where("locale", "=", locale);
+		query =
+			parentId === null
+				? query.where("parent_id", "is", null)
+				: query.where("parent_id", "=", parentId);
+
+		const bounds = await query.executeTakeFirst();
+		// Both are null only when the group is empty.
+		if (!bounds || bounds.max === null || bounds.min === null) return 0;
+		return bounds.min === bounds.max ? bounds.max : bounds.max + 1;
 	}
 
 	async delete(id: string): Promise<boolean> {
@@ -543,6 +631,7 @@ export class TaxonomyRepository {
 			data: row.data ? JSON.parse(row.data) : null,
 			locale: row.locale,
 			translationGroup: row.translation_group,
+			sortOrder: row.sort_order,
 		};
 	}
 }
