@@ -48,6 +48,8 @@ const {
 			handleContentCountTrashed: ok,
 			handleContentGetIncludingTrashed: ok,
 			handleContentDuplicate: ok,
+			handleDuplicateMappingGet: ok,
+			handleContentDuplicateTo: ok,
 			handleContentPublish: ok,
 			handleContentUnpublish: ok,
 			handleContentSchedule: ok,

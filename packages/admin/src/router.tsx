@@ -34,6 +34,7 @@ import { ContentTypeEditor } from "./components/ContentTypeEditor";
 import { ContentTypeList } from "./components/ContentTypeList";
 import { Dashboard } from "./components/Dashboard";
 import { DeviceAuthorizePage } from "./components/DeviceAuthorizePage";
+import { DuplicateToDialog } from "./components/DuplicateToDialog";
 import { InviteAcceptPage } from "./components/InviteAcceptPage";
 import { LoginPage } from "./components/LoginPage";
 import { MarketplaceBrowse } from "./components/MarketplaceBrowse";
@@ -99,6 +100,7 @@ import {
 	restoreContent,
 	permanentDeleteContent,
 	duplicateContent,
+	type DuplicateToResult,
 	scheduleContent,
 	unscheduleContent,
 	publishContent,
@@ -456,6 +458,66 @@ function ContentListPage() {
 		},
 	});
 
+	// The cross-collection duplicate runs behind a dialog, so the promise
+	// ContentList awaits (to decide which rows stay selected) is settled by the
+	// dialog rather than by a request: cancelling keeps every row selected,
+	// completing keeps only the failures.
+	const [duplicateToIds, setDuplicateToIds] = React.useState<string[]>([]);
+	const duplicateToResolve = React.useRef<((failedIds: string[]) => void) | null>(null);
+
+	const settleDuplicateTo = (failedIds: string[]) => {
+		duplicateToResolve.current?.(failedIds);
+		duplicateToResolve.current = null;
+		setDuplicateToIds([]);
+	};
+
+	const handleDuplicateTo = (ids: string[]) => {
+		setDuplicateToIds(ids);
+		return new Promise<string[]>((resolve) => {
+			duplicateToResolve.current = resolve;
+		});
+	};
+
+	const handleDuplicateToComplete = (results: DuplicateToResult[]) => {
+		const copied = results.filter((r) => r.status !== "failed");
+		const failed = results.filter((r) => r.status === "failed");
+		const orphaned = results.filter((r) => r.status === "copied_not_trashed");
+
+		if (copied.length > 0) {
+			toastManager.add({
+				title: plural(copied.length, { one: "Copied # item", other: "Copied # items" }),
+				type: "success",
+			});
+		}
+		if (failed.length > 0) {
+			toastManager.add({
+				title: t`Failed to duplicate`,
+				description:
+					failed[0]?.error ??
+					plural(failed.length, {
+						one: "# item could not be copied",
+						other: "# items could not be copied",
+					}),
+				type: "error",
+			});
+		}
+		if (orphaned.length > 0) {
+			toastManager.add({
+				title: t`Copied, but not trashed`,
+				description: plural(orphaned.length, {
+					one: "# original could not be moved to trash — trash it by hand. Retrying would create a second copy.",
+					other:
+						"# originals could not be moved to trash — trash them by hand. Retrying would create a second copy.",
+				}),
+				type: "error",
+			});
+		}
+
+		// `copied_not_trashed` is not retryable: a retry would copy again.
+		settleDuplicateTo(failed.map((r) => r.id));
+		void queryClient.invalidateQueries({ queryKey: ["content"] });
+	};
+
 	const duplicateMutation = useMutation({
 		mutationFn: (id: string) => duplicateContent(collection, id),
 		onSuccess: () => {
@@ -581,40 +643,58 @@ function ContentListPage() {
 		});
 	};
 
+	const duplicateTargets = Object.entries(manifest.collections)
+		.filter(([slug]) => slug !== collection)
+		.map(([slug, config]) => ({ slug, label: config.label }));
+
 	return (
-		<ContentList
-			collection={collection}
-			collectionLabel={collectionConfig.label}
-			items={items}
-			trashedItems={trashedData?.items || []}
-			isLoading={isLoading || isFetchingNextPage}
-			isTrashedLoading={isTrashedLoading}
-			hasMore={!!hasNextPage}
-			onLoadMore={handleLoadMore}
-			trashedCount={trashedData?.items?.length || 0}
-			onDelete={(id) => deleteMutation.mutate(id)}
-			onRestore={(id) => restoreMutation.mutate(id)}
-			onPermanentDelete={(id) => permanentDeleteMutation.mutate(id)}
-			onDuplicate={(id) => duplicateMutation.mutate(id)}
-			i18n={i18n}
-			activeLocale={activeLocale}
-			onLocaleChange={handleLocaleChange}
-			urlPattern={collectionConfig.urlPattern}
-			sort={sort}
-			onSortChange={setSort}
-			total={total}
-			onSearchChange={setSearchTerm}
-			statusFilter={statusFilter}
-			onStatusFilterChange={setStatusFilter}
-			authors={authors}
-			authorFilter={authorFilter}
-			onAuthorFilterChange={setAuthorFilter}
-			dateFilter={dateFilter}
-			onDateFilterChange={setDateFilter}
-			onBulkPublish={(ids) => bulkPublishMutation.mutateAsync(ids).then((r) => r.failedIds)}
-			onBulkUnpublish={(ids) => bulkUnpublishMutation.mutateAsync(ids).then((r) => r.failedIds)}
-			onBulkDelete={(ids) => bulkDeleteMutation.mutateAsync(ids).then((r) => r.failedIds)}
-		/>
+		<>
+			<ContentList
+				collection={collection}
+				collectionLabel={collectionConfig.label}
+				items={items}
+				trashedItems={trashedData?.items || []}
+				isLoading={isLoading || isFetchingNextPage}
+				isTrashedLoading={isTrashedLoading}
+				hasMore={!!hasNextPage}
+				onLoadMore={handleLoadMore}
+				trashedCount={trashedData?.items?.length || 0}
+				onDelete={(id) => deleteMutation.mutate(id)}
+				onRestore={(id) => restoreMutation.mutate(id)}
+				onPermanentDelete={(id) => permanentDeleteMutation.mutate(id)}
+				onDuplicate={(id) => duplicateMutation.mutate(id)}
+				i18n={i18n}
+				activeLocale={activeLocale}
+				onLocaleChange={handleLocaleChange}
+				urlPattern={collectionConfig.urlPattern}
+				sort={sort}
+				onSortChange={setSort}
+				total={total}
+				onSearchChange={setSearchTerm}
+				statusFilter={statusFilter}
+				onStatusFilterChange={setStatusFilter}
+				authors={authors}
+				authorFilter={authorFilter}
+				onAuthorFilterChange={setAuthorFilter}
+				dateFilter={dateFilter}
+				onDateFilterChange={setDateFilter}
+				onBulkPublish={(ids) => bulkPublishMutation.mutateAsync(ids).then((r) => r.failedIds)}
+				onBulkUnpublish={(ids) => bulkUnpublishMutation.mutateAsync(ids).then((r) => r.failedIds)}
+				onBulkDelete={(ids) => bulkDeleteMutation.mutateAsync(ids).then((r) => r.failedIds)}
+				onDuplicateTo={duplicateTargets.length > 0 ? handleDuplicateTo : undefined}
+			/>
+			<DuplicateToDialog
+				open={duplicateToIds.length > 0}
+				onOpenChange={(open) => {
+					// Cancelling keeps every row selected so the run can be retried.
+					if (!open) settleDuplicateTo(duplicateToIds);
+				}}
+				collection={collection}
+				ids={duplicateToIds}
+				targets={duplicateTargets}
+				onComplete={handleDuplicateToComplete}
+			/>
+		</>
 	);
 }
 

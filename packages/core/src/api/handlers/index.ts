@@ -30,6 +30,18 @@ export {
 	type TrashedContentItem,
 } from "./content.js";
 
+// Cross-collection duplication
+export {
+	handleDuplicateMappingGet,
+	handleContentDuplicateTo,
+	type DuplicateFieldMapping,
+	type DuplicateMappingResponse,
+	type DuplicateToActor,
+	type DuplicateToInput,
+	type DuplicateToItemResult,
+	type DuplicateToItemStatus,
+} from "./content-duplicate-to.js";
+
 // Dashboard stats
 export {
 	handleDashboardStats,

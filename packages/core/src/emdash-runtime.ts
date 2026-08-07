@@ -158,6 +158,9 @@ import {
 	handleContentUpdate,
 	handleContentDelete,
 	handleContentDuplicate,
+	handleDuplicateMappingGet,
+	handleContentDuplicateTo,
+	type DuplicateToInput,
 	handleContentRestore,
 	handleContentPermanentDelete,
 	handleContentListTrashed,
@@ -3091,6 +3094,21 @@ export class EmDashRuntime {
 		const result = await handleContentDuplicate(this.db, collection, id, authorId);
 		if (result.success && result.data) {
 			await this.refreshContentUsageAfterSuccessfulWrite(collection, [result.data.item.id]);
+		}
+		return result;
+	}
+
+	async handleDuplicateMappingGet(collection: string, targetCollection: string, ids?: string[]) {
+		return handleDuplicateMappingGet(this.db, collection, targetCollection, ids);
+	}
+
+	async handleContentDuplicateTo(collection: string, input: DuplicateToInput) {
+		const result = await handleContentDuplicateTo(this.db, collection, input);
+		if (result.success && result.data) {
+			const copiedIds = result.data.results
+				.map((entry) => entry.targetId)
+				.filter((id): id is string => id !== undefined);
+			await this.refreshContentUsageAfterSuccessfulWrite(input.targetCollection, copiedIds);
 		}
 		return result;
 	}
