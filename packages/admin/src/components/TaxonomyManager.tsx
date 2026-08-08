@@ -88,12 +88,16 @@ export function replaceSiblingGroup(
 /**
  * Term row component (recursive for hierarchy)
  *
- * `siblings` is the group the term is rendered from, in display order — moving
- * a term reorders that group and never changes its parent.
+ * `siblings` is the group the term is rendered from, in display order, and
+ * `parentId` is that group's parent — moving a term reorders the group it is
+ * rendered in and never changes its parent. The two travel together because a
+ * term's own `parentId` can name a parent that isn't in this locale, which the
+ * server lists at the top level; the group it is drawn in is the authority.
  */
 function TermRow({
 	term,
 	siblings,
+	parentId,
 	position,
 	level = 0,
 	onEdit,
@@ -104,11 +108,17 @@ function TermRow({
 }: {
 	term: TaxonomyTerm;
 	siblings: TaxonomyTerm[];
+	parentId: string | null;
 	position: number;
 	level?: number;
 	onEdit: (term: TaxonomyTerm) => void;
 	onDelete: (term: TaxonomyTerm) => void;
-	onMove: (siblings: TaxonomyTerm[], from: number, direction: -1 | 1) => void;
+	onMove: (
+		parentId: string | null,
+		siblings: TaxonomyTerm[],
+		from: number,
+		direction: -1 | 1,
+	) => void;
 	onTranslate?: (term: TaxonomyTerm) => void;
 	canTranslate: boolean;
 }) {
@@ -127,7 +137,7 @@ function TermRow({
 						size="sm"
 						aria-label={t`Move ${term.label} up`}
 						disabled={position === 0}
-						onClick={() => onMove(siblings, position, -1)}
+						onClick={() => onMove(parentId, siblings, position, -1)}
 					>
 						<CaretUp className="w-4 h-4" />
 					</Button>
@@ -136,7 +146,7 @@ function TermRow({
 						size="sm"
 						aria-label={t`Move ${term.label} down`}
 						disabled={position >= siblings.length - 1}
-						onClick={() => onMove(siblings, position, 1)}
+						onClick={() => onMove(parentId, siblings, position, 1)}
 					>
 						<CaretDown className="w-4 h-4" />
 					</Button>
@@ -173,6 +183,7 @@ function TermRow({
 					key={child.id}
 					term={child}
 					siblings={term.children}
+					parentId={term.translationGroup ?? term.id}
 					position={childPosition}
 					level={level + 1}
 					onEdit={onEdit}
@@ -841,7 +852,12 @@ export function TaxonomyManager({ taxonomyName }: TaxonomyManagerProps) {
 	// Swaps a term with its neighbour and sends the whole group's new order. The
 	// list is updated in place first so the row moves on click rather than after
 	// the round trip.
-	const handleMove = (siblings: TaxonomyTerm[], from: number, direction: -1 | 1) => {
+	const handleMove = (
+		parentId: string | null,
+		siblings: TaxonomyTerm[],
+		from: number,
+		direction: -1 | 1,
+	) => {
 		const to = from + direction;
 		const moving = siblings[from];
 		const displaced = siblings[to];
@@ -850,7 +866,6 @@ export function TaxonomyManager({ taxonomyName }: TaxonomyManagerProps) {
 		const reordered = siblings.map((sibling, index) =>
 			index === from ? displaced : index === to ? moving : sibling,
 		);
-		const parentId = moving.parentId ?? null;
 		queryClient.setQueryData(termsQueryKey, (current: TaxonomyTerm[] | undefined) =>
 			current ? replaceSiblingGroup(current, parentId, reordered) : current,
 		);
@@ -949,6 +964,7 @@ export function TaxonomyManager({ taxonomyName }: TaxonomyManagerProps) {
 								key={term.id}
 								term={term}
 								siblings={terms}
+								parentId={null}
 								position={position}
 								onEdit={handleEdit}
 								onDelete={handleDelete}

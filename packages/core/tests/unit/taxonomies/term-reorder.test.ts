@@ -172,6 +172,54 @@ describeEachDialect("taxonomy term reorder", (dialect) => {
 		]);
 	});
 
+	/** Labels of one parent's children, in list order. */
+	async function listChildLabels(parentLabel: string): Promise<string[]> {
+		const result = await handleTermList(ctx.db, "category", { includeCounts: false });
+		if (!result.success) throw new Error(result.error.message);
+		const parent = result.data.terms.find((term) => term.label === parentLabel);
+		if (!parent) throw new Error(`no root term labelled ${parentLabel}`);
+		return parent.children.map((term) => term.label);
+	}
+
+	it("moves a reparented term to the end of an ordered group", async () => {
+		const [alpha, beta] = await createCategories(["Alpha", "Beta"]);
+		const childA = await repo.create({
+			name: "category",
+			slug: "child-a",
+			label: "Child A",
+			parentId: alpha!.id,
+		});
+		const childZ = await repo.create({
+			name: "category",
+			slug: "child-z",
+			label: "Child Z",
+			parentId: alpha!.id,
+		});
+		await handleTermReorder(ctx.db, "category", {
+			parentId: alpha!.translationGroup,
+			ids: [childZ.id, childA.id],
+		});
+
+		// Beta's position as a root says nothing about where it belongs among
+		// Alpha's children, so it joins them at the end.
+		await repo.update(beta!.id, { parentId: alpha!.translationGroup ?? alpha!.id });
+
+		expect(await listChildLabels("Alpha")).toEqual(["Child Z", "Child A", "Beta"]);
+	});
+
+	it("keeps a never-ordered group alphabetical when a term is reparented into it", async () => {
+		const [alpha, beta, gamma] = await createCategories(["Alpha", "Beta", "Gamma"]);
+		await repo.create({ name: "category", slug: "child-m", label: "Child M", parentId: alpha!.id });
+		await handleTermReorder(ctx.db, "category", { ids: [gamma!.id, beta!.id, alpha!.id] });
+
+		// Beta carries a root position of 1. Alpha's children have never been
+		// ordered, and moving a term in must not make them look like they have.
+		await repo.update(beta!.id, { parentId: alpha!.translationGroup ?? alpha!.id });
+		await repo.create({ name: "category", slug: "child-a", label: "Child A", parentId: alpha!.id });
+
+		expect(await listChildLabels("Alpha")).toEqual(["Beta", "Child A", "Child M"]);
+	});
+
 	it("adds a term to the end of a group that has been ordered", async () => {
 		const [zebra, apple] = await createCategories(["Zebra", "Apple"]);
 		await handleTermReorder(ctx.db, "category", { ids: [zebra!.id, apple!.id] });

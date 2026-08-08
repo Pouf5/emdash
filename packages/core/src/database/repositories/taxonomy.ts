@@ -252,10 +252,20 @@ export class TaxonomyRepository {
 			// Defense in depth: empty-string parentId means null (no parent).
 			// Otherwise persist the parent's translation_group (locale-agnostic),
 			// matching create() — see the note there.
-			updates.parent_id =
+			const parentId =
 				input.parentId === "" || input.parentId === null
 					? null
 					: await this.resolveParentRef(input.parentId);
+			updates.parent_id = parentId;
+
+			// `sort_order` only means anything within one sibling group, so a term
+			// that changes parent has to be placed in the group it lands in —
+			// otherwise it carries a position from the group it left. Placed by the
+			// same rule as a newly created term, which also keeps a group nobody has
+			// ordered from reading as ordered (see nextSortOrder).
+			if (parentId !== existing.parentId) {
+				updates.sort_order = await this.nextSortOrder(existing.name, parentId, existing.locale);
+			}
 		}
 		if (input.data !== undefined) updates.data = JSON.stringify(input.data);
 

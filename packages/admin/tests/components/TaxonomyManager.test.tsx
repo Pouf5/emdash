@@ -149,6 +149,37 @@ const nestedSiblingsTermsResponse = JSON.stringify({
 	},
 });
 
+/**
+ * A term whose parent has no row in this locale. The server lists it at the top
+ * level (its parent can't own it here), so it is a sibling of the roots.
+ */
+const untranslatedParentTermsResponse = JSON.stringify({
+	data: {
+		terms: [
+			{
+				id: "beta",
+				name: "beta",
+				slug: "beta",
+				label: "Beta",
+				parentId: null,
+				translationGroup: "beta-group",
+				children: [],
+				count: 0,
+			},
+			{
+				id: "nino",
+				name: "nino",
+				slug: "nino",
+				label: "Nino",
+				parentId: "alpha-group",
+				translationGroup: "nino-group",
+				children: [],
+				count: 0,
+			},
+		],
+	},
+});
+
 vi.mock("../../src/lib/api/client.js", async () => {
 	const actual = await vi.importActual("../../src/lib/api/client.js");
 	return {
@@ -404,6 +435,19 @@ describe("TaxonomyManager", () => {
 			parentId: "design-group",
 			ids: ["colour", "fonts"],
 		});
+	});
+
+	it("orders the top level when moving a term whose parent is untranslated", async () => {
+		mockApiFetch(untranslatedParentTermsResponse);
+		const screen = await render(<TaxonomyManager taxonomyName="categories" />, {
+			wrapper: Wrapper,
+		});
+
+		await expect.element(screen.getByText("Nino", { exact: true })).toBeInTheDocument();
+
+		await screen.getByRole("button", { name: "Move Nino up" }).click();
+
+		expect(reorderRequestBody()).toEqual({ parentId: null, ids: ["nino", "beta"] });
 	});
 
 	it("splices a reordered child group into its parent, leaving the roots alone", () => {
