@@ -1,7 +1,12 @@
 /**
- * Cross-collection content duplication.
+ * Content duplication through a field mapping.
  *
- * Copies entries from one collection into another through a field mapping.
+ * Backs every duplicate the admin performs. The target may be the source
+ * collection itself, where the mapping defaults to the identity and the copy
+ * behaves like a plain duplicate. Any copy staying in its own collection gets
+ * a `(Copy)` title, so it is distinguishable from the original in the list
+ * they now share.
+ *
  * Two checks sit at different stages and stay distinct:
  *
  *  - **Column type compatibility** is enforced when the mapping is built. A
@@ -10,9 +15,9 @@
  *    offered — and re-checked here, not only in the UI.
  *  - **Field values** are validated when the copy is inserted, through the
  *    same `validateContentData(..., { partial: false })` pipeline creates use.
- *    Same-collection duplicate can skip this because its source row already
- *    passed `partial: false`; an arbitrary mapping breaks that invariant and
- *    can assemble a row `handleContentCreate` would have rejected.
+ *    A straight copy within one collection skips it because the source row
+ *    already passed `partial: false`; any other mapping breaks that invariant
+ *    and can assemble a row `handleContentCreate` would have rejected.
  *
  * Mapping completeness (every required target field has a source assigned) is
  * a statement about the mapping, checked once for the whole request. A
@@ -36,7 +41,7 @@ import { SchemaRegistry } from "../../schema/registry.js";
 import type { CollectionWithFields, ColumnType, Field, FieldType } from "../../schema/types.js";
 import { chunks, SQL_BATCH_SIZE } from "../../utils/chunks.js";
 import { isMissingTableError } from "../../utils/db-errors.js";
-import { DUPLICATE_TO_MAX_IDS } from "../schemas/content.js";
+import { DUPLICATE_MAX_IDS } from "../schemas/content.js";
 import type { ApiResult } from "../types.js";
 import { validateMediaFields } from "./validate-media-fields.js";
 import { validateContentData } from "./validation.js";
@@ -82,27 +87,34 @@ export interface DuplicateMappingResponse {
 	referenceEdges?: { inbound: number; outbound: number };
 }
 
-export type DuplicateToItemStatus = "copied" | "copied_not_trashed" | "failed";
+export type DuplicateItemStatus = "copied" | "copied_not_trashed" | "failed";
 
-export interface DuplicateToItemResult {
+export interface DuplicateItemResult {
 	id: string;
-	status: DuplicateToItemStatus;
+	status: DuplicateItemStatus;
 	targetId?: string;
 	error?: string;
 }
 
-export interface DuplicateToActor {
+export interface DuplicateActor {
 	id: string;
 	role: RoleLevel;
 }
 
-export interface DuplicateToInput {
+export interface DuplicateManyInput {
 	ids: string[];
-	targetCollection: string;
+	/** Defaults to the source collection, which makes the copy a straight one. */
+	targetCollection?: string;
 	mapping?: DuplicateFieldMapping;
 	saveMapping?: boolean;
 	trashSource?: boolean;
-	actor?: DuplicateToActor;
+	/**
+	 * Per-item read (and, with `trashSource`, delete) access is checked against
+	 * this actor. Omit only where the caller has already authorized the request.
+	 */
+	actor?: DuplicateActor;
+	/** Author of the copies. Defaults to `actor`, then to the source's author. */
+	authorId?: string;
 }
 
 /**
@@ -148,6 +160,20 @@ function sanitizeMapping(
 		clean[targetSlug] = source && source.columnType === target.columnType ? sourceSlug : null;
 	}
 	return clean;
+}
+
+/**
+ * Whether every target field is copied from the field of the same slug. Only
+ * such a mapping reproduces a row that already passed validation at create.
+ */
+function isIdentityMapping(
+	mapping: DuplicateFieldMapping,
+	targetFields: Map<string, Field>,
+): boolean {
+	for (const slug of targetFields.keys()) {
+		if (mapping[slug] !== slug) return false;
+	}
+	return true;
 }
 
 /** Exact field-slug match, kept only where the column types agree. */
@@ -295,7 +321,7 @@ async function countReferenceEdges(
 }
 
 /**
- * Everything the duplicate-to dialog needs in one round trip: both field
+ * Everything the duplicate dialog needs in one round trip: both field
  * lists, the mapping (saved or derived), which taxonomies carry, and — when
  * `ids` is supplied — the reference-edge counts for those entries.
  */
@@ -306,21 +332,12 @@ export async function handleDuplicateMappingGet(
 	ids: string[] = [],
 ): Promise<ApiResult<DuplicateMappingResponse>> {
 	try {
-		if (sourceCollection === targetCollection) {
+		if (ids.length > DUPLICATE_MAX_IDS) {
 			return {
 				success: false,
 				error: {
 					code: "VALIDATION_ERROR",
-					message: "Target collection must differ from the source collection",
-				},
-			};
-		}
-		if (ids.length > DUPLICATE_TO_MAX_IDS) {
-			return {
-				success: false,
-				error: {
-					code: "VALIDATION_ERROR",
-					message: `At most ${DUPLICATE_TO_MAX_IDS} items may be mapped at once`,
+					message: `At most ${DUPLICATE_MAX_IDS} items may be mapped at once`,
 				},
 			};
 		}
@@ -431,30 +448,21 @@ function errorMessage(error: unknown, fallback: string): string {
 }
 
 /**
- * Copy entries into another collection through a field mapping.
+ * Copy entries into a collection, which defaults to the one they came from.
  *
  * Each item's copy (row, bylines, taxonomy terms, SEO) runs in one
  * transaction. `trashSource` runs after that transaction commits: D1 has no
  * transactions, so a copy that succeeds and a trash that fails reports
  * `copied_not_trashed` — retrying the item would make a second copy.
  */
-export async function handleContentDuplicateTo(
+export async function handleContentDuplicateMany(
 	db: Kysely<Database>,
 	sourceCollection: string,
-	input: DuplicateToInput,
-): Promise<ApiResult<{ results: DuplicateToItemResult[] }>> {
+	input: DuplicateManyInput,
+): Promise<ApiResult<{ results: DuplicateItemResult[] }>> {
 	try {
-		const { targetCollection, trashSource = false, actor } = input;
-
-		if (sourceCollection === targetCollection) {
-			return {
-				success: false,
-				error: {
-					code: "VALIDATION_ERROR",
-					message: "Target collection must differ from the source collection",
-				},
-			};
-		}
+		const { trashSource = false, actor } = input;
+		const targetCollection = input.targetCollection ?? sourceCollection;
 
 		const ids = [...new Set(input.ids)];
 		if (ids.length === 0) {
@@ -463,12 +471,12 @@ export async function handleContentDuplicateTo(
 				error: { code: "VALIDATION_ERROR", message: "At least one item id is required" },
 			};
 		}
-		if (ids.length > DUPLICATE_TO_MAX_IDS) {
+		if (ids.length > DUPLICATE_MAX_IDS) {
 			return {
 				success: false,
 				error: {
 					code: "VALIDATION_ERROR",
-					message: `At most ${DUPLICATE_TO_MAX_IDS} items may be duplicated at once`,
+					message: `At most ${DUPLICATE_MAX_IDS} items may be duplicated at once`,
 				},
 			};
 		}
@@ -511,7 +519,7 @@ export async function handleContentDuplicateTo(
 		const repo = new ContentRepository(db);
 		const resolved = await repo.findManyByIdOrSlug(sourceCollection, ids);
 
-		const results: DuplicateToItemResult[] = [];
+		const results: DuplicateItemResult[] = [];
 		const pending: Array<{ id: string; item: ContentItem }> = [];
 
 		for (const id of ids) {
@@ -561,6 +569,8 @@ export async function handleContentDuplicateTo(
 			(await splitTaxonomies(db, sourceCollection, targetCollection)).carried.map((t) => t.name),
 		);
 		const copySeo = collections.source.hasSeo && collections.target.hasSeo;
+		const straightCopy =
+			sourceCollection === targetCollection && isIdentityMapping(mapping, targetFields);
 
 		for (const { id, item } of pending) {
 			const result = await copyItem(db, {
@@ -570,7 +580,8 @@ export async function handleContentDuplicateTo(
 				mapping,
 				carriedTaxonomies,
 				copySeo,
-				authorId: actor?.id,
+				straightCopy,
+				authorId: input.authorId ?? actor?.id,
 			});
 			if (!result.ok) {
 				results.push({ id, status: "failed", error: result.error });
@@ -602,7 +613,7 @@ export async function handleContentDuplicateTo(
 			data: { results: ids.map((id) => byId.get(id)).filter((entry) => entry !== undefined) },
 		};
 	} catch (error) {
-		console.error("Content duplicate-to error:", error);
+		console.error("Content duplicate error:", error);
 		return {
 			success: false,
 			error: {
@@ -615,9 +626,9 @@ export async function handleContentDuplicateTo(
 
 /**
  * Copy one entry. The copy is always a draft with a fresh slug, a new
- * `translation_group` (a copy in another collection is a distinct thing, not a
- * translation) and the acting user as author; revision pointers, schedule and
- * publication timestamps start clean.
+ * `translation_group` (a copy is a distinct thing, not a translation) and the
+ * acting user as author; revision pointers, schedule and publication
+ * timestamps start clean.
  */
 async function copyItem(
 	db: Kysely<Database>,
@@ -628,14 +639,25 @@ async function copyItem(
 		mapping: DuplicateFieldMapping;
 		carriedTaxonomies: Set<string>;
 		copySeo: boolean;
+		/** Identity mapping within one collection: reproduces an already-valid row. */
+		straightCopy: boolean;
 		authorId?: string;
 	},
 ): Promise<{ ok: true; targetId: string } | { ok: false; error: string }> {
 	const { sourceCollection, targetCollection, item, mapping, carriedTaxonomies, copySeo } = args;
 	const data = applyMapping(item, mapping);
 
-	const validation = await validateContentData(db, targetCollection, data, { partial: false });
-	if (!validation.ok) return { ok: false, error: validation.error.message };
+	// A copy landing in the same list as its original needs a distinguishable
+	// title; across collections the original name carries as-is.
+	if (sourceCollection === targetCollection) {
+		if (typeof data.title === "string") data.title = `${data.title} (Copy)`;
+		else if (typeof data.name === "string") data.name = `${data.name} (Copy)`;
+	}
+
+	if (!args.straightCopy) {
+		const validation = await validateContentData(db, targetCollection, data, { partial: false });
+		if (!validation.ok) return { ok: false, error: validation.error.message };
+	}
 
 	const mimeCheck = await validateMediaFields(db, targetCollection, data);
 	if (!mimeCheck.success) {

@@ -10,9 +10,9 @@ import type { Kysely } from "kysely";
 
 import type {
 	DuplicateMappingResponse,
-	DuplicateToInput,
-	DuplicateToItemResult,
-} from "../api/handlers/content-duplicate-to.js";
+	DuplicateManyInput,
+	DuplicateItemResult,
+} from "../api/handlers/content-duplicate.js";
 import type { RouteMeta } from "../plugins/routes.js";
 
 // Re-export core types
@@ -334,10 +334,10 @@ export interface EmDashHandlers {
 		ids?: string[],
 	) => Promise<HandlerResponse<DuplicateMappingResponse>>;
 
-	handleContentDuplicateTo: (
+	handleContentDuplicateMany: (
 		collection: string,
-		input: DuplicateToInput,
-	) => Promise<HandlerResponse<{ results: DuplicateToItemResult[] }>>;
+		input: DuplicateManyInput,
+	) => Promise<HandlerResponse<{ results: DuplicateItemResult[] }>>;
 
 	// Publishing & Scheduling handlers
 	handleContentPublish: (

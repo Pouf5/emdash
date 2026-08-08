@@ -49,7 +49,7 @@ const {
 			handleContentGetIncludingTrashed: ok,
 			handleContentDuplicate: ok,
 			handleDuplicateMappingGet: ok,
-			handleContentDuplicateTo: ok,
+			handleContentDuplicateMany: ok,
 			handleContentPublish: ok,
 			handleContentUnpublish: ok,
 			handleContentSchedule: ok,

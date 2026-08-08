@@ -1,10 +1,12 @@
 /**
- * Cross-collection duplicate dialog.
+ * Duplicate dialog — the single confirmation step behind every duplicate
+ * action, so a copy is never one stray click away.
  *
- * One screen: pick a target collection, then map the target's fields to
- * source fields. Target fields are the rows so "every required field has a
- * source" is readable at a glance. Everything the copy will drop is named
- * below the table rather than left for the user to discover afterwards.
+ * The target defaults to the source collection, where the copy is a straight
+ * one and there is nothing to map. Choosing another collection reveals the
+ * mapping: target fields are the rows, so "every required field has a source"
+ * is readable at a glance. Everything the copy will drop is named here rather
+ * than left for the user to discover afterwards.
  */
 
 import { Button, Checkbox, Dialog, Loader, Select } from "@cloudflare/kumo";
@@ -14,36 +16,42 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import * as React from "react";
 
 import {
-	duplicateContentTo,
+	duplicateContentMany,
 	fetchDuplicateMapping,
 	type DuplicateFieldMapping,
-	type DuplicateToResult,
+	type DuplicateResult,
 } from "../lib/api";
 import { DialogError, getMutationError } from "./DialogError.js";
 
-export interface DuplicateToDialogProps {
+export interface DuplicateDialogProps {
 	open: boolean;
 	onOpenChange: (open: boolean) => void;
 	/** Source collection slug. */
 	collection: string;
 	/** Entries to copy. */
 	ids: string[];
-	/** Collections that can be targeted, excluding the source. */
+	/** Collections that can be targeted, including the source. */
 	targets: Array<{ slug: string; label: string }>;
-	/** Called once the run settles, with the results in request order. */
-	onComplete: (results: DuplicateToResult[]) => void;
+	/** Warn that the copy is taken from the last saved version. */
+	unsavedChanges?: boolean;
+	/**
+	 * Called once the run settles, with the results in request order and the
+	 * collection the copies landed in.
+	 */
+	onComplete: (results: DuplicateResult[], targetCollection: string) => void;
 }
 
-export function DuplicateToDialog({
+export function DuplicateDialog({
 	open,
 	onOpenChange,
 	collection,
 	ids,
 	targets,
+	unsavedChanges,
 	onComplete,
-}: DuplicateToDialogProps) {
+}: DuplicateDialogProps) {
 	const { t } = useLingui();
-	const [target, setTarget] = React.useState("");
+	const [target, setTarget] = React.useState(collection);
 	const [mapping, setMapping] = React.useState<DuplicateFieldMapping>({});
 	const [saveMapping, setSaveMapping] = React.useState(false);
 	const [trashSource, setTrashSource] = React.useState(false);
@@ -52,11 +60,15 @@ export function DuplicateToDialog({
 	// persisted, and the mapping is re-resolved for the chosen pair.
 	React.useEffect(() => {
 		if (!open) return;
-		setTarget("");
+		setTarget(collection);
 		setMapping({});
 		setSaveMapping(false);
 		setTrashSource(false);
-	}, [open]);
+	}, [open, collection]);
+
+	// A straight copy within one collection: every field carries, so there is
+	// no mapping to show and nothing to remember for the pair.
+	const sameCollection = target === collection;
 
 	const {
 		data: resolved,
@@ -74,15 +86,17 @@ export function DuplicateToDialog({
 
 	const duplicateMutation = useMutation({
 		mutationFn: () =>
-			duplicateContentTo(collection, {
+			duplicateContentMany(collection, {
 				ids,
 				targetCollection: target,
-				mapping,
-				saveMapping,
-				trashSource,
+				// Omitting the mapping lets the server derive the identity one,
+				// which is what makes the copy a straight duplicate.
+				mapping: sameCollection ? undefined : mapping,
+				saveMapping: sameCollection ? false : saveMapping,
+				trashSource: sameCollection ? false : trashSource,
 			}),
 		onSuccess: (results) => {
-			onComplete(results);
+			onComplete(results, target);
 			onOpenChange(false);
 		},
 	});
@@ -91,12 +105,14 @@ export function DuplicateToDialog({
 	const sourceFields = resolved?.sourceCollection.fields ?? [];
 	const sourceLabels = new Map(sourceFields.map((field) => [field.slug, field.label]));
 
-	const missingRequired = targetFields
-		.filter((field) => field.required && !mapping[field.slug])
-		.map((field) => field.slug);
-	const unmappable = resolved?.unmappableRequired ?? [];
+	const missingRequired = sameCollection
+		? []
+		: targetFields.filter((field) => field.required && !mapping[field.slug]).map((f) => f.slug);
+	const unmappable = sameCollection ? [] : (resolved?.unmappableRequired ?? []);
 	const mappedSources = new Set(Object.values(mapping).filter((slug): slug is string => !!slug));
-	const droppedSourceFields = sourceFields.filter((field) => !mappedSources.has(field.slug));
+	const droppedSourceFields = sameCollection
+		? []
+		: sourceFields.filter((field) => !mappedSources.has(field.slug));
 	const droppedTaxonomies = resolved?.taxonomies.dropped ?? [];
 	const inboundEdges = resolved?.referenceEdges?.inbound ?? 0;
 	const outboundEdges = resolved?.referenceEdges?.outbound ?? 0;
@@ -111,31 +127,27 @@ export function DuplicateToDialog({
 	return (
 		<Dialog.Root open={open} onOpenChange={onOpenChange} disablePointerDismissal>
 			<Dialog className="flex max-h-[85vh] flex-col p-6" size="lg">
-				<Dialog.Title className="text-lg font-semibold">{t`Duplicate to another collection`}</Dialog.Title>
+				<Dialog.Title className="text-lg font-semibold">{t`Duplicate`}</Dialog.Title>
 				<Dialog.Description className="text-kumo-subtle">
 					{plural(ids.length, {
-						one: "Copy # entry into another collection.",
-						other: "Copy # entries into another collection.",
+						one: "The copy is created as a draft.",
+						other: "# copies are created as drafts.",
 					})}
 				</Dialog.Description>
 
 				<div className="mt-4 flex-1 space-y-4 overflow-y-auto">
 					<div className="max-w-sm">
 						<label
-							htmlFor="duplicate-to-target"
+							htmlFor="duplicate-target"
 							className="mb-1 block text-sm font-medium"
-						>{t`Target collection`}</label>
+						>{t`Duplicate into`}</label>
 						<Select
-							id="duplicate-to-target"
-							aria-label={t`Target collection`}
+							id="duplicate-target"
+							aria-label={t`Duplicate into`}
 							value={target}
-							onValueChange={(value) => setTarget(value ?? "")}
-							items={{
-								"": t`Select a collection…`,
-								...Object.fromEntries(targets.map((c) => [c.slug, c.label])),
-							}}
+							onValueChange={(value) => setTarget(value ?? collection)}
+							items={Object.fromEntries(targets.map((c) => [c.slug, c.label]))}
 						>
-							<Select.Option value="">{t`Select a collection…`}</Select.Option>
 							{targets.map((c) => (
 								<Select.Option key={c.slug} value={c.slug}>
 									{c.label}
@@ -143,6 +155,10 @@ export function DuplicateToDialog({
 							))}
 						</Select>
 					</div>
+
+					{unsavedChanges && (
+						<p className="text-sm text-kumo-subtle">{t`Unsaved changes aren't included — the copy is taken from the last saved version.`}</p>
+					)}
 
 					{isLoading && (
 						<div className="flex justify-center py-8">
@@ -159,7 +175,7 @@ export function DuplicateToDialog({
 						/>
 					)}
 
-					{resolved && unmappable.length === 0 && (
+					{resolved && !sameCollection && unmappable.length === 0 && (
 						<>
 							<div className="overflow-x-auto rounded-md border">
 								<table className="w-full text-sm">
@@ -227,52 +243,52 @@ export function DuplicateToDialog({
 									</tbody>
 								</table>
 							</div>
-
-							<section className="rounded-md border border-dashed p-4">
-								<h3 className="text-sm font-medium">{t`Won't be copied`}</h3>
-								<ul className="mt-2 space-y-1 text-sm text-kumo-subtle">
-									{droppedSourceFields.length > 0 && (
-										<li>{t`Fields: ${droppedSourceFields.map((f) => f.label).join(", ")}`}</li>
-									)}
-									{droppedTaxonomies.length > 0 && (
-										<li>
-											{t`Taxonomies not attached to ${resolved.targetCollection.label}: ${droppedTaxonomies.map((tx) => tx.label).join(", ")}`}
-										</li>
-									)}
-									{seoDropped && (
-										<li>{t`SEO metadata — the target collection has SEO disabled`}</li>
-									)}
-									{outboundEdges > 0 && (
-										<li>
-											{plural(outboundEdges, {
-												one: "# reference this entry makes — relations belong to a collection",
-												other: "# references these entries make — relations belong to a collection",
-											})}
-										</li>
-									)}
-									{inboundEdges > 0 && (
-										<li>
-											{plural(inboundEdges, {
-												one: "# item links to this — that link will keep pointing at the original",
-												other:
-													"# items link to these — those links will keep pointing at the originals",
-											})}
-										</li>
-									)}
-									{droppedSourceFields.length === 0 &&
-										droppedTaxonomies.length === 0 &&
-										!seoDropped &&
-										outboundEdges === 0 &&
-										inboundEdges === 0 && <li>{t`Nothing — everything carries over.`}</li>}
-								</ul>
-							</section>
 						</>
+					)}
+
+					{resolved && unmappable.length === 0 && (
+						<section className="rounded-md border border-dashed p-4">
+							<h3 className="text-sm font-medium">{t`Won't be copied`}</h3>
+							<ul className="mt-2 space-y-1 text-sm text-kumo-subtle">
+								{droppedSourceFields.length > 0 && (
+									<li>{t`Fields: ${droppedSourceFields.map((f) => f.label).join(", ")}`}</li>
+								)}
+								{droppedTaxonomies.length > 0 && (
+									<li>
+										{t`Taxonomies not attached to ${resolved.targetCollection.label}: ${droppedTaxonomies.map((tx) => tx.label).join(", ")}`}
+									</li>
+								)}
+								{seoDropped && <li>{t`SEO metadata — the target collection has SEO disabled`}</li>}
+								{outboundEdges > 0 && (
+									<li>
+										{plural(outboundEdges, {
+											one: "# reference this entry makes — the copy starts with no relations",
+											other: "# references these entries make — the copy starts with no relations",
+										})}
+									</li>
+								)}
+								{inboundEdges > 0 && (
+									<li>
+										{plural(inboundEdges, {
+											one: "# item links to this — that link will keep pointing at the original",
+											other:
+												"# items link to these — those links will keep pointing at the originals",
+										})}
+									</li>
+								)}
+								{droppedSourceFields.length === 0 &&
+									droppedTaxonomies.length === 0 &&
+									!seoDropped &&
+									outboundEdges === 0 &&
+									inboundEdges === 0 && <li>{t`Nothing — everything carries over.`}</li>}
+							</ul>
+						</section>
 					)}
 				</div>
 
 				{/* Outside the scroll area: the trash option changes what the run
 				    does, so it must never be hidden below the fold. */}
-				{resolved && unmappable.length === 0 && (
+				{resolved && !sameCollection && unmappable.length === 0 && (
 					<div className="mt-4 flex flex-col items-start gap-2 border-t pt-4">
 						<Checkbox
 							checked={saveMapping}

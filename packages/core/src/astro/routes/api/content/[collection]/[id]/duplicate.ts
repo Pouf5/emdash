@@ -61,10 +61,10 @@ export const POST: APIRoute = async ({ params, request, locals, cache }) => {
 	const resolvedId = typeof existingItem?.id === "string" ? existingItem.id : id;
 
 	if (body) {
-		if (!emdash.handleContentDuplicateTo) {
+		if (!emdash.handleContentDuplicateMany) {
 			return apiError("NOT_CONFIGURED", "EmDash is not initialized", 500);
 		}
-		const result = await emdash.handleContentDuplicateTo(collection, {
+		const result = await emdash.handleContentDuplicateMany(collection, {
 			...body,
 			ids: [resolvedId],
 			actor: user ? { id: user.id, role: user.role } : undefined,
@@ -77,7 +77,7 @@ export const POST: APIRoute = async ({ params, request, locals, cache }) => {
 		}
 
 		if (cache?.enabled) {
-			const tags = [body.targetCollection];
+			const tags = [body.targetCollection ?? collection];
 			if (body.trashSource) tags.push(collection);
 			await cache.invalidate({ tags });
 		}

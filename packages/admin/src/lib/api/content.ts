@@ -366,7 +366,7 @@ export interface DuplicateMapping {
 	referenceEdges?: { inbound: number; outbound: number };
 }
 
-export interface DuplicateToResult {
+export interface DuplicateResult {
 	id: string;
 	status: "copied" | "copied_not_trashed" | "failed";
 	targetId?: string;
@@ -391,24 +391,26 @@ export async function fetchDuplicateMapping(
 }
 
 /**
- * Copy entries into another collection. Resolves with one result per id —
- * a failure for one entry doesn't stop the others.
+ * Copy entries into a collection, which may be the source collection itself.
+ * Resolves with one result per id — a failure for one entry doesn't stop the
+ * others. Omitting `mapping` uses the saved mapping for the pair, falling back
+ * to a slug match.
  */
-export async function duplicateContentTo(
+export async function duplicateContentMany(
 	collection: string,
 	body: {
 		ids: string[];
 		targetCollection: string;
-		mapping: DuplicateFieldMapping;
+		mapping?: DuplicateFieldMapping;
 		saveMapping?: boolean;
 		trashSource?: boolean;
 	},
-): Promise<DuplicateToResult[]> {
-	const response = await apiFetch(`${API_BASE}/content/${collection}/duplicate-to`, {
+): Promise<DuplicateResult[]> {
+	const response = await apiFetch(`${API_BASE}/content/${collection}/duplicate`, {
 		method: "POST",
 		body: JSON.stringify(body),
 	});
-	const data = await parseApiResponse<{ results: DuplicateToResult[] }>(
+	const data = await parseApiResponse<{ results: DuplicateResult[] }>(
 		response,
 		"Failed to duplicate content",
 	);

@@ -33,14 +33,14 @@ export {
 // Cross-collection duplication
 export {
 	handleDuplicateMappingGet,
-	handleContentDuplicateTo,
+	handleContentDuplicateMany,
 	type DuplicateFieldMapping,
 	type DuplicateMappingResponse,
-	type DuplicateToActor,
-	type DuplicateToInput,
-	type DuplicateToItemResult,
-	type DuplicateToItemStatus,
-} from "./content-duplicate-to.js";
+	type DuplicateActor,
+	type DuplicateManyInput,
+	type DuplicateItemResult,
+	type DuplicateItemStatus,
+} from "./content-duplicate.js";
 
 // Dashboard stats
 export {

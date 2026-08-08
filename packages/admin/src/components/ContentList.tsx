@@ -18,7 +18,6 @@ import {
 	ArrowCounterClockwise,
 	ArrowSquareOut,
 	Copy,
-	CopySimple,
 	MagnifyingGlass,
 	CaretUp,
 	CaretDown,
@@ -76,11 +75,10 @@ export interface ContentListProps {
 	onDelete?: (id: string) => void;
 	onDuplicate?: (id: string) => void;
 	/**
-	 * Open the cross-collection duplicate flow for these entries. Rendered as
-	 * a row action and as a toolbar button. Like the other bulk handlers it
-	 * resolves with the ids that failed, so those rows stay selected.
+	 * Duplicate the selected entries. Like the other bulk handlers it resolves
+	 * with the ids that failed, so those rows stay selected.
 	 */
-	onDuplicateTo?: BulkActionHandler;
+	onBulkDuplicate?: BulkActionHandler;
 	onRestore?: (id: string) => void;
 	onPermanentDelete?: (id: string) => void;
 	onLoadMore?: () => void;
@@ -175,7 +173,6 @@ export function ContentList({
 	isTrashedLoading,
 	onDelete,
 	onDuplicate,
-	onDuplicateTo,
 	onRestore,
 	onPermanentDelete,
 	onLoadMore,
@@ -201,6 +198,7 @@ export function ContentList({
 	onBulkPublish,
 	onBulkUnpublish,
 	onBulkDelete,
+	onBulkDuplicate,
 }: ContentListProps) {
 	const { t } = useLingui();
 	const [activeTab, setActiveTab] = React.useState<ViewTab>("all");
@@ -210,7 +208,7 @@ export function ContentList({
 
 	// Bulk selection is opt-in: the checkbox column + toolbar only render when
 	// the parent wired at least one bulk handler.
-	const bulkEnabled = !!(onBulkPublish || onBulkUnpublish || onBulkDelete || onDuplicateTo);
+	const bulkEnabled = !!(onBulkPublish || onBulkUnpublish || onBulkDelete || onBulkDuplicate);
 
 	// Server-side search mode: the caller refetches based on the (debounced)
 	// query, so `items`/`total` already reflect the filter and we must not
@@ -440,15 +438,15 @@ export function ContentList({
 										{t`Set to draft`}
 									</Button>
 								)}
-								{onDuplicateTo && (
+								{onBulkDuplicate && (
 									<Button
 										size="sm"
 										variant="secondary"
 										disabled={bulkBusy}
-										icon={<CopySimple />}
-										onClick={() => runBulk(onDuplicateTo)}
+										icon={<Copy />}
+										onClick={() => runBulk(onBulkDuplicate)}
 									>
-										{t`Duplicate to…`}
+										{t`Duplicate…`}
 									</Button>
 								)}
 								{onBulkDelete && (
@@ -599,7 +597,6 @@ export function ContentList({
 											collection={collection}
 											onDelete={onDelete}
 											onDuplicate={onDuplicate}
-											onDuplicateTo={onDuplicateTo}
 											showLocale={!!i18n}
 											urlPattern={urlPattern}
 											selectable={bulkEnabled}
@@ -973,7 +970,6 @@ interface ContentListItemProps {
 	collection: string;
 	onDelete?: (id: string) => void;
 	onDuplicate?: (id: string) => void;
-	onDuplicateTo?: (ids: string[]) => Promise<unknown>;
 	showLocale?: boolean;
 	urlPattern?: string;
 	selectable?: boolean;
@@ -986,7 +982,6 @@ function ContentListItem({
 	collection,
 	onDelete,
 	onDuplicate,
-	onDuplicateTo,
 	showLocale,
 	urlPattern,
 	selectable,
@@ -1063,16 +1058,6 @@ function ContentListItem({
 					>
 						<Copy className="h-4 w-4" aria-hidden="true" />
 					</Button>
-					{onDuplicateTo && (
-						<Button
-							variant="ghost"
-							shape="square"
-							aria-label={t`Duplicate ${title} to another collection`}
-							onClick={() => void onDuplicateTo([item.id])}
-						>
-							<CopySimple className="h-4 w-4" aria-hidden="true" />
-						</Button>
-					)}
 					<Dialog.Root disablePointerDismissal>
 						<Dialog.Trigger
 							render={(p) => (

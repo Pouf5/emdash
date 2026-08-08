@@ -27,8 +27,8 @@ import {
 	contentAuthorsResponseSchema,
 	contentCreateBody,
 	contentDuplicateBody,
-	contentDuplicateToBody,
-	contentDuplicateToResponseSchema,
+	contentDuplicateManyBody,
+	contentDuplicateManyResponseSchema,
 	contentItemSchema,
 	contentListQuery,
 	contentListResponseSchema,
@@ -485,12 +485,12 @@ const contentPaths = {
 		},
 	},
 
-	"/_emdash/api/content/{collection}/duplicate-to": {
+	"/_emdash/api/content/{collection}/duplicate": {
 		post: {
-			operationId: "duplicateContentTo",
-			summary: "Copy entries into another collection",
+			operationId: "duplicateContentMany",
+			summary: "Duplicate entries",
 			description:
-				"Copies up to 50 entries into `targetCollection` through a field mapping. Results are per item: one entry failing validation does not stop the others.",
+				"Copies up to 50 entries, into `targetCollection` through a field mapping when it differs from the source. Results are per item: one entry failing validation does not stop the others.",
 			tags: ["Content"],
 			requestParams: {
 				path: z.object({
@@ -498,13 +498,13 @@ const contentPaths = {
 				}),
 			},
 			requestBody: {
-				content: { [JSON_CONTENT]: { schema: contentDuplicateToBody } },
+				content: { [JSON_CONTENT]: { schema: contentDuplicateManyBody } },
 			},
 			responses: {
 				"200": {
 					description: "Per-item copy results",
 					content: {
-						[JSON_CONTENT]: { schema: successEnvelope(contentDuplicateToResponseSchema) },
+						[JSON_CONTENT]: { schema: successEnvelope(contentDuplicateManyResponseSchema) },
 					},
 				},
 				...authErrors,

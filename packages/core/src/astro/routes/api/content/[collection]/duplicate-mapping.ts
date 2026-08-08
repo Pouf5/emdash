@@ -1,8 +1,8 @@
 /**
- * Cross-collection duplicate mapping endpoint - injected by EmDash integration
+ * Duplicate mapping endpoint - injected by EmDash integration
  *
  * GET /_emdash/api/content/{collection}/duplicate-mapping?target={slug}&ids={csv}
- * Everything the duplicate-to dialog needs in one round trip.
+ * Everything the duplicate dialog needs in one round trip.
  */
 
 import type { APIRoute } from "astro";

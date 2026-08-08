@@ -130,8 +130,8 @@ export const contentTermsBody = z
 
 export const contentTrashQuery = cursorPaginationQuery;
 
-/** Maximum entries one cross-collection duplicate request may carry (D1 binds 100 parameters). */
-export const DUPLICATE_TO_MAX_IDS = 50;
+/** Maximum entries one bulk duplicate request may carry (D1 binds 100 parameters). */
+export const DUPLICATE_MAX_IDS = 50;
 
 const collectionSlug = z.string().min(1).max(63).regex(slugPattern, "Invalid collection slug");
 
@@ -147,14 +147,16 @@ export const duplicateMappingQuery = z
 			.string()
 			.optional()
 			.meta({
-				description: `Comma-separated entry ids (max ${DUPLICATE_TO_MAX_IDS}) to report reference-edge counts for.`,
+				description: `Comma-separated entry ids (max ${DUPLICATE_MAX_IDS}) to report reference-edge counts for.`,
 			}),
 	})
 	.meta({ id: "DuplicateMappingQuery" });
 
-/** Shared body fields for the single-item and bulk cross-collection duplicate routes. */
-const duplicateToFields = {
-	targetCollection: collectionSlug,
+/** Shared body fields for the per-item and bulk duplicate routes. */
+const duplicateFields = {
+	targetCollection: collectionSlug.optional().meta({
+		description: "Defaults to the source collection, which makes the copy a straight one.",
+	}),
 	mapping: duplicateFieldMapping.optional().meta({
 		description: "Omit to use the saved mapping for this collection pair, or a slug-match default.",
 	}),
@@ -164,17 +166,15 @@ const duplicateToFields = {
 	}),
 };
 
-/** Optional body on the per-item duplicate route. Absent = same-collection duplicate. */
-export const contentDuplicateBody = z
-	.object(duplicateToFields)
-	.meta({ id: "ContentDuplicateBody" });
+/** Optional body on the per-item duplicate route. Absent = straight copy. */
+export const contentDuplicateBody = z.object(duplicateFields).meta({ id: "ContentDuplicateBody" });
 
-export const contentDuplicateToBody = z
+export const contentDuplicateManyBody = z
 	.object({
-		ids: z.array(z.string().min(1)).min(1).max(DUPLICATE_TO_MAX_IDS),
-		...duplicateToFields,
+		ids: z.array(z.string().min(1)).min(1).max(DUPLICATE_MAX_IDS),
+		...duplicateFields,
 	})
-	.meta({ id: "ContentDuplicateToBody" });
+	.meta({ id: "ContentDuplicateManyBody" });
 
 const duplicateMappingField = z.object({
 	slug: z.string(),
@@ -208,7 +208,7 @@ export const duplicateMappingResponseSchema = z
 	})
 	.meta({ id: "DuplicateMappingResponse" });
 
-export const contentDuplicateToResponseSchema = z
+export const contentDuplicateManyResponseSchema = z
 	.object({
 		results: z.array(
 			z.object({
@@ -219,7 +219,7 @@ export const contentDuplicateToResponseSchema = z
 			}),
 		),
 	})
-	.meta({ id: "ContentDuplicateToResponse" });
+	.meta({ id: "ContentDuplicateManyResponse" });
 
 // ---------------------------------------------------------------------------
 // Content: Response schemas

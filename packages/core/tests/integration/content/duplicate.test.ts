@@ -3,9 +3,9 @@ import { sql } from "kysely";
 import { afterEach, beforeEach, expect, it } from "vitest";
 
 import {
-	handleContentDuplicateTo,
+	handleContentDuplicateMany,
 	handleDuplicateMappingGet,
-} from "../../../src/api/handlers/content-duplicate-to.js";
+} from "../../../src/api/handlers/content-duplicate.js";
 import { handleTaxonomyCreate } from "../../../src/api/handlers/taxonomies.js";
 import { ContentRepository } from "../../../src/database/repositories/content.js";
 import { OptionsRepository } from "../../../src/database/repositories/options.js";
@@ -25,7 +25,7 @@ const AUTHOR = { id: "author-1", role: Role.AUTHOR };
 
 // setupForDialectWithCollections registers "post" and "page", each with a
 // `title` (string/TEXT) and `content` (portableText/JSON) field.
-describeEachDialect("cross-collection duplication", (dialect) => {
+describeEachDialect("content duplication", (dialect) => {
 	let ctx: DialectTestContext;
 
 	beforeEach(async () => {
@@ -76,7 +76,7 @@ describeEachDialect("cross-collection duplication", (dialect) => {
 		});
 		const post = await content().create({ type: "post", slug: "p", data: { title: "P" } });
 
-		const result = await handleContentDuplicateTo(ctx.db, "post", {
+		const result = await handleContentDuplicateMany(ctx.db, "post", {
 			ids: [post.id],
 			targetCollection: "page",
 			mapping: { title: "title" },
@@ -104,7 +104,7 @@ describeEachDialect("cross-collection duplication", (dialect) => {
 			data: { title: "P", kind: "tutorial" },
 		});
 
-		const result = await handleContentDuplicateTo(ctx.db, "post", {
+		const result = await handleContentDuplicateMany(ctx.db, "post", {
 			ids: [post.id],
 			targetCollection: "page",
 			mapping: { title: "title", kind: "kind" },
@@ -129,7 +129,7 @@ describeEachDialect("cross-collection duplication", (dialect) => {
 		// The mapping is complete; the source value simply isn't set.
 		const post = await content().create({ type: "post", slug: "p", data: { title: "P" } });
 
-		const result = await handleContentDuplicateTo(ctx.db, "post", {
+		const result = await handleContentDuplicateMany(ctx.db, "post", {
 			ids: [post.id],
 			targetCollection: "page",
 			mapping: { title: "title", subtitle: "subtitle" },
@@ -151,7 +151,7 @@ describeEachDialect("cross-collection duplication", (dialect) => {
 			status: "published",
 		});
 
-		const result = await handleContentDuplicateTo(ctx.db, "post", {
+		const result = await handleContentDuplicateMany(ctx.db, "post", {
 			ids: [post.id],
 			targetCollection: "page",
 			actor: EDITOR,
@@ -193,7 +193,7 @@ describeEachDialect("cross-collection duplication", (dialect) => {
 		await taxRepo.attachToEntry("post", post.id, topic.id);
 		await taxRepo.attachToEntry("post", post.id, series.id);
 
-		const result = await handleContentDuplicateTo(ctx.db, "post", {
+		const result = await handleContentDuplicateMany(ctx.db, "post", {
 			ids: [post.id],
 			targetCollection: "page",
 			actor: EDITOR,
@@ -228,7 +228,7 @@ describeEachDialect("cross-collection duplication", (dialect) => {
 		if (!mapping.success) return;
 		expect(mapping.data.referenceEdges).toEqual({ inbound: 1, outbound: 0 });
 
-		const result = await handleContentDuplicateTo(ctx.db, "post", {
+		const result = await handleContentDuplicateMany(ctx.db, "post", {
 			ids: [post.id],
 			targetCollection: "page",
 			actor: EDITOR,
@@ -258,7 +258,7 @@ describeEachDialect("cross-collection duplication", (dialect) => {
 		});
 
 		// post has no SEO, so nothing carries even though article does.
-		const toArticle = await handleContentDuplicateTo(ctx.db, "post", {
+		const toArticle = await handleContentDuplicateMany(ctx.db, "post", {
 			ids: [post.id],
 			targetCollection: "article",
 			actor: EDITOR,
@@ -269,7 +269,7 @@ describeEachDialect("cross-collection duplication", (dialect) => {
 		expect(articleSeo.title).toBeNull();
 
 		await registry.updateCollection("post", { hasSeo: true });
-		const withSeo = await handleContentDuplicateTo(ctx.db, "post", {
+		const withSeo = await handleContentDuplicateMany(ctx.db, "post", {
 			ids: [post.id],
 			targetCollection: "article",
 			actor: EDITOR,
@@ -294,7 +294,7 @@ describeEachDialect("cross-collection duplication", (dialect) => {
 			data: { title: "P", summary: "S" },
 		});
 
-		const saved = await handleContentDuplicateTo(ctx.db, "post", {
+		const saved = await handleContentDuplicateMany(ctx.db, "post", {
 			ids: [post.id],
 			targetCollection: "page",
 			mapping: { title: "title", subtitle: "summary" },
@@ -316,7 +316,7 @@ describeEachDialect("cross-collection duplication", (dialect) => {
 		expect(mapping.data.mapping.subtitle).toBe("summary");
 
 		// A later run without an explicit mapping uses the saved one.
-		const reused = await handleContentDuplicateTo(ctx.db, "post", {
+		const reused = await handleContentDuplicateMany(ctx.db, "post", {
 			ids: [post.id],
 			targetCollection: "page",
 			actor: EDITOR,
@@ -348,7 +348,7 @@ describeEachDialect("cross-collection duplication", (dialect) => {
 			data: { title: "Bad", kind: "nope" },
 		});
 
-		const result = await handleContentDuplicateTo(ctx.db, "post", {
+		const result = await handleContentDuplicateMany(ctx.db, "post", {
 			ids: [bad.id, good.id],
 			targetCollection: "page",
 			actor: EDITOR,
@@ -377,7 +377,7 @@ describeEachDialect("cross-collection duplication", (dialect) => {
 			authorId: "someone-else",
 		});
 
-		const result = await handleContentDuplicateTo(ctx.db, "post", {
+		const result = await handleContentDuplicateMany(ctx.db, "post", {
 			ids: [mine.id, theirs.id],
 			targetCollection: "page",
 			trashSource: true,
@@ -393,5 +393,130 @@ describeEachDialect("cross-collection duplication", (dialect) => {
 		expect(await countRows("page")).toBe(1);
 		expect(await content().findById("post", mine.id)).toBeNull();
 		expect(await content().findById("post", theirs.id)).not.toBeNull();
+	});
+
+	it("resolves an identity mapping when the target is the source collection", async () => {
+		await handleTaxonomyCreate(ctx.db, {
+			name: "series",
+			label: "Series",
+			collections: ["post"],
+		});
+
+		const result = await handleDuplicateMappingGet(ctx.db, "post", "post");
+		expect(result.success).toBe(true);
+		if (!result.success) return;
+
+		expect(result.data.mapping).toEqual({ title: "title", content: "content" });
+		expect(result.data.unmappableRequired).toEqual([]);
+		expect(result.data.taxonomies.dropped).toEqual([]);
+		expect(result.data.taxonomies.carried.map((tx) => tx.name)).toEqual(["series"]);
+	});
+
+	it("duplicates within one collection as a draft copy carrying taxonomy terms", async () => {
+		await handleTaxonomyCreate(ctx.db, {
+			name: "series",
+			label: "Series",
+			collections: ["post"],
+		});
+		const taxRepo = new TaxonomyRepository(ctx.db);
+		const series = await taxRepo.create({ name: "series", slug: "basics", label: "Basics" });
+
+		const post = await content().create({
+			type: "post",
+			slug: "hello",
+			data: { title: "Hello" },
+			status: "published",
+		});
+		await taxRepo.attachToEntry("post", post.id, series.id);
+
+		const result = await handleContentDuplicateMany(ctx.db, "post", {
+			ids: [post.id],
+			targetCollection: "post",
+			actor: EDITOR,
+		});
+		expect(result.success).toBe(true);
+		if (!result.success) return;
+
+		const targetId = result.data.results[0]?.targetId;
+		expect(targetId).toBeDefined();
+		const copy = await content().findById("post", targetId!);
+		expect(copy?.status).toBe("draft");
+		expect(copy?.data.title).toBe("Hello (Copy)");
+		expect(copy?.slug).not.toBe(post.slug);
+		expect(copy?.translationGroup).not.toBe(post.translationGroup);
+		expect(await taxRepo.getTermsForEntry("post", targetId!)).toHaveLength(1);
+	});
+
+	it("copies a row that predates a newly required field", async () => {
+		const post = await content().create({ type: "post", slug: "old", data: { title: "Old" } });
+		// The row was valid when it was written; the schema tightened afterwards.
+		await new SchemaRegistry(ctx.db).createField("post", {
+			slug: "subtitle",
+			label: "Subtitle",
+			type: "string",
+			required: true,
+		});
+
+		const result = await handleContentDuplicateMany(ctx.db, "post", {
+			ids: [post.id],
+			targetCollection: "post",
+			actor: EDITOR,
+		});
+		expect(result.success).toBe(true);
+		if (!result.success) return;
+
+		expect(result.data.results[0]?.status).toBe("copied");
+		expect(await countRows("post")).toBe(2);
+	});
+
+	it("suffixes the title of a same-collection copy that drops a field", async () => {
+		const post = await content().create({
+			type: "post",
+			slug: "p",
+			data: { title: "P", content: [{ _type: "block", children: [] }] },
+		});
+
+		const result = await handleContentDuplicateMany(ctx.db, "post", {
+			ids: [post.id],
+			targetCollection: "post",
+			mapping: { title: "title", content: null },
+			actor: EDITOR,
+		});
+		expect(result.success).toBe(true);
+		if (!result.success) return;
+
+		const targetId = result.data.results[0]?.targetId;
+		expect(targetId).toBeDefined();
+		const copy = await content().findById("post", targetId!);
+		expect(copy?.data.title).toBe("P (Copy)");
+		expect(copy?.data.content).toBeFalsy();
+	});
+
+	it("validates a same-collection copy that remaps fields", async () => {
+		const registry = new SchemaRegistry(ctx.db);
+		await registry.createField("post", { slug: "note", label: "Note", type: "string" });
+		await registry.createField("post", {
+			slug: "kind",
+			label: "Kind",
+			type: "select",
+			validation: { options: ["guide", "reference"] },
+		});
+		const post = await content().create({
+			type: "post",
+			slug: "p",
+			data: { title: "P", note: "tutorial" },
+		});
+
+		const result = await handleContentDuplicateMany(ctx.db, "post", {
+			ids: [post.id],
+			targetCollection: "post",
+			mapping: { title: "title", content: "content", note: "note", kind: "note" },
+			actor: EDITOR,
+		});
+		expect(result.success).toBe(true);
+		if (!result.success) return;
+
+		expect(result.data.results[0]?.status).toBe("failed");
+		expect(await countRows("post")).toBe(1);
 	});
 });

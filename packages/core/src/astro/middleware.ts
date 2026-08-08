@@ -758,7 +758,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
 					// Duplicate handlers
 					handleContentDuplicate: runtime.handleContentDuplicate.bind(runtime),
 					handleDuplicateMappingGet: runtime.handleDuplicateMappingGet.bind(runtime),
-					handleContentDuplicateTo: runtime.handleContentDuplicateTo.bind(runtime),
+					handleContentDuplicateMany: runtime.handleContentDuplicateMany.bind(runtime),
 
 					// Publishing & Scheduling handlers
 					handleContentPublish: runtime.handleContentPublish.bind(runtime),

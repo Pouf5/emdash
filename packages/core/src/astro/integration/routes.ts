@@ -148,15 +148,15 @@ export function injectCoreRoutes(
 		entrypoint: resolveRoute("api/content/[collection]/[id]/duplicate.ts"),
 	});
 
-	// Cross-collection duplication
+	// Bulk duplication
 	injectRoute({
 		pattern: "/_emdash/api/content/[collection]/duplicate-mapping",
 		entrypoint: resolveRoute("api/content/[collection]/duplicate-mapping.ts"),
 	});
 
 	injectRoute({
-		pattern: "/_emdash/api/content/[collection]/duplicate-to",
-		entrypoint: resolveRoute("api/content/[collection]/duplicate-to.ts"),
+		pattern: "/_emdash/api/content/[collection]/duplicate",
+		entrypoint: resolveRoute("api/content/[collection]/duplicate.ts"),
 	});
 
 	// Publishing routes
