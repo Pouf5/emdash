@@ -89,10 +89,10 @@ export function replaceSiblingGroup(
  * Term row component (recursive for hierarchy)
  *
  * `siblings` is the group the term is rendered from, in display order, and
- * `parentId` is that group's parent — moving a term reorders the group it is
- * rendered in and never changes its parent. The two travel together because a
- * term's own `parentId` can name a parent that isn't in this locale, which the
- * server lists at the top level; the group it is drawn in is the authority.
+ * `parentId` is that group's parent. Moving a term reorders that group and
+ * never changes its parent. Both are passed down rather than read off the term
+ * because a term's own `parentId` can name a parent absent from this locale,
+ * which the server lists at the top level; the group it is drawn in wins.
  */
 function TermRow({
 	term,
@@ -849,9 +849,8 @@ export function TaxonomyManager({ taxonomyName }: TaxonomyManagerProps) {
 		},
 	});
 
-	// Swaps a term with its neighbour and sends the whole group's new order. The
-	// list is updated in place first so the row moves on click rather than after
-	// the round trip.
+	// The cached list is updated before the request so the row moves on click
+	// rather than after the round trip.
 	const handleMove = (
 		parentId: string | null,
 		siblings: TaxonomyTerm[],

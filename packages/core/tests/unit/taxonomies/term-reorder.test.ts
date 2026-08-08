@@ -2,8 +2,8 @@
  * Manual term ordering.
  *
  * Terms are listed by `(sort_order, label)`, so a taxonomy nobody has ordered
- * has to stay alphabetical — the behaviour before terms were sortable — and an
- * ordered one has to survive later term creation and translation.
+ * has to stay alphabetical, and an ordered one has to survive later term
+ * creation and translation.
  */
 
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
@@ -95,7 +95,7 @@ describeEachDialect("taxonomy term reorder", (dialect) => {
 	});
 
 	it("rejects a list that is missing a term in the group, without reordering", async () => {
-		const [zebra, apple, mango] = await createCategories(["Zebra", "Apple", "Mango"]);
+		const [zebra, , mango] = await createCategories(["Zebra", "Apple", "Mango"]);
 
 		const result = await handleTermReorder(ctx.db, "category", {
 			ids: [mango!.id, zebra!.id],
@@ -105,7 +105,6 @@ describeEachDialect("taxonomy term reorder", (dialect) => {
 		if (result.success) throw new Error("expected a mismatch");
 		expect(result.error.code).toBe("REORDER_MISMATCH");
 		expect(await listLabels()).toEqual(["Apple", "Mango", "Zebra"]);
-		expect(apple).toBeDefined();
 	});
 
 	it("rejects a list containing the same term twice", async () => {

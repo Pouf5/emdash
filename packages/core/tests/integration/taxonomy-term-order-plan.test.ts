@@ -1,26 +1,16 @@
 /**
- * Query-plan shape of the term listing reads once terms carry a manual order.
+ * Query-plan shape of the term listing reads.
  *
  * `sort_order` leads the ORDER BY (`sort_order, label, id`), which no index
  * satisfies: `idx_taxonomies_name_locale` is `(name, locale)` and
- * `idx_taxonomies_parent` is `(parent_id)`. Both reads therefore seek the
- * sibling group through an index and sort it in a temp b-tree.
+ * `idx_taxonomies_parent` is `(parent_id)`. Both reads seek the sibling group
+ * through an index and sort it in a temp b-tree.
  *
- * That is deliberate, and it is what these assertions pin:
- *
- *   - The *seek* is the part that matters on stats-blind SQLite/D1. Before
- *     `idx_taxonomies_name_locale` the planner picked `idx_taxonomies_locale`
- *     and read every term in the locale per facet (#1723). Adding `sort_order`
- *     to the ORDER BY must not push it back there.
- *   - The *sort* is over one taxonomy's terms in one locale — tens of rows,
- *     already narrowed by the seek — and it costs no extra rows read, which is
- *     what D1 bills. `ORDER BY label` had the same temp b-tree before terms
- *     were sortable, so this is not a regression the manual order introduced.
- *
- * Eliminating the sort would take a five-column `(name, locale, sort_order,
- * label, id)` index, paid on every term write, on a table already carrying four
- * indexes. If someone decides that trade is worth making, the TEMP B-TREE
- * assertions below are the ones to delete — deliberately, not by accident.
+ * The seek is what these assertions protect: without it the planner falls back
+ * to `idx_taxonomies_locale` and reads every term in the locale per facet. The
+ * temp b-tree sorts only the seeked group and reads no extra rows, which is
+ * what D1 bills; removing it would take a `(name, locale, sort_order, label,
+ * id)` index paid on every term write.
  *
  * SQLite-only: `EXPLAIN QUERY PLAN` is a SQLite concern and, being stats-blind
  * here, the plan is schema-driven — matching D1 exactly.
@@ -57,12 +47,12 @@ beforeEach(async () => {
 		},
 	});
 
-	// Deliberately no ANALYZE: matches D1, which never maintains sqlite_stat1.
+	// No ANALYZE: matches D1, which never maintains sqlite_stat1.
 	await runMigrations(db);
 	repo = new TaxonomyRepository(db);
 
-	// One taxonomy dominates the locale, mirroring #1723: without the composite
-	// index the planner reads every term in the locale to filter `name`.
+	// One taxonomy dominates the locale, so a plan that filters `name` in memory
+	// instead of seeking it reads far more rows than it returns.
 	for (let i = 0; i < 40; i++) {
 		await repo.create({ name: "tag", slug: `tag-${i}`, label: `Tag ${i}`, locale: "en" });
 	}
@@ -115,10 +105,9 @@ it("seeks findByName through the composite index rather than scanning the locale
 
 	const plan = planOf((sql) => sql.includes('"name" = ?') && sql.includes("sort_order"));
 	expect(plan).toContain("idx_taxonomies_name_locale");
-	// Reading the whole locale to filter `name` in memory is the #1723 regression.
+	// The locale-only index reads every term in the locale to filter `name`.
 	expect(plan).not.toContain("idx_taxonomies_locale");
 	expect(plan).not.toContain("SCAN taxonomies");
-	// The seeked group is sorted in memory — see the header note.
 	expect(plan).toContain("TEMP B-TREE");
 });
 

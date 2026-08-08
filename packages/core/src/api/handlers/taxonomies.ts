@@ -439,20 +439,18 @@ export async function handleTermList(
 /**
  * Set the manual order of one sibling group.
  *
- * `ids` must be exactly the group's current membership, in the desired order:
- * partial lists are rejected (`REORDER_MISMATCH`) rather than applied, so a
- * client working from a stale list can't silently bury the terms it didn't
- * know about. Reordering never reparents — moving a term under a different
- * parent is a term update.
+ * `ids` must be exactly the group's current membership, in the desired order;
+ * anything else is `REORDER_MISMATCH`, so a client working from a stale list
+ * can't bury the terms it didn't know about. Reordering never reparents —
+ * moving a term under a different parent is a term update.
  *
  * The group is `(taxonomy, locale, parentId)`. `parentId` is the parent's
  * translation_group (a row id is accepted and resolved), and `null` selects
  * the top level — which for a flat taxonomy is every term.
  *
  * Membership is resolved the way `buildTree` resolves it for `handleTermList`,
- * so the group is exactly what the client saw: a term whose parent has no row
- * in this locale is listed at the top level, and so belongs to the `null` group
- * here too.
+ * so the group is what the client saw: a term whose parent has no row in this
+ * locale is listed at the top level, and belongs to the `null` group here too.
  */
 export async function handleTermReorder(
 	db: Kysely<Database>,
@@ -503,8 +501,6 @@ export async function handleTermReorder(
 		);
 		invalidateTermCache();
 
-		// The rows are already loaded and `ids` is their exact membership, so the
-		// response is sorted in memory rather than re-read from the database.
 		const positions = new Map(ids.map((id, position) => [id, position]));
 		const ordered = siblings.toSorted(
 			(a, b) => (positions.get(a.id) ?? 0) - (positions.get(b.id) ?? 0),

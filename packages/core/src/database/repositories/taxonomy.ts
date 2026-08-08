@@ -107,12 +107,10 @@ export class TaxonomyRepository {
 		const parentId = parentInput ? await this.resolveParentRef(parentInput) : null;
 
 		let translationGroup = id;
-		// A translation copies the source's position so a translated tree keeps
-		// the order its source was given, rather than being appended — but only
-		// when it lands in the group that mirrors the source's. Under a different
-		// parent that position belongs to a group this row is not joining, and
-		// carrying it in lands the row mid-list and makes a group nobody has
-		// ordered read as ordered (see nextSortOrder).
+		// A translation copies the source's position, so a translated tree keeps
+		// the order its source was given — but only when it lands in the group
+		// mirroring the source's. Under a different parent that position belongs
+		// to a group this row is not joining (see nextSortOrder).
 		let sortOrder: number | null = null;
 		if (input.translationOf) {
 			const source = await this.findById(input.translationOf);
@@ -263,10 +261,8 @@ export class TaxonomyRepository {
 			updates.parent_id = parentId;
 
 			// `sort_order` only means anything within one sibling group, so a term
-			// that changes parent has to be placed in the group it lands in —
-			// otherwise it carries a position from the group it left. Placed by the
-			// same rule as a newly created term, which also keeps a group nobody has
-			// ordered from reading as ordered (see nextSortOrder).
+			// that changes parent is placed in the group it lands in — otherwise it
+			// carries a position from the group it left (see nextSortOrder).
 			if (parentId !== existing.parentId) {
 				updates.sort_order = await this.nextSortOrder(existing.name, parentId, existing.locale);
 			}
@@ -288,9 +284,8 @@ export class TaxonomyRepository {
 	 * to `name`, so an id from another taxonomy can never be renumbered.
 	 *
 	 * `current` is each term's stored `sort_order`; rows already at their target
-	 * position are left alone. Every write here is a round trip, and the common
-	 * move is one swap in an already-ordered group — without this a taxonomy
-	 * with hundreds of terms would rewrite all of them to move one.
+	 * position are skipped, so one swap costs two writes rather than one per
+	 * term in the group.
 	 */
 	async reorder(name: string, ids: string[], current?: ReadonlyMap<string, number>): Promise<void> {
 		const changed = ids
@@ -317,9 +312,8 @@ export class TaxonomyRepository {
 	 *
 	 * A group nobody has ordered has every `sort_order` equal (0 for anything
 	 * predating migration 055), and a new term joins it at that same value so
-	 * the group stays alphabetical — the behaviour before terms were sortable.
-	 * Once a group has been ordered its values differ, and a new term goes to
-	 * the end.
+	 * the group stays alphabetical. Once a group has been ordered its values
+	 * differ, and a new term goes to the end.
 	 *
 	 * `locale` is the locale the new row lands in, never `undefined`: bounds
 	 * taken across every locale would let an order set in one locale decide
