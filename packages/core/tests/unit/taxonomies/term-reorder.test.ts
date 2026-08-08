@@ -316,4 +316,87 @@ describeEachDialect("taxonomy term reorder", (dialect) => {
 		if (!result.success) throw new Error(result.error.message);
 		expect(result.data.terms.map((term) => term.label)).toEqual(["Zebra (ES)", "Apple (ES)"]);
 	});
+
+	/** Labels of `category` in one locale, in list order. */
+	async function listLocaleLabels(locale: string): Promise<string[]> {
+		const result = await handleTermList(ctx.db, "category", { locale, includeCounts: false });
+		if (!result.success) throw new Error(result.error.message);
+		return result.data.terms.map((term) => term.label);
+	}
+
+	it("moves a translation created outside its source's group to the end of an ordered group", async () => {
+		const [alpha] = await createCategories(["Alpha"]);
+		const childZ = await repo.create({
+			name: "category",
+			slug: "child-z",
+			label: "Child Z",
+			parentId: alpha!.id,
+		});
+		const uno = await handleTermCreate(ctx.db, "category", {
+			slug: "uno",
+			label: "Uno",
+			locale: "es",
+		});
+		const dos = await handleTermCreate(ctx.db, "category", {
+			slug: "dos",
+			label: "Dos",
+			locale: "es",
+		});
+		if (!uno.success || !dos.success) throw new Error("setup failed");
+		await handleTermReorder(
+			ctx.db,
+			"category",
+			{ ids: [uno.data.term.id, dos.data.term.id] },
+			{ locale: "es" },
+		);
+
+		// The translation has no parent, so it is a root in ES. Child Z's position
+		// among Alpha's children says nothing about the ES top level, so it joins
+		// that group at the end.
+		const translated = await handleTermCreate(ctx.db, "category", {
+			slug: "hijo",
+			label: "Hijo",
+			locale: "es",
+			translationOf: childZ.id,
+		});
+		if (!translated.success) throw new Error(translated.error.message);
+
+		expect(await listLocaleLabels("es")).toEqual(["Uno", "Dos", "Hijo"]);
+	});
+
+	it("keeps a never-ordered group alphabetical when a translation lands in it from another group", async () => {
+		const [alpha] = await createCategories(["Alpha"]);
+		const childA = await repo.create({
+			name: "category",
+			slug: "child-a",
+			label: "Child A",
+			parentId: alpha!.id,
+		});
+		const childZ = await repo.create({
+			name: "category",
+			slug: "child-z",
+			label: "Child Z",
+			parentId: alpha!.id,
+		});
+		await handleTermReorder(ctx.db, "category", {
+			parentId: alpha!.translationGroup,
+			ids: [childZ.id, childA.id],
+		});
+		await handleTermCreate(ctx.db, "category", { slug: "uno", label: "Uno", locale: "es" });
+		await handleTermCreate(ctx.db, "category", { slug: "dos", label: "Dos", locale: "es" });
+
+		// Child A carries a position of 1 from Alpha's children. The ES top level
+		// has never been ordered, and a translation landing in it must not make it
+		// look like it has.
+		const translated = await handleTermCreate(ctx.db, "category", {
+			slug: "casa",
+			label: "Casa",
+			locale: "es",
+			translationOf: childA.id,
+		});
+		if (!translated.success) throw new Error(translated.error.message);
+		await handleTermCreate(ctx.db, "category", { slug: "ana", label: "Ana", locale: "es" });
+
+		expect(await listLocaleLabels("es")).toEqual(["Ana", "Casa", "Dos", "Uno"]);
+	});
 });

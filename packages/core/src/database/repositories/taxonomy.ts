@@ -108,12 +108,16 @@ export class TaxonomyRepository {
 
 		let translationGroup = id;
 		// A translation copies the source's position so a translated tree keeps
-		// the order its source was given, rather than being appended.
+		// the order its source was given, rather than being appended — but only
+		// when it lands in the group that mirrors the source's. Under a different
+		// parent that position belongs to a group this row is not joining, and
+		// carrying it in lands the row mid-list and makes a group nobody has
+		// ordered read as ordered (see nextSortOrder).
 		let sortOrder: number | null = null;
 		if (input.translationOf) {
 			const source = await this.findById(input.translationOf);
 			if (source?.translationGroup) translationGroup = source.translationGroup;
-			if (source) sortOrder = source.sortOrder;
+			if (source && source.parentId === parentId) sortOrder = source.sortOrder;
 		}
 		sortOrder ??= await this.nextSortOrder(
 			input.name,
