@@ -311,7 +311,7 @@ export class TaxonomyRepository {
 	 * Position for a term being added to a sibling group.
 	 *
 	 * A group nobody has ordered has every `sort_order` equal (0 for anything
-	 * predating migration 055), and a new term joins it at that same value so
+	 * predating migration 056), and a new term joins it at that same value so
 	 * the group stays alphabetical. Once a group has been ordered its values
 	 * differ, and a new term goes to the end.
 	 *
