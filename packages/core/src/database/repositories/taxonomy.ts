@@ -30,6 +30,50 @@ const EMPTY_DENORM: PivotDenorm = {
 	created_at: null,
 };
 
+/** A member of one sibling group and the position it currently holds. */
+export interface SiblingPosition {
+	group: string;
+	position: number;
+}
+
+/** Deal the listed groups back out over the slots they hold, in the order given. */
+function permuteWithinSlots(
+	listed: readonly string[],
+	occupied: readonly number[],
+): Map<string, number> {
+	const slots = occupied.toSorted((a, b) => a - b);
+	const target = new Map<string, number>();
+	listed.forEach((group, index) => {
+		const position = slots[index];
+		if (position !== undefined) target.set(group, position);
+	});
+	return target;
+}
+
+/**
+ * Renumber a whole sibling group 0..n-1, with the listed groups in the order
+ * given and every other member left in the place it already held.
+ *
+ * Works off each member's index in the sequence rather than its stored value,
+ * which is what lets it resolve positions that tie. The sort is stable and
+ * `siblings` arrives in rendered order, so tied members keep the order the
+ * caller saw them in — the order their request was built from.
+ */
+function renumberSiblings(
+	listed: readonly string[],
+	siblings: readonly SiblingPosition[],
+): Map<string, number> {
+	const sequence = siblings.toSorted((a, b) => a.position - b.position);
+	const wanted = new Set(listed);
+	const target = new Map<string, number>();
+	let next = 0;
+	sequence.forEach(({ group }, index) => {
+		const replacement = wanted.has(group) ? listed[next++] : undefined;
+		target.set(replacement ?? group, index);
+	});
+	return target;
+}
+
 export interface Taxonomy {
 	id: string;
 	name: string;
@@ -110,13 +154,15 @@ export class TaxonomyRepository {
 		const parentId = parentInput ? await this.resolveParentRef(parentInput) : null;
 
 		let translationGroup = id;
-		// A translation is the same term in another locale, so it takes the
-		// group's position rather than being placed again.
 		let sortOrder: number | null = null;
 		if (input.translationOf) {
 			const source = await this.findById(input.translationOf);
 			if (source?.translationGroup) translationGroup = source.translationGroup;
-			if (source) sortOrder = source.sortOrder;
+			// A translation is the same term in another locale, so it takes the
+			// group's position — but only while it stays in the group that position
+			// belongs to. Landing under a different parent makes it a new member of
+			// that sibling group, and the source's position means nothing there.
+			if (source && source.parentId === parentId) sortOrder = source.sortOrder;
 		}
 		sortOrder ??= await this.nextSortOrder(input.name, parentId);
 
@@ -244,10 +290,14 @@ export class TaxonomyRepository {
 		const existing = await this.findById(id);
 		if (!existing) return null;
 
+		// Per-row display fields. `parent_id` and `sort_order` are not here: both
+		// belong to the translation_group and are written across it below.
 		const updates: Record<string, unknown> = {};
-		let reparentedTo: number | null = null;
 		if (input.slug !== undefined) updates.slug = input.slug;
 		if (input.label !== undefined) updates.label = input.label;
+		if (input.data !== undefined) updates.data = JSON.stringify(input.data);
+
+		const group: { parent_id?: string | null; sort_order?: number } = {};
 		if (input.parentId !== undefined) {
 			// Defense in depth: empty-string parentId means null (no parent).
 			// Otherwise persist the parent's translation_group (locale-agnostic),
@@ -256,27 +306,26 @@ export class TaxonomyRepository {
 				input.parentId === "" || input.parentId === null
 					? null
 					: await this.resolveParentRef(input.parentId);
-			updates.parent_id = parentId;
 
-			// A position only means anything within one sibling group, so a term
-			// that changes parent is appended to the group it lands in. The whole
-			// translation_group moves with it — the position is the term's, not the
-			// row's.
 			if (parentId !== existing.parentId) {
-				reparentedTo = await this.nextSortOrder(existing.name, parentId);
+				group.parent_id = parentId;
+				// A position only means anything within one sibling group, so a term
+				// that changes parent is appended to the group it lands in.
+				group.sort_order = await this.nextSortOrder(existing.name, parentId);
 			}
 		}
-		if (input.data !== undefined) updates.data = JSON.stringify(input.data);
 
-		if (Object.keys(updates).length > 0 || reparentedTo !== null) {
+		const hasRowUpdates = Object.keys(updates).length > 0;
+		const hasGroupUpdates = Object.keys(group).length > 0;
+		if (hasRowUpdates || hasGroupUpdates) {
 			await withTransaction(this.db, async (trx) => {
-				if (Object.keys(updates).length > 0) {
+				if (hasRowUpdates) {
 					await trx.updateTable("taxonomies").set(updates).where("id", "=", id).execute();
 				}
-				if (reparentedTo !== null) {
+				if (hasGroupUpdates) {
 					await trx
 						.updateTable("taxonomies")
-						.set({ sort_order: reparentedTo })
+						.set(group)
 						.where("translation_group", "=", existing.translationGroup ?? existing.id)
 						.execute();
 				}
@@ -292,36 +341,41 @@ export class TaxonomyRepository {
 	 * those same groups already occupy, leaving every other member of the sibling
 	 * group where it is.
 	 *
-	 * Permuting within occupied slots rather than renumbering 0..n-1 is what lets
-	 * a caller reorder a group it can only partly see: a locale renders only the
-	 * terms translated into it, so an admin in `fr` may never be able to name
-	 * every member. A group the caller didn't list keeps its position, so a stale
-	 * or partial list can't bury it.
+	 * `groups` may be a subset: a locale renders only the terms translated into
+	 * it, so an admin in `fr` often cannot name every member. A group left out
+	 * keeps its place, which is also what makes a stale list harmless.
 	 *
-	 * `current` is each group's stored position; groups already at their target
-	 * are skipped, so one swap costs two writes rather than one per group.
+	 * `siblings` is every member of the group with the position it holds, in the
+	 * order a term listing renders them — tied positions are resolved by that
+	 * order, so pass it as read. Groups already at their target are skipped, so
+	 * one swap costs two writes rather than one per group.
 	 */
-	async reorder(
-		groups: string[],
-		current: ReadonlyMap<string, number>,
-	): Promise<Map<string, number>> {
-		const slots = groups
-			.map((group) => current.get(group))
-			.filter((position): position is number => position !== undefined)
-			.toSorted((a, b) => a - b);
+	async reorder(groups: string[], siblings: readonly SiblingPosition[]): Promise<void> {
+		const current = new Map(siblings.map(({ group, position }) => [group, position]));
 
-		const applied = new Map<string, number>();
-		const changed: { group: string; position: number }[] = [];
-		groups.forEach((group, index) => {
-			const position = slots[index];
-			if (position === undefined) return;
-			applied.set(group, position);
-			if (current.get(group) !== position) changed.push({ group, position });
-		});
-		if (changed.length === 0) return applied;
+		const listed: string[] = [];
+		const occupied: number[] = [];
+		for (const group of groups) {
+			const position = current.get(group);
+			if (position === undefined) continue;
+			listed.push(group);
+			occupied.push(position);
+		}
+		if (listed.length === 0) return;
+
+		// Tied positions have no distinct order to permute into, so the requested
+		// one would be dropped without a word. Renumbering is the only way to
+		// honour it, and it repairs the tie on the way through.
+		const target =
+			new Set(occupied).size === occupied.length
+				? permuteWithinSlots(listed, occupied)
+				: renumberSiblings(listed, siblings);
+
+		const changed = [...target].filter(([group, position]) => current.get(group) !== position);
+		if (changed.length === 0) return;
 
 		await withTransaction(this.db, async (trx) => {
-			for (const { group, position } of changed) {
+			for (const [group, position] of changed) {
 				await trx
 					.updateTable("taxonomies")
 					.set({ sort_order: position })
@@ -331,7 +385,6 @@ export class TaxonomyRepository {
 		});
 
 		invalidateTaxonomyObjectCache();
-		return applied;
 	}
 
 	/**

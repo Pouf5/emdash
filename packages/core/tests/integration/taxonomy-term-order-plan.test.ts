@@ -8,9 +8,8 @@
  *
  * The seek is what these assertions protect: without it the planner falls back
  * to `idx_taxonomies_locale` and reads every term in the locale per facet. The
- * temp b-tree sorts only the seeked group and reads no extra rows, which is
- * what D1 bills; removing it would take a `(name, locale, sort_order, label,
- * id)` index paid on every term write.
+ * temp b-tree sorts only the seeked group and reads no extra rows, which is what
+ * D1 bills.
  *
  * SQLite-only: `EXPLAIN QUERY PLAN` is a SQLite concern and, being stats-blind
  * here, the plan is schema-driven — matching D1 exactly.

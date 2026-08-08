@@ -94,10 +94,11 @@ export function reorderWithinSlots(
 	movable: TaxonomyTerm[],
 	permuted: TaxonomyTerm[],
 ): TaxonomyTerm[] {
+	const inGroup = new Set(movable);
 	const next = [...rendered];
 	let slot = 0;
 	for (const [index, term] of rendered.entries()) {
-		if (!movable.includes(term)) continue;
+		if (!inGroup.has(term)) continue;
 		const replacement = permuted[slot++];
 		if (replacement) next[index] = replacement;
 	}
@@ -123,6 +124,57 @@ export function replaceSiblingGroup(
 	);
 }
 
+interface TermRowCallbacks {
+	onEdit: (term: TaxonomyTerm) => void;
+	onDelete: (term: TaxonomyTerm) => void;
+	onMove: (
+		parentId: string | null,
+		siblings: TaxonomyTerm[],
+		movable: TaxonomyTerm[],
+		term: TaxonomyTerm,
+		direction: -1 | 1,
+	) => void;
+	onTranslate?: (term: TaxonomyTerm) => void;
+	canTranslate: boolean;
+}
+
+/**
+ * One sibling group's rows, in display order.
+ *
+ * The movable subset is worked out once for the whole group: each row needs it
+ * to know whether its carets are live, and a move needs the same list to build
+ * the order it sends.
+ */
+function TermGroup({
+	siblings,
+	parentId,
+	level = 0,
+	...callbacks
+}: {
+	siblings: TaxonomyTerm[];
+	parentId: string | null;
+	level?: number;
+} & TermRowCallbacks) {
+	const movable = siblings.filter((sibling) => !isStranded(sibling, parentId));
+	const places = new Map(movable.map((term, index) => [term, index]));
+	return (
+		<>
+			{siblings.map((term) => (
+				<TermRow
+					key={term.id}
+					term={term}
+					siblings={siblings}
+					movable={movable}
+					place={places.get(term) ?? -1}
+					parentId={parentId}
+					level={level}
+					{...callbacks}
+				/>
+			))}
+		</>
+	);
+}
+
 /**
  * Term row component (recursive for hierarchy)
  *
@@ -133,11 +185,14 @@ export function replaceSiblingGroup(
  * A term whose parent has no row in this locale is rendered at the top level so
  * it isn't lost, but it belongs to its parent's group — a group this locale
  * can't show. Its move buttons are disabled rather than silently addressing the
- * wrong group.
+ * wrong group, and `place` is -1 because it holds no slot in the group it is
+ * drawn in.
  */
 function TermRow({
 	term,
 	siblings,
+	movable,
+	place,
 	parentId,
 	level = 0,
 	onEdit,
@@ -148,23 +203,13 @@ function TermRow({
 }: {
 	term: TaxonomyTerm;
 	siblings: TaxonomyTerm[];
+	movable: TaxonomyTerm[];
+	place: number;
 	parentId: string | null;
 	level?: number;
-	onEdit: (term: TaxonomyTerm) => void;
-	onDelete: (term: TaxonomyTerm) => void;
-	onMove: (
-		parentId: string | null,
-		siblings: TaxonomyTerm[],
-		term: TaxonomyTerm,
-		direction: -1 | 1,
-	) => void;
-	onTranslate?: (term: TaxonomyTerm) => void;
-	canTranslate: boolean;
-}) {
+} & TermRowCallbacks) {
 	const { t } = useLingui();
 	const stranded = isStranded(term, parentId);
-	const movable = siblings.filter((sibling) => !isStranded(sibling, parentId));
-	const position = movable.indexOf(term);
 	return (
 		<>
 			<div className="flex items-center gap-4 py-2 px-4 hover:bg-kumo-tint/50">
@@ -178,8 +223,8 @@ function TermRow({
 						variant="ghost"
 						size="sm"
 						aria-label={t`Move ${term.label} up`}
-						disabled={stranded || position <= 0}
-						onClick={() => onMove(parentId, siblings, term, -1)}
+						disabled={stranded || place <= 0}
+						onClick={() => onMove(parentId, siblings, movable, term, -1)}
 					>
 						<CaretUp className="w-4 h-4" />
 					</Button>
@@ -187,8 +232,8 @@ function TermRow({
 						variant="ghost"
 						size="sm"
 						aria-label={t`Move ${term.label} down`}
-						disabled={stranded || position >= movable.length - 1}
-						onClick={() => onMove(parentId, siblings, term, 1)}
+						disabled={stranded || place >= movable.length - 1}
+						onClick={() => onMove(parentId, siblings, movable, term, 1)}
 					>
 						<CaretDown className="w-4 h-4" />
 					</Button>
@@ -220,20 +265,16 @@ function TermRow({
 					</Button>
 				</div>
 			</div>
-			{term.children.map((child) => (
-				<TermRow
-					key={child.id}
-					term={child}
-					siblings={term.children}
-					parentId={termGroup(term)}
-					level={level + 1}
-					onEdit={onEdit}
-					onDelete={onDelete}
-					onMove={onMove}
-					onTranslate={onTranslate}
-					canTranslate={canTranslate}
-				/>
-			))}
+			<TermGroup
+				siblings={term.children}
+				parentId={termGroup(term)}
+				level={level + 1}
+				onEdit={onEdit}
+				onDelete={onDelete}
+				onMove={onMove}
+				onTranslate={onTranslate}
+				canTranslate={canTranslate}
+			/>
 		</>
 	);
 }
@@ -882,24 +923,21 @@ export function TaxonomyManager({ taxonomyName }: TaxonomyManagerProps) {
 		onError: (error: Error) => {
 			toastManager.add({ title: t`Error`, description: error.message, type: "error" });
 		},
-		// Refetch either way: on success to pick up the saved order, on failure to
-		// drop the optimistic one. Only the last queued move refetches — an
-		// earlier one would serve a stale order and snap the list back.
+		// Only the last of the queued moves refetches — an earlier one would serve
+		// a stale order and snap the list back.
 		onSettled: () => {
 			if (queryClient.isMutating({ mutationKey: reorderMutationKey }) > 1) return;
 			void queryClient.invalidateQueries({ queryKey: ["taxonomy-terms", taxonomyName] });
 		},
 	});
 
-	// The cached list is updated before the request so the row moves on click
-	// rather than after the round trip.
 	const handleMove = (
 		parentId: string | null,
 		siblings: TaxonomyTerm[],
+		movable: TaxonomyTerm[],
 		term: TaxonomyTerm,
 		direction: -1 | 1,
 	) => {
-		const movable = siblings.filter((sibling) => !isStranded(sibling, parentId));
 		const from = movable.indexOf(term);
 		const to = from + direction;
 		const moving = movable[from];
@@ -1003,19 +1041,15 @@ export function TaxonomyManager({ taxonomyName }: TaxonomyManagerProps) {
 					</div>
 				) : (
 					<div className="divide-y divide-kumo-line">
-						{terms.map((term) => (
-							<TermRow
-								key={term.id}
-								term={term}
-								siblings={terms}
-								parentId={null}
-								onEdit={handleEdit}
-								onDelete={handleDelete}
-								onMove={handleMove}
-								onTranslate={setTranslateTarget}
-								canTranslate={!!i18n && !!activeLocale && i18n.locales.length > 1}
-							/>
-						))}
+						<TermGroup
+							siblings={terms}
+							parentId={null}
+							onEdit={handleEdit}
+							onDelete={handleDelete}
+							onMove={handleMove}
+							onTranslate={setTranslateTarget}
+							canTranslate={!!i18n && !!activeLocale && i18n.locales.length > 1}
+						/>
 					</div>
 				)}
 			</div>

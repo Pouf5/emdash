@@ -1009,7 +1009,7 @@ taxonomy is every term. Reordering never changes a term's parent — use
 positions they already occupy, and every other member keeps its place. That
 matters when a locale doesn't render the whole group, and it means a stale list
 can't bury the terms it left out. An id outside the group is rejected with
-`REORDER_MISMATCH`.
+`REORDER_MISMATCH`, and at most 100 ids may be sent at once.
 
 There is no `locale` parameter. A term holds one position across every locale it
 is translated into, so an id may be either a term id or a translation group, and

@@ -241,29 +241,17 @@ describe("TaxonomyRepository", () => {
 		});
 
 		it("should return terms in their manual order, not by label", async () => {
-			const zebra = await repo.create({ name: "tags", slug: "z", label: "Zebra" });
+			await repo.create({ name: "tags", slug: "z", label: "Zebra" });
 			await repo.create({ name: "tags", slug: "a", label: "Apple" });
-			const mango = await repo.create({ name: "tags", slug: "m", label: "Mango" });
+			await repo.create({ name: "tags", slug: "m", label: "Mango" });
 
-			// Each term appends, so the group starts out in creation order.
+			// Each term appends, so the group reads back in creation order rather
+			// than alphabetically. Reordering itself is covered through the handler
+			// in term-reorder.test.ts.
 			expect((await repo.findByName("tags")).map((tag) => tag.label)).toEqual([
 				"Zebra",
 				"Apple",
 				"Mango",
-			]);
-
-			await repo.reorder(
-				[mango.translationGroup!, zebra.translationGroup!],
-				new Map([
-					[mango.translationGroup!, mango.sortOrder],
-					[zebra.translationGroup!, zebra.sortOrder],
-				]),
-			);
-
-			expect((await repo.findByName("tags")).map((tag) => tag.label)).toEqual([
-				"Mango",
-				"Apple",
-				"Zebra",
 			]);
 		});
 	});

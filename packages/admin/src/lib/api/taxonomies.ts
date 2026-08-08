@@ -193,20 +193,17 @@ export async function updateTerm(
  * every locale, so there is no locale to pass. `ids` may name only the terms
  * this locale renders — the server permutes them within the positions they
  * already occupy and leaves untranslated members where they are.
- *
- * Returns the group's translation groups in their new order.
  */
 export async function reorderTerms(
 	taxonomyName: string,
 	input: { parentId: string | null; ids: string[] },
-): Promise<string[]> {
+): Promise<void> {
 	const response = await apiFetch(`${API_BASE}/taxonomies/${taxonomyName}/reorder`, {
 		method: "POST",
 		headers: { "Content-Type": "application/json" },
 		body: JSON.stringify(input),
 	});
-	const data = await parseApiResponse<{ order: string[] }>(response, "Failed to reorder terms");
-	return data.order;
+	await parseApiResponse<{ reordered: true }>(response, "Failed to reorder terms");
 }
 
 /**

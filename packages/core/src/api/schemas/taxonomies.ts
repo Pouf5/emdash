@@ -61,7 +61,7 @@ export const reorderTermsBody = z
 			description:
 				"Parent term whose children are being ordered (translation_group or row id). Omit or null for the top level, which for a flat taxonomy is every term.",
 		}),
-		ids: z.array(z.string().min(1)).meta({
+		ids: z.array(z.string().min(1)).max(100).meta({
 			description:
 				"Terms to move, in the desired order — each a row id or translation_group. May be a subset of the group: the listed terms are permuted within the positions they already occupy and every other member keeps its place. An id outside the group is rejected with REORDER_MISMATCH.",
 		}),
@@ -167,11 +167,7 @@ export const termListResponseSchema = z
 export const termResponseSchema = z.object({ term: termSchema }).meta({ id: "TermResponse" });
 
 export const termReorderResponseSchema = z
-	.object({
-		order: z.array(z.string()).meta({
-			description: "The sibling group's translation_groups, in their new order.",
-		}),
-	})
+	.object({ reordered: z.literal(true) })
 	.meta({ id: "TermReorderResponse" });
 
 export const termGetResponseSchema = z

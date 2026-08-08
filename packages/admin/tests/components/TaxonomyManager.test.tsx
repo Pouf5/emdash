@@ -202,9 +202,39 @@ vi.mock("../../src/lib/api/client.js", async () => {
 
 import { apiFetch } from "../../src/lib/api/client.js";
 
-function mockApiFetch(overrideTerms?: string) {
+/**
+ * Hold the reorder responses until `release()` is called, so a test can look at
+ * the list while the request is still in flight.
+ */
+function deferReorders() {
+	const pending: Array<() => void> = [];
+	let open = false;
+	const ok = () =>
+		new Response(JSON.stringify({ data: { reordered: true } }), {
+			status: 200,
+			headers: { "Content-Type": "application/json" },
+		});
+	return {
+		hold: (): Promise<Response> => {
+			// `scope` serializes the reorder mutation, so a queued move only calls
+			// this once the one before it settles — stay open so those land too.
+			if (open) return Promise.resolve(ok());
+			return new Promise((resolve) => pending.push(() => resolve(ok())));
+		},
+		release: () => {
+			open = true;
+			for (const settle of pending.splice(0)) settle();
+		},
+		get inFlight() {
+			return pending.length;
+		},
+	};
+}
+
+function mockApiFetch(overrideTerms?: string, defer?: ReturnType<typeof deferReorders>) {
 	vi.mocked(apiFetch).mockImplementation((url: string, init?: RequestInit) => {
 		const urlStr = typeof url === "string" ? url : "";
+		if (defer && urlStr.includes("/reorder")) return defer.hold();
 		if (urlStr.includes("/terms") && (!init || !init.method || init.method === "GET")) {
 			return Promise.resolve(
 				new Response(overrideTerms ?? termsResponse, {
@@ -394,6 +424,38 @@ describe("TaxonomyManager", () => {
 		return typeof body === "string" ? JSON.parse(body) : undefined;
 	}
 
+	/** Parsed bodies of every reorder request, in the order they were sent. */
+	function reorderRequestBodies(): unknown[] {
+		return vi
+			.mocked(apiFetch)
+			.mock.calls.filter(([url]) => typeof url === "string" && url.includes("/reorder"))
+			.map(([, init]) => (typeof init?.body === "string" ? JSON.parse(init.body) : undefined));
+	}
+
+	/** How many times the term list has been fetched. */
+	function termFetchCount(): number {
+		return vi
+			.mocked(apiFetch)
+			.mock.calls.filter(
+				([url, init]) =>
+					typeof url === "string" &&
+					url.includes("/terms") &&
+					!url.includes("/reorder") &&
+					(!init || !init.method || init.method === "GET"),
+			).length;
+	}
+
+	/**
+	 * Labels of the rendered rows, top to bottom, read off each row's move
+	 * button rather than the markup around it.
+	 */
+	function renderedOrder(): string[] {
+		const buttons = document.querySelectorAll<HTMLElement>('button[aria-label$=" up"]');
+		return Array.from(buttons, (button) =>
+			(button.getAttribute("aria-label") ?? "").slice("Move ".length, -" up".length),
+		);
+	}
+
 	it("moving a term sends the whole sibling group in its new order", async () => {
 		const screen = await render(<TaxonomyManager taxonomyName="categories" />, {
 			wrapper: Wrapper,
@@ -404,6 +466,57 @@ describe("TaxonomyManager", () => {
 		await screen.getByRole("button", { name: "Move Technology down" }).click();
 
 		expect(reorderRequestBody()).toEqual({ parentId: null, ids: ["2", "1"] });
+	});
+
+	it("moves the row on screen before the request comes back", async () => {
+		const defer = deferReorders();
+		mockApiFetch(undefined, defer);
+		const screen = await render(<TaxonomyManager taxonomyName="categories" />, {
+			wrapper: Wrapper,
+		});
+
+		await expect.element(screen.getByText("Technology", { exact: true })).toBeInTheDocument();
+		expect(renderedOrder()).toEqual(["Technology", "Science"]);
+
+		await screen.getByRole("button", { name: "Move Technology down" }).click();
+
+		// Still in flight, and the list has already moved.
+		expect(defer.inFlight).toBe(1);
+		expect(renderedOrder()).toEqual(["Science", "Technology"]);
+
+		defer.release();
+	});
+
+	it("queues rapid moves and refetches once at the end", async () => {
+		const defer = deferReorders();
+		mockApiFetch(undefined, defer);
+		const screen = await render(<TaxonomyManager taxonomyName="categories" />, {
+			wrapper: Wrapper,
+		});
+
+		await expect.element(screen.getByText("Technology", { exact: true })).toBeInTheDocument();
+		const fetchesBefore = termFetchCount();
+
+		// Two clicks before either response lands: down, then back up. The list
+		// tracks both without waiting for the round trip.
+		await screen.getByRole("button", { name: "Move Technology down" }).click();
+		expect(renderedOrder()).toEqual(["Science", "Technology"]);
+		await screen.getByRole("button", { name: "Move Technology up" }).click();
+		expect(renderedOrder()).toEqual(["Technology", "Science"]);
+
+		defer.release();
+		await vi.waitFor(() => expect(reorderRequestBodies()).toHaveLength(2));
+
+		// Each body is an absolute order taken from the list at click time, so
+		// applying them in click order is what makes the last one win.
+		expect(reorderRequestBodies()).toEqual([
+			{ parentId: null, ids: ["2", "1"] },
+			{ parentId: null, ids: ["1", "2"] },
+		]);
+
+		// Only the last of the queued moves refetches; an earlier one would serve
+		// a stale order and snap the list back.
+		expect(termFetchCount()).toBe(fetchesBefore + 1);
 	});
 
 	it("cannot move the first term up or the last term down", async () => {
