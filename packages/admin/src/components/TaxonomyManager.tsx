@@ -219,24 +219,43 @@ function TermRow({
 				</div>
 				<div className="text-sm text-kumo-subtle">{term.count || 0}</div>
 				<div className="flex gap-2">
-					<Button
-						variant="ghost"
-						size="sm"
-						aria-label={t`Move ${term.label} up`}
-						disabled={stranded || place <= 0}
-						onClick={() => onMove(parentId, siblings, movable, term, -1)}
+					{/* The buttons inside are disabled and take no pointer events, so the
+					    explanation has to hang off something that still receives hover. */}
+					<span
+						className="flex gap-2"
+						title={
+							stranded
+								? t`${term.label} can't be moved here — its parent has no translation in this locale, so this list isn't the group it belongs to.`
+								: undefined
+						}
 					>
-						<CaretUp className="w-4 h-4" />
-					</Button>
-					<Button
-						variant="ghost"
-						size="sm"
-						aria-label={t`Move ${term.label} down`}
-						disabled={stranded || place >= movable.length - 1}
-						onClick={() => onMove(parentId, siblings, movable, term, 1)}
-					>
-						<CaretDown className="w-4 h-4" />
-					</Button>
+						<Button
+							variant="ghost"
+							size="sm"
+							aria-label={
+								stranded
+									? t`Move ${term.label} up — unavailable, its parent has no translation in this locale`
+									: t`Move ${term.label} up`
+							}
+							disabled={stranded || place <= 0}
+							onClick={() => onMove(parentId, siblings, movable, term, -1)}
+						>
+							<CaretUp className="w-4 h-4" />
+						</Button>
+						<Button
+							variant="ghost"
+							size="sm"
+							aria-label={
+								stranded
+									? t`Move ${term.label} down — unavailable, its parent has no translation in this locale`
+									: t`Move ${term.label} down`
+							}
+							disabled={stranded || place >= movable.length - 1}
+							onClick={() => onMove(parentId, siblings, movable, term, 1)}
+						>
+							<CaretDown className="w-4 h-4" />
+						</Button>
+					</span>
 					{canTranslate && onTranslate ? (
 						<Button
 							variant="ghost"

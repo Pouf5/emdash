@@ -573,8 +573,16 @@ describe("TaxonomyManager", () => {
 
 		await expect.element(screen.getByText("Nino", { exact: true })).toBeInTheDocument();
 
-		await expect.element(screen.getByRole("button", { name: "Move Nino up" })).toBeDisabled();
-		await expect.element(screen.getByRole("button", { name: "Move Nino down" })).toBeDisabled();
+		// The label carries the reason: a disabled caret with no explanation is
+		// two dead buttons on an arbitrary row.
+		const up = screen.getByRole("button", {
+			name: "Move Nino up — unavailable, its parent has no translation in this locale",
+		});
+		const down = screen.getByRole("button", {
+			name: "Move Nino down — unavailable, its parent has no translation in this locale",
+		});
+		await expect.element(up).toBeDisabled();
+		await expect.element(down).toBeDisabled();
 	});
 
 	it("leaves an untranslated-parent term out of the group it is drawn in", async () => {

@@ -475,8 +475,9 @@ export async function handleTermReorder(
 
 		// Every locale's rows: membership is locale-agnostic, and a term the
 		// caller can't see still holds its slot.
-		// `findByName` returns them in rendered order, which is what resolves
-		// positions that tie — keep it.
+		// The order carries into how ties are resolved, so it must be stable
+		// across calls; with locales interleaved a tie falls to whichever
+		// locale's label sorts first, not to the order the caller rendered.
 		const members = await repo.findByName(taxonomyName, { parentId });
 		const siblings: SiblingPosition[] = [];
 		const seen = new Set<string>();

@@ -6,7 +6,11 @@ import { columnExists } from "../dialect-helpers.js";
  * Add `taxonomies.sort_order` and mint a position for every existing term.
  *
  * Groups are numbered by `(label, id)` — the order term listings used before
- * this migration — so the rendered order is unchanged the moment it runs.
+ * this migration — taking the label from the group's lowest row id, which is
+ * the locale the term was first written in. That locale's rendered order is
+ * unchanged the moment this runs; every other locale is re-sorted to match it,
+ * because a position is shared by a whole translation_group and only one
+ * locale's collation can win.
  *
  * A position belongs to a `translation_group`, not a row: every row of a group
  * carries the same value, and sibling groups are keyed on the raw `parent_id`

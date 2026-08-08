@@ -36,6 +36,13 @@ export interface SiblingPosition {
 	position: number;
 }
 
+/**
+ * Translation groups per reorder `UPDATE`. Each costs three bound parameters —
+ * a CASE `WHEN`/`THEN` pair plus one slot in the `IN` list — which keeps a
+ * statement inside D1's 100-parameter ceiling.
+ */
+const GROUPS_PER_UPDATE = 32;
+
 /** Deal the listed groups back out over the slots they hold, in the order given. */
 function permuteWithinSlots(
 	listed: readonly string[],
@@ -55,9 +62,10 @@ function permuteWithinSlots(
  * given and every other member left in the place it already held.
  *
  * Works off each member's index in the sequence rather than its stored value,
- * which is what lets it resolve positions that tie. The sort is stable and
- * `siblings` arrives in rendered order, so tied members keep the order the
- * caller saw them in — the order their request was built from.
+ * which is what lets it resolve positions that tie. The sort is stable, so
+ * tied members keep the order `siblings` arrives in — deterministic, but a
+ * listing that mixes locales breaks a tie on whichever locale's label sorts
+ * first, not on the order any one caller rendered.
  */
 function renumberSiblings(
 	listed: readonly string[],
@@ -345,10 +353,10 @@ export class TaxonomyRepository {
 	 * it, so an admin in `fr` often cannot name every member. A group left out
 	 * keeps its place, which is also what makes a stale list harmless.
 	 *
-	 * `siblings` is every member of the group with the position it holds, in the
-	 * order a term listing renders them — tied positions are resolved by that
-	 * order, so pass it as read. Groups already at their target are skipped, so
-	 * one swap costs two writes rather than one per group.
+	 * `siblings` is every member of the group with the position it holds, in a
+	 * listing's order — tied positions are resolved by that order, so pass it as
+	 * read. Groups already at their target are skipped, so one swap rewrites two
+	 * groups rather than the whole list.
 	 */
 	async reorder(groups: string[], siblings: readonly SiblingPosition[]): Promise<void> {
 		const current = new Map(siblings.map(({ group, position }) => [group, position]));
@@ -374,17 +382,36 @@ export class TaxonomyRepository {
 		const changed = [...target].filter(([group, position]) => current.get(group) !== position);
 		if (changed.length === 0) return;
 
-		await withTransaction(this.db, async (trx) => {
-			for (const [group, position] of changed) {
-				await trx
-					.updateTable("taxonomies")
-					.set({ sort_order: position })
-					.where("translation_group", "=", group)
-					.execute();
-			}
-		});
+		await this.applyPositions(changed);
 
 		invalidateTaxonomyObjectCache();
+	}
+
+	/**
+	 * Write one position per translation_group.
+	 *
+	 * A statement per group would not be atomic — D1 has no transactions, so
+	 * `withTransaction` runs the callback bare there and a failure partway
+	 * leaves the group half-permuted. One `CASE` per chunk moves up to
+	 * GROUPS_PER_UPDATE groups or none of them, so a swap — two changed groups,
+	 * what the admin's carets issue — cannot tear. Only a renumbering wide enough
+	 * to span chunks can, and it leaves ties, which the next reorder renumbers
+	 * away.
+	 */
+	private async applyPositions(positions: readonly (readonly [string, number])[]): Promise<void> {
+		for (let index = 0; index < positions.length; index += GROUPS_PER_UPDATE) {
+			const chunk = positions.slice(index, index + GROUPS_PER_UPDATE);
+			const arms = sql.join(
+				chunk.map(([group, position]) => sql`WHEN ${group} THEN ${position}`),
+				sql` `,
+			);
+			const keys = sql.join(chunk.map(([group]) => sql`${group}`));
+			await sql`
+				UPDATE taxonomies
+				SET sort_order = CASE translation_group ${arms} END
+				WHERE translation_group IN (${keys})
+			`.execute(this.db);
+		}
 	}
 
 	/**

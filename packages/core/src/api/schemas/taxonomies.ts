@@ -66,6 +66,7 @@ export const reorderTermsBody = z
 				"Terms to move, in the desired order — each a row id or translation_group. May be a subset of the group: the listed terms are permuted within the positions they already occupy and every other member keeps its place. An id outside the group is rejected with REORDER_MISMATCH.",
 		}),
 	})
+	.strict()
 	.meta({ id: "ReorderTermsBody" });
 
 export const termListQuery = z
