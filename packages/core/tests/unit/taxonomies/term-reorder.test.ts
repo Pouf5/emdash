@@ -1,9 +1,9 @@
 /**
  * Manual term ordering.
  *
- * Terms are listed by `(sort_order, label)`, so a taxonomy nobody has ordered
- * has to stay alphabetical, and an ordered one has to survive later term
- * creation and translation.
+ * Terms carry an explicit position within their sibling group, and that
+ * position belongs to the translation_group rather than to a row — a term sits
+ * in the same place in every locale it is translated into.
  */
 
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
@@ -13,6 +13,10 @@ import {
 	handleTermList,
 	handleTermReorder,
 } from "../../../src/api/handlers/taxonomies.js";
+import {
+	down as dropSortOrder,
+	up as mintSortOrder,
+} from "../../../src/database/migrations/056_taxonomy_term_sort_order.js";
 import { TaxonomyRepository } from "../../../src/database/repositories/taxonomy.js";
 import {
 	describeEachDialect,
@@ -59,117 +63,12 @@ describeEachDialect("taxonomy term reorder", (dialect) => {
 		return result.data.terms.map((term) => term.label);
 	}
 
-	async function createCategories(labels: string[]) {
-		const created = [];
-		for (const label of labels) {
-			created.push(await repo.create({ name: "category", slug: label.toLowerCase(), label }));
-		}
-		return created;
+	/** Labels of `category` in one locale, in list order. */
+	async function listLocaleLabels(locale: string): Promise<string[]> {
+		const result = await handleTermList(ctx.db, "category", { locale, includeCounts: false });
+		if (!result.success) throw new Error(result.error.message);
+		return result.data.terms.map((term) => term.label);
 	}
-
-	it("lists terms alphabetically until a group is ordered", async () => {
-		await createCategories(["Zebra", "Apple", "Mango"]);
-
-		expect(await listLabels()).toEqual(["Apple", "Mango", "Zebra"]);
-	});
-
-	it("lists a group in the order it was given", async () => {
-		const [zebra, apple, mango] = await createCategories(["Zebra", "Apple", "Mango"]);
-
-		const result = await handleTermReorder(ctx.db, "category", {
-			ids: [zebra!.id, mango!.id, apple!.id],
-		});
-
-		expect(result.success).toBe(true);
-		expect(await listLabels()).toEqual(["Zebra", "Mango", "Apple"]);
-	});
-
-	it("reflects the order in the public runtime helper", async () => {
-		const [zebra, apple] = await createCategories(["Zebra", "Apple"]);
-
-		await handleTermReorder(ctx.db, "category", { ids: [zebra!.id, apple!.id] });
-		invalidateTermCache();
-
-		const terms = await getTaxonomyTerms("category", { includeCounts: false });
-		expect(terms.map((term) => term.label)).toEqual(["Zebra", "Apple"]);
-	});
-
-	it("rejects a list that is missing a term in the group, without reordering", async () => {
-		const [zebra, , mango] = await createCategories(["Zebra", "Apple", "Mango"]);
-
-		const result = await handleTermReorder(ctx.db, "category", {
-			ids: [mango!.id, zebra!.id],
-		});
-
-		expect(result.success).toBe(false);
-		if (result.success) throw new Error("expected a mismatch");
-		expect(result.error.code).toBe("REORDER_MISMATCH");
-		expect(await listLabels()).toEqual(["Apple", "Mango", "Zebra"]);
-	});
-
-	it("rejects a list containing the same term twice", async () => {
-		const [zebra, apple] = await createCategories(["Zebra", "Apple"]);
-
-		const result = await handleTermReorder(ctx.db, "category", {
-			ids: [zebra!.id, zebra!.id, apple!.id],
-		});
-
-		expect(result.success).toBe(false);
-		if (result.success) throw new Error("expected a mismatch");
-		expect(result.error.code).toBe("REORDER_MISMATCH");
-	});
-
-	it("rejects a term that belongs to another taxonomy", async () => {
-		const [zebra, apple] = await createCategories(["Zebra", "Apple"]);
-		const tag = await repo.create({ name: "tag", slug: "news", label: "News" });
-
-		const result = await handleTermReorder(ctx.db, "category", {
-			ids: [zebra!.id, apple!.id, tag.id],
-		});
-
-		expect(result.success).toBe(false);
-		if (result.success) throw new Error("expected a mismatch");
-		expect(result.error.code).toBe("REORDER_MISMATCH");
-	});
-
-	it("orders each parent's children independently of the roots", async () => {
-		const [alpha, beta] = await createCategories(["Alpha", "Beta"]);
-		const child1 = await repo.create({
-			name: "category",
-			slug: "child-a",
-			label: "Child A",
-			parentId: alpha!.id,
-		});
-		const child2 = await repo.create({
-			name: "category",
-			slug: "child-z",
-			label: "Child Z",
-			parentId: alpha!.id,
-		});
-
-		// Reordering the children leaves the roots alphabetical...
-		await handleTermReorder(ctx.db, "category", {
-			parentId: alpha!.translationGroup,
-			ids: [child2.id, child1.id],
-		});
-		let result = await handleTermList(ctx.db, "category", { includeCounts: false });
-		if (!result.success) throw new Error(result.error.message);
-		expect(result.data.terms.map((term) => term.label)).toEqual(["Alpha", "Beta"]);
-		expect(result.data.terms[0]?.children.map((term) => term.label)).toEqual([
-			"Child Z",
-			"Child A",
-		]);
-
-		// ...and reordering the roots leaves the children as they were.
-		await handleTermReorder(ctx.db, "category", { ids: [beta!.id, alpha!.id] });
-		result = await handleTermList(ctx.db, "category", { includeCounts: false });
-		if (!result.success) throw new Error(result.error.message);
-		expect(result.data.terms.map((term) => term.label)).toEqual(["Beta", "Alpha"]);
-		expect(result.data.terms[1]?.children.map((term) => term.label)).toEqual([
-			"Child Z",
-			"Child A",
-		]);
-	});
 
 	/** Labels of one parent's children, in list order. */
 	async function listChildLabels(parentLabel: string): Promise<string[]> {
@@ -180,7 +79,81 @@ describeEachDialect("taxonomy term reorder", (dialect) => {
 		return parent.children.map((term) => term.label);
 	}
 
-	it("moves a reparented term to the end of an ordered group", async () => {
+	async function createCategories(labels: string[]) {
+		const created = [];
+		for (const label of labels) {
+			created.push(await repo.create({ name: "category", slug: label.toLowerCase(), label }));
+		}
+		return created;
+	}
+
+	it("lists a group in the order its terms were created", async () => {
+		await createCategories(["Zebra", "Apple", "Mango"]);
+
+		expect(await listLabels()).toEqual(["Zebra", "Apple", "Mango"]);
+	});
+
+	it("lists a group in the order it was given", async () => {
+		const [zebra, apple, mango] = await createCategories(["Zebra", "Apple", "Mango"]);
+
+		const result = await handleTermReorder(ctx.db, "category", {
+			ids: [apple!.id, mango!.id, zebra!.id],
+		});
+
+		expect(result.success).toBe(true);
+		expect(await listLabels()).toEqual(["Apple", "Mango", "Zebra"]);
+	});
+
+	it("reflects the order in the public runtime helper", async () => {
+		const [zebra, apple] = await createCategories(["Zebra", "Apple"]);
+
+		await handleTermReorder(ctx.db, "category", { ids: [apple!.id, zebra!.id] });
+		invalidateTermCache();
+
+		const terms = await getTaxonomyTerms("category", { includeCounts: false });
+		expect(terms.map((term) => term.label)).toEqual(["Apple", "Zebra"]);
+	});
+
+	it("adds a new term to the end of its group", async () => {
+		const [zebra, apple] = await createCategories(["Zebra", "Apple"]);
+		await handleTermReorder(ctx.db, "category", { ids: [apple!.id, zebra!.id] });
+
+		const created = await handleTermCreate(ctx.db, "category", { slug: "banana", label: "Banana" });
+
+		expect(created.success).toBe(true);
+		expect(await listLabels()).toEqual(["Apple", "Zebra", "Banana"]);
+	});
+
+	it("orders each parent's children independently of the roots", async () => {
+		const [alpha, beta] = await createCategories(["Alpha", "Beta"]);
+		const childA = await repo.create({
+			name: "category",
+			slug: "child-a",
+			label: "Child A",
+			parentId: alpha!.id,
+		});
+		const childZ = await repo.create({
+			name: "category",
+			slug: "child-z",
+			label: "Child Z",
+			parentId: alpha!.id,
+		});
+
+		// Reordering the children leaves the roots alone...
+		await handleTermReorder(ctx.db, "category", {
+			parentId: alpha!.translationGroup,
+			ids: [childZ.id, childA.id],
+		});
+		expect(await listLabels()).toEqual(["Alpha", "Beta"]);
+		expect(await listChildLabels("Alpha")).toEqual(["Child Z", "Child A"]);
+
+		// ...and reordering the roots leaves the children as they were.
+		await handleTermReorder(ctx.db, "category", { ids: [beta!.id, alpha!.id] });
+		expect(await listLabels()).toEqual(["Beta", "Alpha"]);
+		expect(await listChildLabels("Alpha")).toEqual(["Child Z", "Child A"]);
+	});
+
+	it("appends a reparented term to the group it lands in", async () => {
 		const [alpha, beta] = await createCategories(["Alpha", "Beta"]);
 		const childA = await repo.create({
 			name: "category",
@@ -206,196 +179,218 @@ describeEachDialect("taxonomy term reorder", (dialect) => {
 		expect(await listChildLabels("Alpha")).toEqual(["Child Z", "Child A", "Beta"]);
 	});
 
-	it("keeps a never-ordered group alphabetical when a term is reparented into it", async () => {
-		const [alpha, beta, gamma] = await createCategories(["Alpha", "Beta", "Gamma"]);
-		await repo.create({ name: "category", slug: "child-m", label: "Child M", parentId: alpha!.id });
-		await handleTermReorder(ctx.db, "category", { ids: [gamma!.id, beta!.id, alpha!.id] });
-
-		// Beta carries a root position of 1. Alpha's children have never been
-		// ordered, and moving a term in must not make them look like they have.
-		await repo.update(beta!.id, { parentId: alpha!.translationGroup ?? alpha!.id });
-		await repo.create({ name: "category", slug: "child-a", label: "Child A", parentId: alpha!.id });
-
-		expect(await listChildLabels("Alpha")).toEqual(["Beta", "Child A", "Child M"]);
-	});
-
-	it("adds a term to the end of a group that has been ordered", async () => {
-		const [zebra, apple] = await createCategories(["Zebra", "Apple"]);
-		await handleTermReorder(ctx.db, "category", { ids: [zebra!.id, apple!.id] });
-
-		const created = await handleTermCreate(ctx.db, "category", { slug: "banana", label: "Banana" });
-
-		expect(created.success).toBe(true);
-		expect(await listLabels()).toEqual(["Zebra", "Apple", "Banana"]);
-	});
-
-	it("keeps a term alphabetical when its group has never been ordered", async () => {
-		await createCategories(["Zebra", "Apple"]);
-
-		await handleTermCreate(ctx.db, "category", { slug: "banana", label: "Banana" });
-
-		expect(await listLabels()).toEqual(["Apple", "Banana", "Zebra"]);
-	});
-
-	it("keeps a new term alphabetical when only another locale has been ordered", async () => {
-		const es = await Promise.all(
-			["Zebra", "Apple"].map((label) =>
-				repo.create({ name: "category", slug: label.toLowerCase(), label, locale: "es" }),
-			),
-		);
-		await handleTermReorder(ctx.db, "category", { ids: [es[0]!.id, es[1]!.id] }, { locale: "es" });
-
-		// No locale on the create: the row lands in the default locale, whose
-		// group nobody has ordered, so it must still sort alphabetically.
-		await handleTermCreate(ctx.db, "category", { slug: "mango", label: "Mango" });
-		await handleTermCreate(ctx.db, "category", { slug: "banana", label: "Banana" });
-
-		const result = await handleTermList(ctx.db, "category", {
-			locale: "en",
-			includeCounts: false,
-		});
-		if (!result.success) throw new Error(result.error.message);
-		expect(result.data.terms.map((term) => term.label)).toEqual(["Banana", "Mango"]);
-	});
-
-	it("orders the top level with a term whose parent is not translated", async () => {
-		const [alpha, beta] = await createCategories(["Alpha", "Beta"]);
-		// A child of Alpha in ES, while Alpha itself has no ES row: the term list
-		// shows it at the top level, so reordering that level has to accept it.
-		const orphan = await handleTermCreate(ctx.db, "category", {
-			slug: "nino",
-			label: "Nino",
-			locale: "es",
-			parentId: alpha!.translationGroup ?? alpha!.id,
-		});
-		if (!orphan.success) throw new Error(orphan.error.message);
-		const esBeta = await handleTermCreate(ctx.db, "category", {
-			slug: "beta",
-			label: "Beta ES",
-			locale: "es",
-			translationOf: beta!.id,
-		});
-		if (!esBeta.success) throw new Error(esBeta.error.message);
-
-		const listed = await handleTermList(ctx.db, "category", { locale: "es", includeCounts: false });
-		if (!listed.success) throw new Error(listed.error.message);
-		expect(listed.data.terms.map((term) => term.label)).toEqual(["Beta ES", "Nino"]);
-
-		const result = await handleTermReorder(
-			ctx.db,
-			"category",
-			{ ids: [orphan.data.term.id, esBeta.data.term.id] },
-			{ locale: "es" },
-		);
-
-		expect(result.success).toBe(true);
-		const list = await handleTermList(ctx.db, "category", { locale: "es", includeCounts: false });
-		if (!list.success) throw new Error(list.error.message);
-		expect(list.data.terms.map((term) => term.label)).toEqual(["Nino", "Beta ES"]);
-	});
-
-	it("gives a translated term the position of the term it translates", async () => {
-		const [zebra, apple] = await createCategories(["Zebra", "Apple"]);
-		await handleTermReorder(ctx.db, "category", { ids: [zebra!.id, apple!.id] });
-
-		for (const source of [apple!, zebra!]) {
-			const translated = await handleTermCreate(ctx.db, "category", {
-				slug: source.slug,
-				label: `${source.label} (ES)`,
-				locale: "es",
-				translationOf: source.id,
-			});
-			if (!translated.success) throw new Error(translated.error.message);
-		}
-
-		const result = await handleTermList(ctx.db, "category", {
-			locale: "es",
-			includeCounts: false,
-		});
-		if (!result.success) throw new Error(result.error.message);
-		expect(result.data.terms.map((term) => term.label)).toEqual(["Zebra (ES)", "Apple (ES)"]);
-	});
-
-	/** Labels of `category` in one locale, in list order. */
-	async function listLocaleLabels(locale: string): Promise<string[]> {
-		const result = await handleTermList(ctx.db, "category", { locale, includeCounts: false });
-		if (!result.success) throw new Error(result.error.message);
-		return result.data.terms.map((term) => term.label);
-	}
-
-	it("moves a translation created outside its source's group to the end of an ordered group", async () => {
-		const [alpha] = await createCategories(["Alpha"]);
-		const childZ = await repo.create({
-			name: "category",
-			slug: "child-z",
-			label: "Child Z",
-			parentId: alpha!.id,
-		});
-		const uno = await handleTermCreate(ctx.db, "category", {
-			slug: "uno",
-			label: "Uno",
-			locale: "es",
-		});
-		const dos = await handleTermCreate(ctx.db, "category", {
-			slug: "dos",
-			label: "Dos",
-			locale: "es",
-		});
-		if (!uno.success || !dos.success) throw new Error("setup failed");
-		await handleTermReorder(
-			ctx.db,
-			"category",
-			{ ids: [uno.data.term.id, dos.data.term.id] },
-			{ locale: "es" },
-		);
-
-		// The translation has no parent, so it is a root in ES. Child Z's position
-		// among Alpha's children says nothing about the ES top level, so it joins
-		// that group at the end.
-		const translated = await handleTermCreate(ctx.db, "category", {
-			slug: "hijo",
-			label: "Hijo",
-			locale: "es",
-			translationOf: childZ.id,
-		});
-		if (!translated.success) throw new Error(translated.error.message);
-
-		expect(await listLocaleLabels("es")).toEqual(["Uno", "Dos", "Hijo"]);
-	});
-
-	it("keeps a never-ordered group alphabetical when a translation lands in it from another group", async () => {
-		const [alpha] = await createCategories(["Alpha"]);
-		const childA = await repo.create({
+	it("rejects a term that is not in the group, without reordering", async () => {
+		const [alpha] = await createCategories(["Alpha", "Beta"]);
+		const child = await repo.create({
 			name: "category",
 			slug: "child-a",
 			label: "Child A",
 			parentId: alpha!.id,
 		});
-		const childZ = await repo.create({
+
+		const result = await handleTermReorder(ctx.db, "category", {
+			ids: [child.id, alpha!.id],
+		});
+
+		expect(result.success).toBe(false);
+		if (result.success) throw new Error("expected a mismatch");
+		expect(result.error.code).toBe("REORDER_MISMATCH");
+		expect(await listLabels()).toEqual(["Alpha", "Beta"]);
+	});
+
+	it("rejects a list naming the same term twice", async () => {
+		const [zebra, apple] = await createCategories(["Zebra", "Apple"]);
+
+		const result = await handleTermReorder(ctx.db, "category", {
+			ids: [zebra!.id, zebra!.id, apple!.id],
+		});
+
+		expect(result.success).toBe(false);
+		if (result.success) throw new Error("expected a mismatch");
+		expect(result.error.code).toBe("REORDER_MISMATCH");
+		expect(await listLabels()).toEqual(["Zebra", "Apple"]);
+	});
+
+	it("rejects a term that belongs to another taxonomy", async () => {
+		const [zebra, apple] = await createCategories(["Zebra", "Apple"]);
+		const tag = await repo.create({ name: "tag", slug: "news", label: "News" });
+
+		const result = await handleTermReorder(ctx.db, "category", {
+			ids: [zebra!.id, apple!.id, tag.id],
+		});
+
+		expect(result.success).toBe(false);
+		if (result.success) throw new Error("expected a mismatch");
+		expect(result.error.code).toBe("REORDER_MISMATCH");
+	});
+
+	// -----------------------------------------------------------------------
+	// A position belongs to the term, not to one of its locales
+	// -----------------------------------------------------------------------
+
+	/**
+	 * Translate `source` into `locale`, returning the new row's id. Carries the
+	 * source's parent through the way the translations route does.
+	 */
+	async function translate(
+		source: { id: string; slug: string; parentId: string | null },
+		locale: string,
+		label: string,
+	) {
+		const result = await handleTermCreate(ctx.db, "category", {
+			slug: `${source.slug}-${locale}`,
+			label,
+			locale,
+			parentId: source.parentId,
+			translationOf: source.id,
+		});
+		if (!result.success) throw new Error(result.error.message);
+		return result.data.term.id;
+	}
+
+	it("gives a translation the position of the term it translates", async () => {
+		const [zebra, apple] = await createCategories(["Zebra", "Apple"]);
+		await handleTermReorder(ctx.db, "category", { ids: [apple!.id, zebra!.id] });
+
+		await translate(zebra!, "es", "Zebra ES");
+		await translate(apple!, "es", "Apple ES");
+
+		expect(await listLocaleLabels("es")).toEqual(["Apple ES", "Zebra ES"]);
+	});
+
+	it("applies an order set from one locale to every other locale", async () => {
+		const [zebra, apple] = await createCategories(["Zebra", "Apple"]);
+		await translate(zebra!, "es", "Zebra ES");
+		await translate(apple!, "es", "Apple ES");
+
+		// Reordering names the EN rows; the ES rows move with them.
+		await handleTermReorder(ctx.db, "category", { ids: [apple!.id, zebra!.id] });
+
+		expect(await listLocaleLabels("en")).toEqual(["Apple", "Zebra"]);
+		expect(await listLocaleLabels("es")).toEqual(["Apple ES", "Zebra ES"]);
+	});
+
+	it("accepts a translation_group in place of a row id", async () => {
+		const [zebra, apple] = await createCategories(["Zebra", "Apple"]);
+
+		const result = await handleTermReorder(ctx.db, "category", {
+			ids: [apple!.translationGroup!, zebra!.translationGroup!],
+		});
+
+		expect(result.success).toBe(true);
+		expect(await listLabels()).toEqual(["Apple", "Zebra"]);
+	});
+
+	it("keeps every row of a reparented term at one position", async () => {
+		const [alpha, beta] = await createCategories(["Alpha", "Beta"]);
+		await translate(beta!, "es", "Beta ES");
+
+		await repo.update(beta!.id, { parentId: alpha!.translationGroup ?? alpha!.id });
+
+		const rows = await repo.findTranslations(beta!.translationGroup!);
+		expect(rows).toHaveLength(2);
+		expect(new Set(rows.map((row) => row.sortOrder)).size).toBe(1);
+	});
+
+	it("permutes a partly visible group within the slots it occupies", async () => {
+		const [alpha, , gamma] = await createCategories(["Alpha", "Beta", "Gamma"]);
+		// Beta is never translated, so an admin working in ES cannot name it.
+		await translate(alpha!, "es", "Alpha ES");
+		await translate(gamma!, "es", "Gamma ES");
+
+		const result = await handleTermReorder(ctx.db, "category", {
+			ids: [gamma!.translationGroup!, alpha!.translationGroup!],
+		});
+
+		expect(result.success).toBe(true);
+		// Gamma and Alpha swap the slots they held (0 and 2); Beta keeps slot 1.
+		expect(await listLocaleLabels("en")).toEqual(["Gamma", "Beta", "Alpha"]);
+		expect(await listLocaleLabels("es")).toEqual(["Gamma ES", "Alpha ES"]);
+	});
+
+	it("leaves a term out of the list alone rather than burying it", async () => {
+		const [alpha, beta] = await createCategories(["Alpha", "Beta", "Gamma"]);
+
+		// A stale client that never saw Gamma reorders the two it knows about.
+		const result = await handleTermReorder(ctx.db, "category", {
+			ids: [beta!.id, alpha!.id],
+		});
+
+		expect(result.success).toBe(true);
+		expect(await listLabels()).toEqual(["Beta", "Alpha", "Gamma"]);
+	});
+
+	it("refuses to reorder a child whose parent is not translated as a root", async () => {
+		const [alpha] = await createCategories(["Alpha"]);
+		const child = await repo.create({
+			name: "category",
+			slug: "child-a",
+			label: "Child A",
+			parentId: alpha!.id,
+		});
+		const esRoot = await handleTermCreate(ctx.db, "category", {
+			slug: "uno",
+			label: "Uno",
+			locale: "es",
+		});
+		if (!esRoot.success) throw new Error(esRoot.error.message);
+		const esChild = await translate(child, "es", "Child A ES");
+
+		// Alpha has no ES row, so the term list shows the child at the ES top
+		// level — but it belongs to Alpha's group, not to the roots.
+		expect(await listLocaleLabels("es")).toEqual(["Child A ES", "Uno"]);
+
+		const result = await handleTermReorder(ctx.db, "category", {
+			ids: [esRoot.data.term.id, esChild],
+		});
+
+		expect(result.success).toBe(false);
+		if (result.success) throw new Error("expected a mismatch");
+		expect(result.error.code).toBe("REORDER_MISMATCH");
+	});
+
+	// -----------------------------------------------------------------------
+	// Migration 056
+	// -----------------------------------------------------------------------
+
+	it("mints positions that preserve the alphabetical order terms had before", async () => {
+		const [alpha] = await createCategories(["Zebra", "Apple", "Mango"]);
+		await repo.create({
 			name: "category",
 			slug: "child-z",
 			label: "Child Z",
 			parentId: alpha!.id,
 		});
-		await handleTermReorder(ctx.db, "category", {
-			parentId: alpha!.translationGroup,
-			ids: [childZ.id, childA.id],
+		await repo.create({
+			name: "category",
+			slug: "child-a",
+			label: "Child A",
+			parentId: alpha!.id,
 		});
-		await handleTermCreate(ctx.db, "category", { slug: "uno", label: "Uno", locale: "es" });
-		await handleTermCreate(ctx.db, "category", { slug: "dos", label: "Dos", locale: "es" });
 
-		// Child A carries a position of 1 from Alpha's children. The ES top level
-		// has never been ordered, and a translation landing in it must not make it
-		// look like it has.
-		const translated = await handleTermCreate(ctx.db, "category", {
-			slug: "casa",
-			label: "Casa",
-			locale: "es",
-			translationOf: childA.id,
-		});
-		if (!translated.success) throw new Error(translated.error.message);
-		await handleTermCreate(ctx.db, "category", { slug: "ana", label: "Ana", locale: "es" });
+		await dropSortOrder(ctx.db);
+		await mintSortOrder(ctx.db);
+		invalidateTermCache();
 
-		expect(await listLocaleLabels("es")).toEqual(["Ana", "Casa", "Dos", "Uno"]);
+		// `alpha` here is Zebra — the first label passed to createCategories.
+		expect(await listLabels()).toEqual(["Apple", "Mango", "Zebra"]);
+		expect(await listChildLabels("Zebra")).toEqual(["Child A", "Child Z"]);
+	});
+
+	it("mints one position per translation group", async () => {
+		const [zebra, apple] = await createCategories(["Zebra", "Apple"]);
+		await translate(zebra!, "es", "Zebra ES");
+		await translate(apple!, "es", "Apple ES");
+
+		await dropSortOrder(ctx.db);
+		await mintSortOrder(ctx.db);
+		invalidateTermCache();
+
+		for (const term of [zebra!, apple!]) {
+			const rows = await repo.findTranslations(term.translationGroup!);
+			expect(rows).toHaveLength(2);
+			expect(new Set(rows.map((row) => row.sortOrder)).size).toBe(1);
+		}
+		expect(await listLocaleLabels("es")).toEqual(["Apple ES", "Zebra ES"]);
 	});
 });

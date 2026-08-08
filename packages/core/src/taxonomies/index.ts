@@ -601,7 +601,6 @@ export async function getTermsForEntries(
 					.where("taxonomies.name", "=", taxonomyName)
 					// Match the order getAllTermsForEntries (the cache primer) uses, so
 					// cache-hit and DB-miss entries in one result are ordered consistently.
-					.orderBy("taxonomies.sort_order", "asc")
 					.orderBy("taxonomies.label", "asc");
 				if (locale !== undefined) query = query.where("taxonomies.locale", "=", locale);
 				rows = await query.execute();
@@ -681,7 +680,6 @@ export async function getAllTermsForEntries(
 				])
 				.where("content_taxonomies.collection", "=", collection)
 				.where("content_taxonomies.entry_id", "in", chunk)
-				.orderBy("taxonomies.sort_order", "asc")
 				.orderBy("taxonomies.label", "asc");
 			if (locale !== undefined) query = query.where("taxonomies.locale", "=", locale);
 			rows = await query.execute();

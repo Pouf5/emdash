@@ -189,32 +189,24 @@ export async function updateTerm(
 /**
  * Set the manual order of one sibling group.
  *
- * `ids` must be the group's exact membership in the desired order — the server
- * rejects a partial or stale list rather than applying it. `parentId` is the
- * parent's translation group; null orders the top level, which for a flat
- * taxonomy is every term.
+ * `ids` and `parentId` are translation groups: a term holds one position across
+ * every locale, so there is no locale to pass. `ids` may name only the terms
+ * this locale renders — the server permutes them within the positions they
+ * already occupy and leaves untranslated members where they are.
  *
- * The group comes back in its new order, flat — the endpoint reorders one group
- * and returns that group, so its members carry no `children`.
+ * Returns the group's translation groups in their new order.
  */
 export async function reorderTerms(
 	taxonomyName: string,
 	input: { parentId: string | null; ids: string[] },
-	options: LocaleOptions = {},
-): Promise<Omit<TaxonomyTerm, "children">[]> {
-	const response = await apiFetch(
-		withLocale(`${API_BASE}/taxonomies/${taxonomyName}/reorder`, options.locale),
-		{
-			method: "POST",
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify(input),
-		},
-	);
-	const data = await parseApiResponse<{ terms: Omit<TaxonomyTerm, "children">[] }>(
-		response,
-		"Failed to reorder terms",
-	);
-	return data.terms;
+): Promise<string[]> {
+	const response = await apiFetch(`${API_BASE}/taxonomies/${taxonomyName}/reorder`, {
+		method: "POST",
+		headers: { "Content-Type": "application/json" },
+		body: JSON.stringify(input),
+	});
+	const data = await parseApiResponse<{ order: string[] }>(response, "Failed to reorder terms");
+	return data.order;
 }
 
 /**

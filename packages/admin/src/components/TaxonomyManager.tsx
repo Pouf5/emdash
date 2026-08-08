@@ -66,6 +66,44 @@ export function getAvailableParentTerms(
 	return flatTerms.filter((term) => !excludedIds.has(term.id));
 }
 
+/** The translation group a term belongs to — what `parentId` and reorder ids hold. */
+export function termGroup(term: TaxonomyTerm): string {
+	return term.translationGroup ?? term.id;
+}
+
+/**
+ * Whether a term is rendered in a group it isn't a member of.
+ *
+ * A child whose parent has no row in this locale is listed at the top level so
+ * it isn't lost, but its position belongs to its parent's group. It can't be
+ * moved from here, and it can't be named in a reorder of the group it's drawn in.
+ */
+export function isStranded(term: TaxonomyTerm, parentId: string | null): boolean {
+	return parentId === null && !!term.parentId;
+}
+
+/**
+ * Permute `movable` into the slots those same terms occupy in `rendered`,
+ * leaving everything else where it is.
+ *
+ * Mirrors what the reorder endpoint does with the ids it's given, so the
+ * optimistic list matches what comes back.
+ */
+export function reorderWithinSlots(
+	rendered: TaxonomyTerm[],
+	movable: TaxonomyTerm[],
+	permuted: TaxonomyTerm[],
+): TaxonomyTerm[] {
+	const next = [...rendered];
+	let slot = 0;
+	for (const [index, term] of rendered.entries()) {
+		if (!movable.includes(term)) continue;
+		const replacement = permuted[slot++];
+		if (replacement) next[index] = replacement;
+	}
+	return next;
+}
+
 /**
  * Replace one sibling group in a term tree with a reordered copy of itself.
  *
@@ -79,7 +117,7 @@ export function replaceSiblingGroup(
 ): TaxonomyTerm[] {
 	if (parentId === null) return ordered;
 	return terms.map((term) =>
-		(term.translationGroup ?? term.id) === parentId
+		termGroup(term) === parentId
 			? { ...term, children: ordered }
 			: { ...term, children: replaceSiblingGroup(term.children, parentId, ordered) },
 	);
@@ -90,15 +128,17 @@ export function replaceSiblingGroup(
  *
  * `siblings` is the group the term is rendered from, in display order, and
  * `parentId` is that group's parent. Moving a term reorders that group and
- * never changes its parent. Both are passed down rather than read off the term
- * because a term's own `parentId` can name a parent absent from this locale,
- * which the server lists at the top level; the group it is drawn in wins.
+ * never changes its parent.
+ *
+ * A term whose parent has no row in this locale is rendered at the top level so
+ * it isn't lost, but it belongs to its parent's group — a group this locale
+ * can't show. Its move buttons are disabled rather than silently addressing the
+ * wrong group.
  */
 function TermRow({
 	term,
 	siblings,
 	parentId,
-	position,
 	level = 0,
 	onEdit,
 	onDelete,
@@ -109,20 +149,22 @@ function TermRow({
 	term: TaxonomyTerm;
 	siblings: TaxonomyTerm[];
 	parentId: string | null;
-	position: number;
 	level?: number;
 	onEdit: (term: TaxonomyTerm) => void;
 	onDelete: (term: TaxonomyTerm) => void;
 	onMove: (
 		parentId: string | null,
 		siblings: TaxonomyTerm[],
-		from: number,
+		term: TaxonomyTerm,
 		direction: -1 | 1,
 	) => void;
 	onTranslate?: (term: TaxonomyTerm) => void;
 	canTranslate: boolean;
 }) {
 	const { t } = useLingui();
+	const stranded = isStranded(term, parentId);
+	const movable = siblings.filter((sibling) => !isStranded(sibling, parentId));
+	const position = movable.indexOf(term);
 	return (
 		<>
 			<div className="flex items-center gap-4 py-2 px-4 hover:bg-kumo-tint/50">
@@ -136,8 +178,8 @@ function TermRow({
 						variant="ghost"
 						size="sm"
 						aria-label={t`Move ${term.label} up`}
-						disabled={position === 0}
-						onClick={() => onMove(parentId, siblings, position, -1)}
+						disabled={stranded || position <= 0}
+						onClick={() => onMove(parentId, siblings, term, -1)}
 					>
 						<CaretUp className="w-4 h-4" />
 					</Button>
@@ -145,8 +187,8 @@ function TermRow({
 						variant="ghost"
 						size="sm"
 						aria-label={t`Move ${term.label} down`}
-						disabled={position >= siblings.length - 1}
-						onClick={() => onMove(parentId, siblings, position, 1)}
+						disabled={stranded || position >= movable.length - 1}
+						onClick={() => onMove(parentId, siblings, term, 1)}
 					>
 						<CaretDown className="w-4 h-4" />
 					</Button>
@@ -178,13 +220,12 @@ function TermRow({
 					</Button>
 				</div>
 			</div>
-			{term.children.map((child, childPosition) => (
+			{term.children.map((child) => (
 				<TermRow
 					key={child.id}
 					term={child}
 					siblings={term.children}
-					parentId={term.translationGroup ?? term.id}
-					position={childPosition}
+					parentId={termGroup(term)}
 					level={level + 1}
 					onEdit={onEdit}
 					onDelete={onDelete}
@@ -831,12 +872,13 @@ export function TaxonomyManager({ taxonomyName }: TaxonomyManagerProps) {
 	const reorderMutationKey = ["taxonomy-terms-reorder", taxonomyName];
 	const reorderMutation = useMutation({
 		mutationKey: reorderMutationKey,
-		// Clicking a caret repeatedly queues moves instead of racing them: each
-		// request is built from the previous one's result, so the server has to
-		// apply them in that order too.
+		// Clicking a caret repeatedly queues moves instead of racing them. Each
+		// request body is an absolute order taken from the optimistic list at
+		// click time, so applying them in click order is what makes the last one
+		// win; `scope` is what serializes them.
 		scope: { id: `taxonomy-reorder:${taxonomyName}` },
 		mutationFn: ({ parentId, ids }: { parentId: string | null; ids: string[] }) =>
-			reorderTerms(taxonomyName, { parentId, ids }, { locale: activeLocale }),
+			reorderTerms(taxonomyName, { parentId, ids }),
 		onError: (error: Error) => {
 			toastManager.add({ title: t`Error`, description: error.message, type: "error" });
 		},
@@ -854,21 +896,24 @@ export function TaxonomyManager({ taxonomyName }: TaxonomyManagerProps) {
 	const handleMove = (
 		parentId: string | null,
 		siblings: TaxonomyTerm[],
-		from: number,
+		term: TaxonomyTerm,
 		direction: -1 | 1,
 	) => {
+		const movable = siblings.filter((sibling) => !isStranded(sibling, parentId));
+		const from = movable.indexOf(term);
 		const to = from + direction;
-		const moving = siblings[from];
-		const displaced = siblings[to];
+		const moving = movable[from];
+		const displaced = movable[to];
 		if (!moving || !displaced) return;
 
-		const reordered = siblings.map((sibling, index) =>
+		const permuted = movable.map((sibling, index) =>
 			index === from ? displaced : index === to ? moving : sibling,
 		);
+		const reordered = reorderWithinSlots(siblings, movable, permuted);
 		queryClient.setQueryData(termsQueryKey, (current: TaxonomyTerm[] | undefined) =>
 			current ? replaceSiblingGroup(current, parentId, reordered) : current,
 		);
-		reorderMutation.mutate({ parentId, ids: reordered.map((sibling) => sibling.id) });
+		reorderMutation.mutate({ parentId, ids: permuted.map(termGroup) });
 	};
 
 	const translateMutation = useMutation({
@@ -958,13 +1003,12 @@ export function TaxonomyManager({ taxonomyName }: TaxonomyManagerProps) {
 					</div>
 				) : (
 					<div className="divide-y divide-kumo-line">
-						{terms.map((term, position) => (
+						{terms.map((term) => (
 							<TermRow
 								key={term.id}
 								term={term}
 								siblings={terms}
 								parentId={null}
-								position={position}
 								onEdit={handleEdit}
 								onDelete={handleDelete}
 								onMove={handleMove}

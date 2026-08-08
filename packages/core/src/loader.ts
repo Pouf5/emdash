@@ -108,8 +108,7 @@ export const FOLDED_BYLINES_EXIST = Symbol.for("emdash:foldedBylinesExist");
  * fetch. `outer` is the content table's alias/name; each subquery correlates on
  * `<outer>.id`, so the base query stays one row per entry (no join fan-out, no
  * duplicated content payload). Order is NOT applied in the aggregate (it differs
- * across dialects) — the consumer sorts terms by (sort_order, label) and credits
- * by sortOrder.
+ * across dialects) — the consumer sorts terms by label and credits by sortOrder.
  *
  * Dialect-specific aggregation: SQLite `json_group_array`/`json_object` returns
  * a JSON *string*; Postgres `json_agg`/`json_build_object` (coalesced to `[]`)
@@ -136,7 +135,7 @@ function foldedHydrationSelects(db: Kysely<any>, type: string, outer: string) {
 	const foldJoin = pg ? sql`JOIN` : sql`CROSS JOIN`;
 
 	const termObj = obj(
-		"'id', t.id, 'name', t.name, 'slug', t.slug, 'label', t.label, 'parent_id', t.parent_id, 'locale', t.locale, 'translation_group', t.translation_group, 'sort_order', t.sort_order",
+		"'id', t.id, 'name', t.name, 'slug', t.slug, 'label', t.label, 'parent_id', t.parent_id, 'locale', t.locale, 'translation_group', t.translation_group",
 	);
 	// Filter terms to the entry's own locale (matches #1441: terms render in the
 	// entry's resolved locale, not all locale variants of the attached group).

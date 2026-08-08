@@ -21,12 +21,7 @@ import {
 	adminCommentListResponseSchema,
 	publicCommentListResponseSchema,
 } from "../schemas/comments.js";
-import {
-	apiErrorSchema,
-	deleteResponseSchema,
-	localeFilterQuery,
-	successEnvelope,
-} from "../schemas/common.js";
+import { apiErrorSchema, deleteResponseSchema, successEnvelope } from "../schemas/common.js";
 import {
 	contentCompareResponseSchema,
 	contentAuthorsResponseSchema,
@@ -1332,11 +1327,10 @@ const taxonomyPaths = {
 			operationId: "reorderTerms",
 			summary: "Set the manual order of one sibling group of terms",
 			description:
-				"`ids` must be the group's exact membership in the desired order; a partial or stale list is rejected with REORDER_MISMATCH. Ordering never reparents — use the term update endpoint to change a parent.",
+				"`ids` names the terms to move, in the desired order, and may be a subset of the group — the listed terms are permuted within the positions they already occupy. A position belongs to a term across every locale, so there is no `locale` parameter. Ordering never reparents — use the term update endpoint to change a parent.",
 			tags: ["Taxonomies"],
 			requestParams: {
 				path: z.object({ name: z.string().meta({ description: "Taxonomy name" }) }),
-				query: localeFilterQuery,
 			},
 			requestBody: { content: { [JSON_CONTENT]: { schema: reorderTermsBody } } },
 			responses: {

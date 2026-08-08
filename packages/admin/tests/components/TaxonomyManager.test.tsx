@@ -6,6 +6,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import {
 	getAvailableParentTerms,
 	replaceSiblingGroup,
+	reorderWithinSlots,
 	TaxonomyManager,
 } from "../../src/components/TaxonomyManager";
 import type { TaxonomyTerm } from "../../src/lib/api/taxonomies.js";
@@ -150,8 +151,9 @@ const nestedSiblingsTermsResponse = JSON.stringify({
 });
 
 /**
- * A term whose parent has no row in this locale. The server lists it at the top
- * level (its parent can't own it here), so it is a sibling of the roots.
+ * A term whose parent has no row in this locale, rendered between two real
+ * roots. The server lists it at the top level so it isn't lost, but it belongs
+ * to its parent's group and can't be moved or named from here.
  */
 const untranslatedParentTermsResponse = JSON.stringify({
 	data: {
@@ -173,6 +175,16 @@ const untranslatedParentTermsResponse = JSON.stringify({
 				label: "Nino",
 				parentId: "alpha-group",
 				translationGroup: "nino-group",
+				children: [],
+				count: 0,
+			},
+			{
+				id: "gamma",
+				name: "gamma",
+				slug: "gamma",
+				label: "Gamma",
+				parentId: null,
+				translationGroup: "gamma-group",
 				children: [],
 				count: 0,
 			},
@@ -418,7 +430,10 @@ describe("TaxonomyManager", () => {
 
 		await screen.getByRole("button", { name: "Move Design down" }).click();
 
-		expect(reorderRequestBody()).toEqual({ parentId: null, ids: ["development", "design"] });
+		expect(reorderRequestBody()).toEqual({
+			parentId: null,
+			ids: ["development-group", "design-group"],
+		});
 	});
 
 	it("reorders a nested group under its own parent, leaving the roots alone", async () => {
@@ -433,11 +448,11 @@ describe("TaxonomyManager", () => {
 
 		expect(reorderRequestBody()).toEqual({
 			parentId: "design-group",
-			ids: ["colour", "fonts"],
+			ids: ["colour-group", "fonts-group"],
 		});
 	});
 
-	it("orders the top level when moving a term whose parent is untranslated", async () => {
+	it("cannot move a term whose parent is untranslated", async () => {
 		mockApiFetch(untranslatedParentTermsResponse);
 		const screen = await render(<TaxonomyManager taxonomyName="categories" />, {
 			wrapper: Wrapper,
@@ -445,9 +460,26 @@ describe("TaxonomyManager", () => {
 
 		await expect.element(screen.getByText("Nino", { exact: true })).toBeInTheDocument();
 
-		await screen.getByRole("button", { name: "Move Nino up" }).click();
+		await expect.element(screen.getByRole("button", { name: "Move Nino up" })).toBeDisabled();
+		await expect.element(screen.getByRole("button", { name: "Move Nino down" })).toBeDisabled();
+	});
 
-		expect(reorderRequestBody()).toEqual({ parentId: null, ids: ["nino", "beta"] });
+	it("leaves an untranslated-parent term out of the group it is drawn in", async () => {
+		mockApiFetch(untranslatedParentTermsResponse);
+		const screen = await render(<TaxonomyManager taxonomyName="categories" />, {
+			wrapper: Wrapper,
+		});
+
+		await expect.element(screen.getByText("Gamma", { exact: true })).toBeInTheDocument();
+
+		// Beta and Gamma are the only real roots, so Beta's "down" is enabled even
+		// though Nino sits between them, and Nino is not named in the request.
+		await screen.getByRole("button", { name: "Move Beta down" }).click();
+
+		expect(reorderRequestBody()).toEqual({
+			parentId: null,
+			ids: ["gamma-group", "beta-group"],
+		});
 	});
 
 	it("splices a reordered child group into its parent, leaving the roots alone", () => {
@@ -458,6 +490,19 @@ describe("TaxonomyManager", () => {
 
 		expect(next.map((term) => term.label)).toEqual(["Design", "Development"]);
 		expect(next[0]!.children.map((term) => term.label)).toEqual(["Colour", "Fonts"]);
+	});
+
+	it("permutes movable terms within their slots, leaving the rest in place", () => {
+		const terms: TaxonomyTerm[] = JSON.parse(untranslatedParentTermsResponse).data.terms;
+		const [beta, nino, gamma] = terms;
+		const movable = [beta!, gamma!];
+
+		const next = reorderWithinSlots(terms, movable, [gamma!, beta!]);
+
+		// Nino keeps the slot it was rendered in; Beta and Gamma swap the two
+		// slots they held around it.
+		expect(next.map((term) => term.label)).toEqual(["Gamma", "Nino", "Beta"]);
+		expect(next[1]).toBe(nino);
 	});
 
 	it("replaces the root list when ordering the top level", () => {
