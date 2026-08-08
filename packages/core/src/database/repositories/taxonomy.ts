@@ -401,8 +401,11 @@ export class TaxonomyRepository {
 	private async applyPositions(positions: readonly (readonly [string, number])[]): Promise<void> {
 		for (let index = 0; index < positions.length; index += GROUPS_PER_UPDATE) {
 			const chunk = positions.slice(index, index + GROUPS_PER_UPDATE);
+			// The CAST types the bound position. Postgres resolves a CASE whose THEN
+			// arms are all untyped parameters to text, then refuses to assign text to
+			// an integer column.
 			const arms = sql.join(
-				chunk.map(([group, position]) => sql`WHEN ${group} THEN ${position}`),
+				chunk.map(([group, position]) => sql`WHEN ${group} THEN CAST(${position} AS INTEGER)`),
 				sql` `,
 			);
 			const keys = sql.join(chunk.map(([group]) => sql`${group}`));

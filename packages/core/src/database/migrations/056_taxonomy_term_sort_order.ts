@@ -160,10 +160,14 @@ async function applyByGroup(
 	values: ReadonlyMap<string, string | number>,
 ): Promise<void> {
 	const entries = [...values];
+	// The CAST types the bound value. Postgres resolves a CASE whose THEN arms are
+	// all untyped parameters to text, then refuses to assign text to an integer
+	// column.
+	const valueType = column === "sort_order" ? sql`INTEGER` : sql`TEXT`;
 	for (let index = 0; index < entries.length; index += GROUPS_PER_UPDATE) {
 		const chunk = entries.slice(index, index + GROUPS_PER_UPDATE);
 		const arms = sql.join(
-			chunk.map(([group, value]) => sql`WHEN ${group} THEN ${value}`),
+			chunk.map(([group, value]) => sql`WHEN ${group} THEN CAST(${value} AS ${valueType})`),
 			sql` `,
 		);
 		const keys = sql.join(chunk.map(([group]) => sql`${group}`));
