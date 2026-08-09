@@ -89,7 +89,7 @@ msgid "{0, plural, one {# comment imported} other {# comments imported}}"
 msgstr ""
 
 #. placeholder {0}: result.affected
-#: packages/admin/src/router.tsx:1484
+#: packages/admin/src/router.tsx:1492
 msgid "{0, plural, one {# comment updated} other {# comments updated}}"
 msgstr "{0, plural, one {# hozzászólás frissítve} other {# hozzászólás frissítve}}"
 
@@ -214,6 +214,11 @@ msgstr "{0} • {1}"
 msgid "{0} banner"
 msgstr "{0} banner"
 
+#. placeholder {0}: term.label
+#: packages/admin/src/components/TaxonomyManager.tsx:228
+msgid "{0} can't be moved here — its parent has no translation in this locale, so this list isn't the group it belongs to."
+msgstr ""
+
 #. placeholder {0}: bestMatch?.detected.siteTitle || "WordPress site"
 #: packages/admin/src/components/WordPressImport.tsx:1303
 msgid "{0} detected"
@@ -306,7 +311,7 @@ msgid "{0}{1}"
 msgstr "{0}{1}"
 
 #. placeholder {0}: draft.description.length
-#: packages/admin/src/components/SeoPanel.tsx:195
+#: packages/admin/src/components/SeoPanel.tsx:206
 msgid "{0}/160 characters"
 msgstr "{0}/160 karakter"
 
@@ -569,7 +574,7 @@ msgstr "Meghívás elfogadása"
 msgid "Access denied"
 msgstr "Hozzáférés megtagadva"
 
-#: packages/admin/src/router.tsx:1504
+#: packages/admin/src/router.tsx:1512
 msgid "Access Denied"
 msgstr "Hozzáférés megtagadva"
 
@@ -602,7 +607,7 @@ msgstr ""
 #: packages/admin/src/components/ContentList.tsx:535
 #: packages/admin/src/components/ContentList.tsx:656
 #: packages/admin/src/components/ContentTypeList.tsx:108
-#: packages/admin/src/components/TaxonomyManager.tsx:845
+#: packages/admin/src/components/TaxonomyManager.tsx:1050
 #: packages/admin/src/routes/byline-schema.tsx:249
 msgid "Actions"
 msgstr "Műveletek"
@@ -613,7 +618,7 @@ msgid "Active"
 msgstr "Aktív"
 
 #: packages/admin/src/components/AllowedTypesEditor.tsx:171
-#: packages/admin/src/components/ContentSettingsPanel.tsx:919
+#: packages/admin/src/components/ContentSettingsPanel.tsx:923
 #: packages/admin/src/components/MenuEditor.tsx:441
 #: packages/admin/src/components/TaxonomySidebar.tsx:496
 msgid "Add"
@@ -622,8 +627,8 @@ msgstr "Hozzáadás"
 #. placeholder {0}: field.item_label
 #. placeholder {0}: taxonomyDef.labelSingular || t`Term`
 #: packages/admin/src/components/PortableTextEditor.tsx:2108
-#: packages/admin/src/components/TaxonomyManager.tsx:378
-#: packages/admin/src/components/TaxonomyManager.tsx:836
+#: packages/admin/src/components/TaxonomyManager.tsx:540
+#: packages/admin/src/components/TaxonomyManager.tsx:1041
 msgid "Add {0}"
 msgstr "{0} hozzáadása"
 
@@ -726,7 +731,7 @@ msgstr "Új hozzáadása"
 msgid "Add new {0}"
 msgstr "Új {0} hozzáadása"
 
-#: packages/admin/src/components/SeoPanel.tsx:227
+#: packages/admin/src/components/SeoPanel.tsx:239
 msgid "Add noindex meta tag"
 msgstr "noindex meta tag hozzáadása"
 
@@ -963,19 +968,20 @@ msgstr "Másik lehetőségként exportálhatsz WordPressből (Eszközök → Exp
 #: packages/admin/src/router.tsx:439
 #: packages/admin/src/router.tsx:453
 #: packages/admin/src/router.tsx:467
-#: packages/admin/src/router.tsx:944
-#: packages/admin/src/router.tsx:1005
-#: packages/admin/src/router.tsx:1023
-#: packages/admin/src/router.tsx:1041
-#: packages/admin/src/router.tsx:1062
-#: packages/admin/src/router.tsx:1083
-#: packages/admin/src/router.tsx:1104
-#: packages/admin/src/router.tsx:1135
-#: packages/admin/src/router.tsx:1155
-#: packages/admin/src/router.tsx:1449
-#: packages/admin/src/router.tsx:1465
-#: packages/admin/src/router.tsx:1490
-#: packages/admin/src/router.tsx:1979
+#: packages/admin/src/router.tsx:671
+#: packages/admin/src/router.tsx:953
+#: packages/admin/src/router.tsx:1013
+#: packages/admin/src/router.tsx:1031
+#: packages/admin/src/router.tsx:1049
+#: packages/admin/src/router.tsx:1070
+#: packages/admin/src/router.tsx:1091
+#: packages/admin/src/router.tsx:1112
+#: packages/admin/src/router.tsx:1143
+#: packages/admin/src/router.tsx:1163
+#: packages/admin/src/router.tsx:1457
+#: packages/admin/src/router.tsx:1473
+#: packages/admin/src/router.tsx:1498
+#: packages/admin/src/router.tsx:1987
 #: packages/admin/src/routes/byline-schema.tsx:103
 #: packages/admin/src/routes/byline-schema.tsx:123
 #: packages/admin/src/routes/byline-schema.tsx:139
@@ -1121,7 +1127,7 @@ msgstr "A hitelesítés megszakadt vagy időtúllépés történt. Próbáld új
 
 #: packages/admin/src/components/comments/CommentDetail.tsx:77
 #: packages/admin/src/components/comments/CommentInbox.tsx:288
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1129
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1133
 #: packages/admin/src/components/users/roleDefinitions.ts:30
 #: packages/admin/src/components/WelcomeModal.tsx:27
 msgid "Author"
@@ -1167,7 +1173,7 @@ msgstr "Automatikus (slug módosítás)"
 msgid "Auto-approve authenticated users"
 msgstr "Hitelesített felhasználók automatikus jóváhagyása"
 
-#: packages/admin/src/components/TaxonomyManager.tsx:424
+#: packages/admin/src/components/TaxonomyManager.tsx:586
 msgid "Auto-generated from name (you can edit)"
 msgstr "A névből automatikusan generálva (szerkeszthető)"
 
@@ -1181,7 +1187,7 @@ msgstr ""
 msgid "Automatic backups need a storage backend (R2, S3, or local storage). Configure storage in your EmDash config to enable them."
 msgstr ""
 
-#: packages/admin/src/router.tsx:1004
+#: packages/admin/src/router.tsx:1012
 msgid "Autosave failed"
 msgstr "Az automatikus mentés sikertelen"
 
@@ -1307,7 +1313,7 @@ msgstr "Félkövér"
 msgid "Boolean"
 msgstr "Logikai érték"
 
-#: packages/admin/src/components/SeoPanel.tsx:184
+#: packages/admin/src/components/SeoPanel.tsx:195
 msgid "Brief summary shown below the title in search results"
 msgstr "A keresési találatokban a cím alatt megjelenő rövid összefoglaló"
 
@@ -1391,9 +1397,9 @@ msgstr "Tartalmat tekinthet meg"
 #: packages/admin/src/components/ContentPickerModal.tsx:241
 #: packages/admin/src/components/ContentSettingsPanel.tsx:92
 #: packages/admin/src/components/ContentSettingsPanel.tsx:534
-#: packages/admin/src/components/ContentSettingsPanel.tsx:730
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1033
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1086
+#: packages/admin/src/components/ContentSettingsPanel.tsx:734
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1037
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1090
 #: packages/admin/src/components/editor/CodeBlockNode.tsx:193
 #: packages/admin/src/components/editor/CodeBlockNode.tsx:194
 #: packages/admin/src/components/editor/ImageDetailPanel.tsx:586
@@ -1414,9 +1420,9 @@ msgstr "Tartalmat tekinthet meg"
 #: packages/admin/src/components/settings/AllowedDomainsSettings.tsx:207
 #: packages/admin/src/components/settings/ApiTokenSettings.tsx:233
 #: packages/admin/src/components/settings/SecuritySettings.tsx:166
-#: packages/admin/src/components/TaxonomyManager.tsx:207
-#: packages/admin/src/components/TaxonomyManager.tsx:494
-#: packages/admin/src/components/TaxonomyManager.tsx:708
+#: packages/admin/src/components/TaxonomyManager.tsx:369
+#: packages/admin/src/components/TaxonomyManager.tsx:656
+#: packages/admin/src/components/TaxonomyManager.tsx:870
 #: packages/admin/src/components/users/InviteUserModal.tsx:198
 #: packages/admin/src/components/Widgets.tsx:451
 #: packages/admin/src/components/WordPressImport.tsx:1917
@@ -1439,8 +1445,8 @@ msgstr "A téma szakaszai nem törölhetők"
 msgid "Cannot determine MIME type from URL. Use a URL ending in a recognized image extension (e.g. .jpg, .png, .webp)."
 msgstr "Nem állapítható meg a MIME-típus az URL-ből. Olyan URL-t használj, amely ismert képkiterjesztésre végződik (pl. .jpg, .png, .webp)."
 
-#: packages/admin/src/components/SeoPanel.tsx:212
-#: packages/admin/src/components/SeoPanel.tsx:216
+#: packages/admin/src/components/SeoPanel.tsx:224
+#: packages/admin/src/components/SeoPanel.tsx:228
 msgid "Canonical URL"
 msgstr "Kanonikus URL"
 
@@ -1514,7 +1520,7 @@ msgstr "Logó módosítása"
 msgid "Changelog"
 msgstr "Változásnapló"
 
-#: packages/admin/src/router.tsx:1055
+#: packages/admin/src/router.tsx:1063
 msgid "Changes discarded"
 msgstr "Módosítások elvetve"
 
@@ -1631,13 +1637,13 @@ msgstr "A bejelentkezéshez kattints az e-mailben lévő linkre."
 #: packages/admin/src/components/settings/AllowedDomainsSettings.tsx:328
 #: packages/admin/src/components/settings/AllowedDomainsSettings.tsx:334
 #: packages/admin/src/components/settings/AllowedDomainsSettings.tsx:338
-#: packages/admin/src/components/TaxonomyManager.tsx:184
-#: packages/admin/src/components/TaxonomyManager.tsx:387
-#: packages/admin/src/components/TaxonomyManager.tsx:393
-#: packages/admin/src/components/TaxonomyManager.tsx:397
-#: packages/admin/src/components/TaxonomyManager.tsx:627
-#: packages/admin/src/components/TaxonomyManager.tsx:633
-#: packages/admin/src/components/TaxonomyManager.tsx:637
+#: packages/admin/src/components/TaxonomyManager.tsx:346
+#: packages/admin/src/components/TaxonomyManager.tsx:549
+#: packages/admin/src/components/TaxonomyManager.tsx:555
+#: packages/admin/src/components/TaxonomyManager.tsx:559
+#: packages/admin/src/components/TaxonomyManager.tsx:789
+#: packages/admin/src/components/TaxonomyManager.tsx:795
+#: packages/admin/src/components/TaxonomyManager.tsx:799
 #: packages/admin/src/components/ThemeMarketplaceDetail.tsx:298
 #: packages/admin/src/components/users/InviteUserModal.tsx:88
 #: packages/admin/src/components/users/InviteUserModal.tsx:94
@@ -1697,7 +1703,7 @@ msgstr "Gyűjtemény"
 msgid "Collection:"
 msgstr "Gyűjtemény:"
 
-#: packages/admin/src/components/TaxonomyManager.tsx:678
+#: packages/admin/src/components/TaxonomyManager.tsx:840
 msgid "Collections"
 msgstr "Gyűjtemények"
 
@@ -1799,7 +1805,7 @@ msgstr "Tartalmi hibák ({0})"
 msgid "Content found:"
 msgstr "Talált tartalom:"
 
-#: packages/admin/src/router.tsx:1077
+#: packages/admin/src/router.tsx:1085
 msgid "Content has been scheduled for publishing"
 msgstr "A tartalom publikálása ütemezve"
 
@@ -1811,7 +1817,7 @@ msgstr "A tartalom frissült a kiválasztott verzióra."
 msgid "Content ID:"
 msgstr "Tartalom ID:"
 
-#: packages/admin/src/router.tsx:1018
+#: packages/admin/src/router.tsx:1026
 msgid "Content is now live"
 msgstr "A tartalom élesítve"
 
@@ -1823,11 +1829,11 @@ msgstr "tartalmi elemek"
 msgid "Content Read"
 msgstr "Tartalom olvasása"
 
-#: packages/admin/src/router.tsx:1036
+#: packages/admin/src/router.tsx:1044
 msgid "Content removed from public view"
 msgstr "A tartalom eltávolítva a nyilvános nézetből"
 
-#: packages/admin/src/router.tsx:1098
+#: packages/admin/src/router.tsx:1106
 msgid "Content reverted to draft"
 msgstr "A tartalom visszaállítva vázlatra"
 
@@ -1936,7 +1942,7 @@ msgstr "Nem sikerült betölteni az egyéni mezőket."
 msgid "Couldn't map \"{draft}\" to a MIME type. Type the MIME directly."
 msgstr "Nem sikerült \"{draft}\" értéket MIME-típushoz rendelni. Add meg közvetlenül a MIME-típust."
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:925
+#: packages/admin/src/components/ContentSettingsPanel.tsx:929
 msgid "Couldn't search bylines. Please try again."
 msgstr "Nem sikerült keresni a szerzők között. Próbáld újra."
 
@@ -1945,15 +1951,15 @@ msgstr "Nem sikerült keresni a szerzők között. Próbáld újra."
 msgid "Couldn't verify how many values reference \"{0}\". Deleting will still remove every stored value for this field — but the count above could not be checked."
 msgstr "Nem sikerült ellenőrizni, hány érték hivatkozik erre: \"{0}\". A törlés így is eltávolít minden ehhez a mezőhöz tartozó tárolt értéket — de a fenti darabszámot nem sikerült ellenőrizni."
 
-#: packages/admin/src/components/TaxonomyManager.tsx:844
+#: packages/admin/src/components/TaxonomyManager.tsx:1049
 msgid "Count"
 msgstr "Darab"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1057
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1061
 #: packages/admin/src/components/MenuList.tsx:178
 #: packages/admin/src/components/Redirects.tsx:192
 #: packages/admin/src/components/Sections.tsx:212
-#: packages/admin/src/components/TaxonomyManager.tsx:501
+#: packages/admin/src/components/TaxonomyManager.tsx:663
 #: packages/admin/src/components/Widgets.tsx:454
 #: packages/admin/src/routes/bylines.tsx:579
 msgid "Create"
@@ -1968,7 +1974,7 @@ msgid "Create a bullet list"
 msgstr "Felsorolás létrehozása"
 
 #. placeholder {0}: taxonomyDef.labelSingular?.toLowerCase() || "term"
-#: packages/admin/src/components/TaxonomyManager.tsx:383
+#: packages/admin/src/components/TaxonomyManager.tsx:545
 msgid "Create a new {0}"
 msgstr "Új {0} létrehozása"
 
@@ -1985,7 +1991,7 @@ msgstr "Fiók létrehozása"
 msgid "Create an account"
 msgstr "Fiók létrehozása"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1005
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1009
 #: packages/admin/src/routes/bylines.tsx:476
 msgid "Create byline"
 msgstr "Szerző létrehozása"
@@ -2052,8 +2058,8 @@ msgstr "Szakasz létrehozása"
 msgid "Create sections in the Sections library to use them here"
 msgstr "Hozz létre szakaszokat a Szakaszok könyvtárban, hogy itt használhasd őket"
 
-#: packages/admin/src/components/TaxonomyManager.tsx:620
-#: packages/admin/src/components/TaxonomyManager.tsx:711
+#: packages/admin/src/components/TaxonomyManager.tsx:782
+#: packages/admin/src/components/TaxonomyManager.tsx:873
 msgid "Create Taxonomy"
 msgstr "Taxonómia létrehozása"
 
@@ -2123,7 +2129,7 @@ msgid "Created {0}"
 msgstr "{0} létrehozva"
 
 #. placeholder {0}: result.locale?.toUpperCase() ?? t`new`
-#: packages/admin/src/router.tsx:1129
+#: packages/admin/src/router.tsx:1137
 msgid "Created {0} translation"
 msgstr "{0} fordítás létrehozva"
 
@@ -2135,12 +2141,12 @@ msgstr "Létrehozva"
 msgid "Creating collections and fields..."
 msgstr "Gyűjtemények és mezők létrehozása..."
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1057
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1061
 #: packages/admin/src/components/MenuList.tsx:178
 #: packages/admin/src/components/Redirects.tsx:189
 #: packages/admin/src/components/Sections.tsx:212
 #: packages/admin/src/components/settings/ApiTokenSettings.tsx:539
-#: packages/admin/src/components/TaxonomyManager.tsx:711
+#: packages/admin/src/components/TaxonomyManager.tsx:873
 #: packages/admin/src/components/TaxonomySidebar.tsx:308
 msgid "Creating..."
 msgstr "Létrehozás..."
@@ -2248,7 +2254,7 @@ msgstr "Alapértelmezett közösségi kép"
 msgid "Default Social Image"
 msgstr "Alapértelmezett közösségi kép"
 
-#: packages/admin/src/components/TaxonomyManager.tsx:623
+#: packages/admin/src/components/TaxonomyManager.tsx:785
 msgid "Define a new taxonomy for classifying content"
 msgstr "Új taxonómia meghatározása a tartalom osztályozásához"
 
@@ -2279,7 +2285,7 @@ msgstr "Kódban definiálva"
 #: packages/admin/src/components/Sections.tsx:308
 #: packages/admin/src/components/Sections.tsx:407
 #: packages/admin/src/components/settings/BackupSettings.tsx:352
-#: packages/admin/src/components/TaxonomyManager.tsx:908
+#: packages/admin/src/components/TaxonomyManager.tsx:1112
 #: packages/admin/src/components/Widgets.tsx:716
 #: packages/admin/src/routes/byline-schema.tsx:378
 #: packages/admin/src/routes/bylines.tsx:588
@@ -2299,7 +2305,7 @@ msgstr "Törlöd ezt: \"{0}\"? Ez nem vonható vissza."
 #: packages/admin/src/components/Sections.tsx:408
 #: packages/admin/src/components/settings/AllowedDomainsSettings.tsx:266
 #: packages/admin/src/components/settings/BackupSettings.tsx:312
-#: packages/admin/src/components/TaxonomyManager.tsx:117
+#: packages/admin/src/components/TaxonomyManager.tsx:280
 #: packages/admin/src/components/Widgets.tsx:817
 #: packages/admin/src/routes/byline-schema.tsx:458
 msgid "Delete {0}"
@@ -2321,7 +2327,7 @@ msgid "Delete {0} widget area"
 msgstr "{0} widgetterület törlése"
 
 #. placeholder {0}: taxonomyDef.labelSingular || "Term"
-#: packages/admin/src/components/TaxonomyManager.tsx:904
+#: packages/admin/src/components/TaxonomyManager.tsx:1108
 msgid "Delete {0}?"
 msgstr "{0} törlése?"
 
@@ -2441,7 +2447,7 @@ msgstr "\"{0}\" törlése az összes szerzői leírásból eltávolítja a hozz�
 #: packages/admin/src/components/Redirects.tsx:586
 #: packages/admin/src/components/Sections.tsx:309
 #: packages/admin/src/components/settings/BackupSettings.tsx:353
-#: packages/admin/src/components/TaxonomyManager.tsx:909
+#: packages/admin/src/components/TaxonomyManager.tsx:1113
 #: packages/admin/src/components/Widgets.tsx:717
 #: packages/admin/src/routes/bylines.tsx:625
 msgid "Deleting..."
@@ -2495,7 +2501,7 @@ msgstr "Írd le, mire való ez a szakasz..."
 msgid "Description"
 msgstr "Leírás"
 
-#: packages/admin/src/components/TaxonomyManager.tsx:456
+#: packages/admin/src/components/TaxonomyManager.tsx:618
 msgid "Description (optional)"
 msgstr "Leírás (opcionális)"
 
@@ -2625,8 +2631,8 @@ msgstr "Navigációs menü megjelenítése"
 msgid "Display category list"
 msgstr ""
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1008
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1070
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1012
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1074
 #: packages/admin/src/routes/bylines.tsx:481
 msgid "Display name"
 msgstr "Megjelenített név"
@@ -2691,7 +2697,7 @@ msgstr "Nincs még fiókod? <0>Regisztráció</0>"
 msgid "Done"
 msgstr "Kész"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:951
+#: packages/admin/src/components/ContentSettingsPanel.tsx:955
 msgid "Down"
 msgstr "Le"
 
@@ -2811,7 +2817,7 @@ msgstr "pl. CI/CD Pipeline"
 msgid "e.g., MacBook Pro, iPhone"
 msgstr "pl. MacBook Pro, iPhone"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:960
+#: packages/admin/src/components/ContentSettingsPanel.tsx:964
 #: packages/admin/src/components/editor/PluginBlockNode.tsx:367
 #: packages/admin/src/components/editor/PluginBlockNode.tsx:368
 #: packages/admin/src/components/MenuEditor.tsx:544
@@ -2827,8 +2833,8 @@ msgstr "Szerkesztés"
 #: packages/admin/src/components/ContentTypeList.tsx:220
 #: packages/admin/src/components/PortableTextEditor.tsx:1889
 #: packages/admin/src/components/settings/AllowedDomainsSettings.tsx:254
-#: packages/admin/src/components/TaxonomyManager.tsx:109
-#: packages/admin/src/components/TaxonomyManager.tsx:377
+#: packages/admin/src/components/TaxonomyManager.tsx:272
+#: packages/admin/src/components/TaxonomyManager.tsx:539
 #: packages/admin/src/routes/byline-schema.tsx:449
 #: packages/admin/src/routes/bylines.tsx:476
 msgid "Edit {0}"
@@ -2847,7 +2853,7 @@ msgstr ""
 msgid "Edit {title}"
 msgstr "{title} szerkesztése"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1067
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1071
 msgid "Edit byline"
 msgstr "Szerző szerkesztése"
 
@@ -3072,8 +3078,9 @@ msgstr "Add meg a WordPress weboldal URL-jét"
 #: packages/admin/src/components/MenuEditor.tsx:193
 #: packages/admin/src/components/MenuEditor.tsx:233
 #: packages/admin/src/components/SetupWizard.tsx:539
+#: packages/admin/src/components/TaxonomyManager.tsx:941
 #: packages/admin/src/components/Widgets.tsx:769
-#: packages/admin/src/router.tsx:2193
+#: packages/admin/src/router.tsx:2201
 msgid "Error"
 msgstr "Hiba"
 
@@ -3184,7 +3191,7 @@ msgstr "Nem sikerült admint létrehozni"
 msgid "Failed to create backup"
 msgstr ""
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1051
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1055
 msgid "Failed to create byline"
 msgstr "Nem sikerült a szerzőt létrehozni"
 
@@ -3208,14 +3215,14 @@ msgstr "Nem sikerült néhány gyűjteményt létrehozni"
 msgid "Failed to create term"
 msgstr "Nem sikerült kifejezést létrehozni"
 
-#: packages/admin/src/router.tsx:1134
+#: packages/admin/src/router.tsx:1142
 msgid "Failed to create translation"
 msgstr "Nem sikerült fordítást létrehozni"
 
 #: packages/admin/src/router.tsx:423
 #: packages/admin/src/router.tsx:452
 #: packages/admin/src/router.tsx:535
-#: packages/admin/src/router.tsx:1154
+#: packages/admin/src/router.tsx:1162
 msgid "Failed to delete"
 msgstr "Nem sikerült törölni"
 
@@ -3240,7 +3247,7 @@ msgid "Failed to delete collection"
 msgstr "Nem sikerült gyűjteményt törölni"
 
 #: packages/admin/src/lib/api/comments.ts:111
-#: packages/admin/src/router.tsx:1464
+#: packages/admin/src/router.tsx:1472
 msgid "Failed to delete comment"
 msgstr "Nem sikerült hozzászólást törölni"
 
@@ -3281,7 +3288,7 @@ msgstr "Nem sikerült átirányítást törölni"
 msgid "Failed to delete section"
 msgstr "Nem sikerült szakaszt törölni"
 
-#: packages/admin/src/lib/api/taxonomies.ts:201
+#: packages/admin/src/lib/api/taxonomies.ts:221
 msgid "Failed to delete term"
 msgstr "Nem sikerült kifejezést törölni"
 
@@ -3306,7 +3313,7 @@ msgstr "Nem sikerült keresést letiltani"
 msgid "Failed to disable user"
 msgstr "Nem sikerült felhasználót letiltani"
 
-#: packages/admin/src/router.tsx:1061
+#: packages/admin/src/router.tsx:1069
 msgid "Failed to discard changes"
 msgstr "Nem sikerült módosításokat elvetni"
 
@@ -3421,8 +3428,8 @@ msgstr "Nem sikerült kifejezéseket lekérni"
 #: packages/admin/src/lib/api/current-user.ts:22
 #: packages/admin/src/lib/api/users.ts:88
 #: packages/admin/src/lib/api/users.ts:93
-#: packages/admin/src/router.tsx:853
-#: packages/admin/src/router.tsx:1395
+#: packages/admin/src/router.tsx:862
+#: packages/admin/src/router.tsx:1403
 msgid "Failed to fetch user"
 msgstr "Nem sikerült felhasználót lekérni"
 
@@ -3533,7 +3540,7 @@ msgstr "Nem sikerült betölteni a felhasználókat: {0}"
 msgid "Failed to load widget"
 msgstr "Nem sikerült betölteni a widgetet"
 
-#: packages/admin/src/router.tsx:1489
+#: packages/admin/src/router.tsx:1497
 msgid "Failed to perform bulk action"
 msgstr "Nem sikerült tömeges műveletet végrehajtani"
 
@@ -3546,7 +3553,7 @@ msgid "Failed to prepare import"
 msgstr "Nem sikerült importot előkészíteni"
 
 #: packages/admin/src/router.tsx:491
-#: packages/admin/src/router.tsx:1022
+#: packages/admin/src/router.tsx:1030
 msgid "Failed to publish"
 msgstr "Nem sikerült publikálni"
 
@@ -3601,8 +3608,9 @@ msgstr "Az API tokent nem sikerült visszavonni"
 msgid "Failed to rewrite URLs"
 msgstr "URL-ek átírása nem sikerült"
 
-#: packages/admin/src/router.tsx:943
-#: packages/admin/src/router.tsx:1978
+#: packages/admin/src/router.tsx:670
+#: packages/admin/src/router.tsx:952
+#: packages/admin/src/router.tsx:1986
 msgid "Failed to save"
 msgstr "Nem sikerült a mentés"
 
@@ -3621,7 +3629,7 @@ msgstr "Nem sikerült a mezők mentése"
 msgid "Failed to save settings"
 msgstr "Nem sikerült a beállítások mentése"
 
-#: packages/admin/src/router.tsx:1082
+#: packages/admin/src/router.tsx:1090
 msgid "Failed to schedule"
 msgstr "Az ütemezés nem sikerült"
 
@@ -3652,11 +3660,11 @@ msgstr "Nem sikerült bejegyzés kifejezéseit beállítani"
 msgid "Failed to uninstall plugin"
 msgstr "Nem sikerült a plugin eltávolítása"
 
-#: packages/admin/src/router.tsx:1040
+#: packages/admin/src/router.tsx:1048
 msgid "Failed to unpublish"
 msgstr "Nem sikerült a közzététel visszavonása"
 
-#: packages/admin/src/router.tsx:1103
+#: packages/admin/src/router.tsx:1111
 msgid "Failed to unschedule"
 msgstr "Nem sikerült az ütemezés törlése"
 
@@ -3673,7 +3681,7 @@ msgstr "Nem sikerült frissíteni: {0}"
 msgid "Failed to update backup settings"
 msgstr ""
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1101
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1105
 msgid "Failed to update byline"
 msgstr "Nem sikerült a szerzőt frissíteni"
 
@@ -3710,7 +3718,7 @@ msgstr "Nem sikerült a szakasz frissítése"
 msgid "Failed to update settings"
 msgstr "Nem sikerült frissíteni a beállításokat"
 
-#: packages/admin/src/router.tsx:1448
+#: packages/admin/src/router.tsx:1456
 msgid "Failed to update status"
 msgstr "Nem sikerült frissíteni az állapotot"
 
@@ -3908,7 +3916,7 @@ msgstr "Általános"
 msgid "General Settings"
 msgstr "Általános beállítások"
 
-#: packages/admin/src/components/TaxonomyManager.tsx:648
+#: packages/admin/src/components/TaxonomyManager.tsx:810
 msgid "Genres"
 msgstr "Műfajok"
 
@@ -3929,7 +3937,7 @@ msgid "Go"
 msgstr "Go"
 
 #: packages/admin/src/components/WordPressImport.tsx:2418
-#: packages/admin/src/router.tsx:2213
+#: packages/admin/src/router.tsx:2221
 msgid "Go to Dashboard"
 msgstr "Ugrás a vezérlőpultra"
 
@@ -4016,8 +4024,8 @@ msgstr "Hero banner"
 msgid "hero, banner, cta"
 msgstr "hero, banner, cta"
 
-#: packages/admin/src/components/SeoPanel.tsx:230
-#: packages/admin/src/components/SeoPanel.tsx:233
+#: packages/admin/src/components/SeoPanel.tsx:242
+#: packages/admin/src/components/SeoPanel.tsx:245
 msgid "Hide from search engines"
 msgstr "Elrejtés a keresők elől"
 
@@ -4026,7 +4034,7 @@ msgstr "Elrejtés a keresők elől"
 msgid "Hide token"
 msgstr "Token elrejtése"
 
-#: packages/admin/src/components/TaxonomyManager.tsx:671
+#: packages/admin/src/components/TaxonomyManager.tsx:833
 msgid "Hierarchical (like categories, with parent/child relationships)"
 msgstr "Hierarchikus (mint a kategóriák, szülő-gyermek kapcsolatokkal)"
 
@@ -4465,7 +4473,7 @@ msgstr "JSX"
 msgid "Keep this tab open. The import runs in small steps and can be safely re-run if interrupted."
 msgstr ""
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:930
+#: packages/admin/src/components/ContentSettingsPanel.tsx:934
 msgid "Keep typing to narrow down more bylines."
 msgstr "Gépelj tovább a szerzők szűréséhez."
 
@@ -4485,7 +4493,7 @@ msgstr "Kotlin"
 #: packages/admin/src/components/MenuEditor.tsx:416
 #: packages/admin/src/components/MenuEditor.tsx:593
 #: packages/admin/src/components/MenuList.tsx:169
-#: packages/admin/src/components/TaxonomyManager.tsx:645
+#: packages/admin/src/components/TaxonomyManager.tsx:807
 #: packages/admin/src/components/Widgets.tsx:436
 #: packages/admin/src/routes/byline-schema.tsx:234
 msgid "Label"
@@ -4636,7 +4644,7 @@ msgstr "Továbbiak betöltése"
 msgid "Load More"
 msgstr "Továbbiak betöltése"
 
-#: packages/admin/src/router.tsx:2168
+#: packages/admin/src/router.tsx:2176
 msgid "Loading"
 msgstr ""
 
@@ -4652,8 +4660,8 @@ msgstr "Gyűjtemények betöltése..."
 msgid "Loading comments..."
 msgstr "Hozzászólások betöltése..."
 
-#: packages/admin/src/router.tsx:2170
-#: packages/admin/src/router.tsx:2182
+#: packages/admin/src/router.tsx:2178
+#: packages/admin/src/router.tsx:2190
 msgid "Loading configuration..."
 msgstr "Konfiguráció betöltése..."
 
@@ -4697,7 +4705,7 @@ msgstr "Beállítások betöltése..."
 msgid "Loading setup..."
 msgstr "Beállítás betöltése..."
 
-#: packages/admin/src/components/TaxonomyManager.tsx:849
+#: packages/admin/src/components/TaxonomyManager.tsx:1054
 msgid "Loading terms..."
 msgstr "Kifejezések betöltése..."
 
@@ -4720,7 +4728,7 @@ msgstr "Widgetek betöltése..."
 #: packages/admin/src/components/settings/BackupSettings.tsx:154
 #: packages/admin/src/components/settings/EmailSettings.tsx:69
 #: packages/admin/src/components/settings/SecuritySettings.tsx:99
-#: packages/admin/src/components/TaxonomyManager.tsx:803
+#: packages/admin/src/components/TaxonomyManager.tsx:1008
 #: packages/admin/src/components/ThemeMarketplaceBrowse.tsx:170
 #: packages/admin/src/components/ThemeMarketplaceBrowse.tsx:244
 #: packages/admin/src/components/ThemeMarketplaceDetail.tsx:143
@@ -4771,7 +4779,7 @@ msgstr "Hosszú szöveg"
 msgid "Lowercase letters, numbers, and hyphens only"
 msgstr "Csak kisbetűk, számok és kötőjelek"
 
-#: packages/admin/src/components/TaxonomyManager.tsx:663
+#: packages/admin/src/components/TaxonomyManager.tsx:825
 msgid "Lowercase letters, numbers, and underscores only, starting with a letter"
 msgstr "Csak kisbetűk, számok és aláhúzások, betűvel kezdve"
 
@@ -4795,11 +4803,11 @@ msgstr "Kezelés"
 
 #. placeholder {0}: taxonomyDef.label.toLowerCase()
 #. placeholder {1}: taxonomyDef.collections.join(", ")
-#: packages/admin/src/components/TaxonomyManager.tsx:820
+#: packages/admin/src/components/TaxonomyManager.tsx:1025
 msgid "Manage {0} for {1}"
 msgstr "{0} kezelése ehhez: {1}"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:892
+#: packages/admin/src/components/ContentSettingsPanel.tsx:896
 msgid "Manage bylines in {entryLocale}"
 msgstr "Szerzői sorok kezelése ezen a nyelven: {entryLocale}"
 
@@ -5000,8 +5008,8 @@ msgstr "Menük ({0})"
 msgid "Menus Manage"
 msgstr "Menük kezelése"
 
-#: packages/admin/src/components/SeoPanel.tsx:188
-#: packages/admin/src/components/SeoPanel.tsx:192
+#: packages/admin/src/components/SeoPanel.tsx:199
+#: packages/admin/src/components/SeoPanel.tsx:203
 msgid "Meta Description"
 msgstr "Meta leírás"
 
@@ -5079,6 +5087,26 @@ msgstr "\"{0}\" mozgatása fel"
 msgid "Move \"{title}\" to trash? You can restore it later."
 msgstr "Áthelyezed a kukába ezt: \"{title}\"? Később visszaállíthatod."
 
+#. placeholder {0}: term.label
+#: packages/admin/src/components/TaxonomyManager.tsx:251
+msgid "Move {0} down"
+msgstr ""
+
+#. placeholder {0}: term.label
+#: packages/admin/src/components/TaxonomyManager.tsx:250
+msgid "Move {0} down — unavailable, its parent has no translation in this locale"
+msgstr ""
+
+#. placeholder {0}: term.label
+#: packages/admin/src/components/TaxonomyManager.tsx:238
+msgid "Move {0} up"
+msgstr ""
+
+#. placeholder {0}: term.label
+#: packages/admin/src/components/TaxonomyManager.tsx:237
+msgid "Move {0} up — unavailable, its parent has no translation in this locale"
+msgstr ""
+
 #: packages/admin/src/components/ContentList.tsx:1051
 msgid "Move {title} to trash"
 msgstr "{title} áthelyezése a kukába"
@@ -5093,14 +5121,14 @@ msgstr ""
 
 #: packages/admin/src/components/ContentList.tsx:473
 #: packages/admin/src/components/ContentList.tsx:1073
-#: packages/admin/src/components/ContentSettingsPanel.tsx:717
-#: packages/admin/src/components/ContentSettingsPanel.tsx:737
+#: packages/admin/src/components/ContentSettingsPanel.tsx:721
+#: packages/admin/src/components/ContentSettingsPanel.tsx:741
 msgid "Move to Trash"
 msgstr "Áthelyezés a kukába"
 
 #: packages/admin/src/components/ContentList.tsx:451
 #: packages/admin/src/components/ContentList.tsx:1058
-#: packages/admin/src/components/ContentSettingsPanel.tsx:722
+#: packages/admin/src/components/ContentSettingsPanel.tsx:726
 msgid "Move to Trash?"
 msgstr "Áthelyezés a kukába?"
 
@@ -5135,20 +5163,20 @@ msgstr "My Awesome Blog"
 #: packages/admin/src/components/ContentTypeList.tsx:96
 #: packages/admin/src/components/MarketplaceBrowse.tsx:45
 #: packages/admin/src/components/MenuList.tsx:157
-#: packages/admin/src/components/TaxonomyManager.tsx:405
-#: packages/admin/src/components/TaxonomyManager.tsx:654
-#: packages/admin/src/components/TaxonomyManager.tsx:843
+#: packages/admin/src/components/TaxonomyManager.tsx:567
+#: packages/admin/src/components/TaxonomyManager.tsx:816
+#: packages/admin/src/components/TaxonomyManager.tsx:1048
 #: packages/admin/src/components/ThemeMarketplaceBrowse.tsx:37
 #: packages/admin/src/components/users/UserDetail.tsx:148
 #: packages/admin/src/components/Widgets.tsx:430
 msgid "Name"
 msgstr "Név"
 
-#: packages/admin/src/components/TaxonomyManager.tsx:580
+#: packages/admin/src/components/TaxonomyManager.tsx:742
 msgid "Name and label are required"
 msgstr "A név és a címke kötelező"
 
-#: packages/admin/src/components/TaxonomyManager.tsx:586
+#: packages/admin/src/components/TaxonomyManager.tsx:748
 msgid "Name must start with a letter and contain only lowercase letters, numbers, and underscores"
 msgstr "A névnek betűvel kell kezdődnie, és csak kisbetűket, számokat és aláhúzásokat tartalmazhat"
 
@@ -5161,7 +5189,7 @@ msgstr "Navigáció"
 msgid "Never"
 msgstr "Soha"
 
-#: packages/admin/src/router.tsx:1129
+#: packages/admin/src/router.tsx:1137
 msgid "new"
 msgstr "új"
 
@@ -5216,7 +5244,7 @@ msgstr "Új szakasz"
 msgid "new tab"
 msgstr "új lap"
 
-#: packages/admin/src/components/TaxonomyManager.tsx:833
+#: packages/admin/src/components/TaxonomyManager.tsx:1038
 msgid "New Taxonomy"
 msgstr "Új taxonómia"
 
@@ -5232,7 +5260,7 @@ msgstr "Új ablak"
 msgid "Newest"
 msgstr "Legújabb"
 
-#: packages/admin/src/components/TaxonomyManager.tsx:408
+#: packages/admin/src/components/TaxonomyManager.tsx:570
 msgid "News"
 msgstr "Hírek"
 
@@ -5269,7 +5297,7 @@ msgid "No {0} yet."
 msgstr "Még nincs {0}."
 
 #. placeholder {0}: taxonomyDef.label.toLowerCase()
-#: packages/admin/src/components/TaxonomyManager.tsx:852
+#: packages/admin/src/components/TaxonomyManager.tsx:1057
 msgid "No {0} yet. Create one to get started."
 msgstr "Még nincs {0}. Hozz létre egyet a kezdéshez."
 
@@ -5294,7 +5322,7 @@ msgstr "Még nincs jóváhagyott hozzászólás."
 msgid "No byline fields yet."
 msgstr "Még nincsenek szerzői sor mezők."
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:884
+#: packages/admin/src/components/ContentSettingsPanel.tsx:888
 msgid "No bylines available in {entryLocale}. Create a variant from the Bylines page before crediting one on this entry."
 msgstr "Nincs elérhető szerző ezen a nyelven: {entryLocale}. Hozz létre egy változatot a Szerzők oldalon, mielőtt hozzárendelnéd ehhez a bejegyzéshez."
 
@@ -5302,7 +5330,7 @@ msgstr "Nincs elérhető szerző ezen a nyelven: {entryLocale}. Hozz létre egy 
 msgid "No bylines found"
 msgstr "Nem találhatók szerzők"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:992
+#: packages/admin/src/components/ContentSettingsPanel.tsx:996
 msgid "No bylines selected."
 msgstr "Nincs kiválasztott szerző."
 
@@ -5400,7 +5428,7 @@ msgstr "Nincs szerzőhöz kapcsolt felhasználó"
 msgid "No matches"
 msgstr "Nincs találat"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:927
+#: packages/admin/src/components/ContentSettingsPanel.tsx:931
 msgid "No matching bylines."
 msgstr "Nincs megfelelő szerző."
 
@@ -5553,8 +5581,8 @@ msgstr "Még nincsenek widgetterületek. Hozz létre egyet a kezdéshez."
 msgid "None"
 msgstr "Nincs"
 
-#: packages/admin/src/components/TaxonomyManager.tsx:434
-#: packages/admin/src/components/TaxonomyManager.tsx:443
+#: packages/admin/src/components/TaxonomyManager.tsx:596
+#: packages/admin/src/components/TaxonomyManager.tsx:605
 msgid "None (top level)"
 msgstr "Nincs (felső szint)"
 
@@ -5654,7 +5682,7 @@ msgstr "Opcionális képaláírás a kép alatt"
 msgid "Optional caption for display"
 msgstr "Opcionális megjelenített képaláírás"
 
-#: packages/admin/src/components/TaxonomyManager.tsx:459
+#: packages/admin/src/components/TaxonomyManager.tsx:621
 msgid "Optional description"
 msgstr "Opcionális leírás"
 
@@ -5704,12 +5732,12 @@ msgstr "Sorrend mentve"
 msgid "Original:"
 msgstr "Eredeti:"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:684
+#: packages/admin/src/components/ContentSettingsPanel.tsx:688
 #: packages/admin/src/components/editor/DocumentOutline.tsx:191
 msgid "Outline"
 msgstr "Dokumentum struktúra"
 
-#: packages/admin/src/components/SeoPanel.tsx:164
+#: packages/admin/src/components/SeoPanel.tsx:174
 msgid "Overrides the page title in search engine results"
 msgstr "Felülírja az oldal címét a keresési találatokban"
 
@@ -5722,7 +5750,7 @@ msgstr "Tulajdonjog"
 msgid "Package"
 msgstr "Csomag"
 
-#: packages/admin/src/router.tsx:2208
+#: packages/admin/src/router.tsx:2216
 msgid "Page Not Found"
 msgstr "Az oldal nem található"
 
@@ -5736,7 +5764,7 @@ msgid "Paragraph"
 msgstr "Bekezdés"
 
 #: packages/admin/src/components/MenuEditor.tsx:615
-#: packages/admin/src/components/TaxonomyManager.tsx:430
+#: packages/admin/src/components/TaxonomyManager.tsx:592
 msgid "Parent"
 msgstr "Szülő"
 
@@ -6004,7 +6032,7 @@ msgstr "Pluginek"
 msgid "Point-in-Time Restore"
 msgstr ""
 
-#: packages/admin/src/components/SeoPanel.tsx:208
+#: packages/admin/src/components/SeoPanel.tsx:220
 msgid "Points search engines to the original version of this page, if it's duplicated from another URL"
 msgstr "A keresőmotorokat az oldal eredeti verziójára irányítja, ha az oldal egy másik URL-ről duplikált"
 
@@ -6097,7 +6125,7 @@ msgid "Publish date"
 msgstr ""
 
 #: packages/admin/src/components/ContentList.tsx:747
-#: packages/admin/src/router.tsx:1018
+#: packages/admin/src/router.tsx:1026
 msgid "Published"
 msgstr "Publikálva"
 
@@ -6122,7 +6150,7 @@ msgstr "Publikálta"
 msgid "Python"
 msgstr "Python"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1000
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1004
 msgid "Quick create byline"
 msgstr "Szerző gyors létrehozása"
 
@@ -6262,7 +6290,7 @@ msgstr "A kiadás túl új a telepítéshez"
 
 #: packages/admin/src/components/BlockKitMediaPickerField.tsx:84
 #: packages/admin/src/components/BlockKitMediaPickerField.tsx:115
-#: packages/admin/src/components/ContentSettingsPanel.tsx:969
+#: packages/admin/src/components/ContentSettingsPanel.tsx:973
 #: packages/admin/src/components/editor/ImageDetailPanel.tsx:199
 #: packages/admin/src/components/PortableTextEditor.tsx:4129
 #: packages/admin/src/components/settings/GeneralSettings.tsx:229
@@ -6469,7 +6497,7 @@ msgstr "Visszaállítás..."
 #: packages/admin/src/components/MarketplaceBrowse.tsx:143
 #: packages/admin/src/components/PluginFieldErrorBoundary.tsx:44
 #: packages/admin/src/components/ThemeMarketplaceBrowse.tsx:122
-#: packages/admin/src/router.tsx:2196
+#: packages/admin/src/router.tsx:2204
 #: packages/admin/src/routes/byline-schema.tsx:280
 msgid "Retry"
 msgstr "Újrapróbálkozás"
@@ -6478,7 +6506,7 @@ msgstr "Újrapróbálkozás"
 msgid "Reusable content blocks you can insert into any content"
 msgstr "Bármely tartalomba beszúrható újrahasznosítható tartalomblokkok"
 
-#: packages/admin/src/router.tsx:1056
+#: packages/admin/src/router.tsx:1064
 msgid "Reverted to published version"
 msgstr "Visszaállítva a publikált verzióra"
 
@@ -6494,7 +6522,7 @@ msgstr "Új engedélyek áttekintése"
 msgid "Revision restored"
 msgstr "Verzió visszaállítva"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:692
+#: packages/admin/src/components/ContentSettingsPanel.tsx:696
 #: packages/admin/src/components/ContentTypeEditor.tsx:76
 #: packages/admin/src/components/RevisionHistory.tsx:168
 msgid "Revisions"
@@ -6556,7 +6584,7 @@ msgstr "Szerepkör"
 msgid "Role {role}"
 msgstr "Szerepkör: {role}"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:974
+#: packages/admin/src/components/ContentSettingsPanel.tsx:978
 msgid "Role label"
 msgstr "Szerepkörcímke"
 
@@ -6582,7 +6610,7 @@ msgstr "Rust"
 msgid "Same window"
 msgstr "Azonos ablak"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1107
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1111
 #: packages/admin/src/components/editor/ImageDetailPanel.tsx:395
 #: packages/admin/src/components/editor/ImageDetailPanel.tsx:589
 #: packages/admin/src/components/editor/ImageNode.tsx:264
@@ -6634,7 +6662,7 @@ msgstr "Mentve"
 msgid "Saved \"{0}\"."
 msgstr "\"{0}\" mentve."
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1107
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1111
 #: packages/admin/src/components/FieldEditor.tsx:660
 #: packages/admin/src/components/MediaDetailPanel.tsx:425
 #: packages/admin/src/components/MenuEditor.tsx:626
@@ -6642,7 +6670,7 @@ msgstr "\"{0}\" mentve."
 #: packages/admin/src/components/PluginSettings.tsx:209
 #: packages/admin/src/components/Redirects.tsx:188
 #: packages/admin/src/components/SaveButton.tsx:33
-#: packages/admin/src/components/TaxonomyManager.tsx:498
+#: packages/admin/src/components/TaxonomyManager.tsx:660
 #: packages/admin/src/components/users/UserDetail.tsx:311
 #: packages/admin/src/components/Widgets.tsx:983
 #: packages/admin/src/routes/bylines.tsx:579
@@ -6676,7 +6704,7 @@ msgstr "Ütemezés későbbre"
 
 #: packages/admin/src/components/ContentList.tsx:738
 #: packages/admin/src/components/ContentStatusBadge.tsx:63
-#: packages/admin/src/router.tsx:1076
+#: packages/admin/src/router.tsx:1084
 msgid "Scheduled"
 msgstr "Ütemezve"
 
@@ -6765,12 +6793,12 @@ msgstr "Keresés fájlnév alapján..."
 msgid "Search by name or email..."
 msgstr "Keresés név vagy e-mail alapján..."
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:901
+#: packages/admin/src/components/ContentSettingsPanel.tsx:905
 #: packages/admin/src/routes/bylines.tsx:401
 msgid "Search bylines"
 msgstr "Szerzők keresése"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:900
+#: packages/admin/src/components/ContentSettingsPanel.tsx:904
 msgid "Search bylines to add..."
 msgstr "Szerző keresése..."
 
@@ -6849,7 +6877,7 @@ msgstr "Keresés..."
 msgid "Searchable"
 msgstr "Kereshető"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:905
+#: packages/admin/src/components/ContentSettingsPanel.tsx:909
 msgid "Searching..."
 msgstr "Keresés..."
 
@@ -7113,8 +7141,8 @@ msgstr "SEO beállítások (Yoast)"
 msgid "SEO settings saved"
 msgstr "SEO beállítások mentve"
 
-#: packages/admin/src/components/SeoPanel.tsx:168
-#: packages/admin/src/components/SeoPanel.tsx:172
+#: packages/admin/src/components/SeoPanel.tsx:178
+#: packages/admin/src/components/SeoPanel.tsx:182
 msgid "SEO Title"
 msgstr "SEO cím"
 
@@ -7336,8 +7364,8 @@ msgstr "Kihagyva"
 
 #: packages/admin/src/components/BylineFieldEditor.tsx:239
 #: packages/admin/src/components/ContentSettingsPanel.tsx:462
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1016
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1078
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1020
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1082
 #: packages/admin/src/components/ContentTypeEditor.tsx:111
 #: packages/admin/src/components/ContentTypeEditor.tsx:402
 #: packages/admin/src/components/ContentTypeList.tsx:99
@@ -7345,7 +7373,7 @@ msgstr "Kihagyva"
 #: packages/admin/src/components/FieldEditor.tsx:418
 #: packages/admin/src/components/SectionEditor.tsx:259
 #: packages/admin/src/components/Sections.tsx:184
-#: packages/admin/src/components/TaxonomyManager.tsx:414
+#: packages/admin/src/components/TaxonomyManager.tsx:576
 #: packages/admin/src/routes/byline-schema.tsx:237
 #: packages/admin/src/routes/bylines.tsx:486
 msgid "Slug"
@@ -7568,7 +7596,7 @@ msgstr "Címkék ({0})"
 msgid "Target"
 msgstr "Cél"
 
-#: packages/admin/src/components/TaxonomyManager.tsx:192
+#: packages/admin/src/components/TaxonomyManager.tsx:354
 msgid "Target locale"
 msgstr "Célnyelv"
 
@@ -7581,15 +7609,15 @@ msgstr "Taxonómiák"
 msgid "Taxonomies Manage"
 msgstr "Taxonómiák kezelése"
 
-#: packages/admin/src/components/TaxonomyManager.tsx:920
+#: packages/admin/src/components/TaxonomyManager.tsx:1124
 msgid "Taxonomy created"
 msgstr "Taxonómia létrehozva"
 
-#: packages/admin/src/components/TaxonomyManager.tsx:809
+#: packages/admin/src/components/TaxonomyManager.tsx:1014
 msgid "Taxonomy not found:"
 msgstr "Taxonómia nem található:"
 
-#: packages/admin/src/components/TaxonomyManager.tsx:179
+#: packages/admin/src/components/TaxonomyManager.tsx:341
 msgid "Taxonomy: {taxonomyName}"
 msgstr "Taxonómia: {taxonomyName}"
 
@@ -7597,19 +7625,19 @@ msgstr "Taxonómia: {taxonomyName}"
 msgid "Template:"
 msgstr "Sablon:"
 
-#: packages/admin/src/components/TaxonomyManager.tsx:377
-#: packages/admin/src/components/TaxonomyManager.tsx:378
-#: packages/admin/src/components/TaxonomyManager.tsx:836
+#: packages/admin/src/components/TaxonomyManager.tsx:539
+#: packages/admin/src/components/TaxonomyManager.tsx:540
+#: packages/admin/src/components/TaxonomyManager.tsx:1041
 msgid "Term"
 msgstr "Kifejezés"
 
 #. placeholder {0}: term.label
 #. placeholder {1}: term.locale.toUpperCase()
-#: packages/admin/src/components/TaxonomyManager.tsx:783
+#: packages/admin/src/components/TaxonomyManager.tsx:988
 msgid "Term \"{0}\" created in {1}."
 msgstr "\"{0}\" kifejezés létrehozva itt: {1}."
 
-#: packages/admin/src/components/TaxonomyManager.tsx:765
+#: packages/admin/src/components/TaxonomyManager.tsx:928
 msgid "Term deleted"
 msgstr "Kifejezés törölve"
 
@@ -7654,7 +7682,7 @@ msgstr "A menü törölve lett."
 msgid "The name of your site, used in the header and metadata"
 msgstr "A weboldal neve, amely a fejlécben és a metaadatokban jelenik meg"
 
-#: packages/admin/src/router.tsx:2210
+#: packages/admin/src/router.tsx:2218
 msgid "The page you're looking for doesn't exist."
 msgstr "A keresett oldal nem létezik."
 
@@ -7798,12 +7826,12 @@ msgstr "Ez törli a widgetterületet és az összes widgetjét. A művelet nem v
 msgid "This will grant CLI access with your permissions."
 msgstr "Ez CLI-hozzáférést ad a te engedélyeiddel."
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:724
+#: packages/admin/src/components/ContentSettingsPanel.tsx:728
 msgid "This will move the item to trash. You can restore it later from the trash."
 msgstr "Ez az elemet a kukába helyezi. Később visszaállíthatod a kukából."
 
 #. placeholder {0}: deleteTarget?.label
-#: packages/admin/src/components/TaxonomyManager.tsx:906
+#: packages/admin/src/components/TaxonomyManager.tsx:1110
 msgid "This will permanently delete \"{0}\" and remove it from all content."
 msgstr "Ez véglegesen törli ezt: \"{0}\", és eltávolítja minden tartalomból."
 
@@ -7908,30 +7936,30 @@ msgstr "Tartalomtörténet követése"
 msgid "Translatable"
 msgstr "Fordítható"
 
-#: packages/admin/src/components/TaxonomyManager.tsx:103
-#: packages/admin/src/components/TaxonomyManager.tsx:214
+#: packages/admin/src/components/TaxonomyManager.tsx:266
+#: packages/admin/src/components/TaxonomyManager.tsx:376
 #: packages/admin/src/components/TranslationsPanel.tsx:104
 msgid "Translate"
 msgstr "Fordítás"
 
 #. placeholder {0}: term.label
-#: packages/admin/src/components/TaxonomyManager.tsx:176
+#: packages/admin/src/components/TaxonomyManager.tsx:338
 msgid "Translate \"{0}\""
 msgstr "\"{0}\" fordítása"
 
 #. placeholder {0}: term.label
-#: packages/admin/src/components/TaxonomyManager.tsx:100
+#: packages/admin/src/components/TaxonomyManager.tsx:263
 msgid "Translate {0}"
 msgstr "{0} fordítása"
 
-#: packages/admin/src/components/TaxonomyManager.tsx:214
+#: packages/admin/src/components/TaxonomyManager.tsx:376
 #: packages/admin/src/components/TranslationsPanel.tsx:104
 msgid "Translating..."
 msgstr "Fordítás..."
 
 #: packages/admin/src/components/MenuEditor.tsx:143
-#: packages/admin/src/components/TaxonomyManager.tsx:782
-#: packages/admin/src/router.tsx:1128
+#: packages/admin/src/components/TaxonomyManager.tsx:987
+#: packages/admin/src/router.tsx:1136
 msgid "Translation created"
 msgstr "Fordítás létrehozva"
 
@@ -8044,8 +8072,8 @@ msgstr "TypeScript"
 msgid "Unable to reach marketplace"
 msgstr "A piactér nem érhető el"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1121
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1138
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1125
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1142
 msgid "Unassigned"
 msgstr "Nincs hozzárendelve"
 
@@ -8110,7 +8138,7 @@ msgstr "Névtelen passkey"
 msgid "Unpublish {itemLabel}"
 msgstr ""
 
-#: packages/admin/src/router.tsx:1036
+#: packages/admin/src/router.tsx:1044
 msgid "Unpublished"
 msgstr "Nincs publikálva"
 
@@ -8122,7 +8150,7 @@ msgstr "Nem regisztrált tartalomtáblák találhatók"
 msgid "Unschedule"
 msgstr "Ütemezés törlése"
 
-#: packages/admin/src/router.tsx:1097
+#: packages/admin/src/router.tsx:1105
 msgid "Unscheduled"
 msgstr "Nincs ütemezve"
 
@@ -8148,11 +8176,11 @@ msgstr "Cím nélküli widget"
 msgid "Unverified publisher"
 msgstr "Nem ellenőrzött kiadó"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:948
+#: packages/admin/src/components/ContentSettingsPanel.tsx:952
 msgid "Up"
 msgstr "Fel"
 
-#: packages/admin/src/components/TaxonomyManager.tsx:500
+#: packages/admin/src/components/TaxonomyManager.tsx:662
 msgid "Update"
 msgstr "Frissítés"
 
@@ -8174,7 +8202,7 @@ msgid "Update site settings"
 msgstr "Weboldalbeállítások frissítése"
 
 #. placeholder {0}: taxonomyDef.labelSingular?.toLowerCase() || "term"
-#: packages/admin/src/components/TaxonomyManager.tsx:382
+#: packages/admin/src/components/TaxonomyManager.tsx:544
 msgid "Update the {0} details"
 msgstr "{0} adatainak frissítése"
 
@@ -8345,7 +8373,7 @@ msgstr "Használd a regisztrált passkeyedet a biztonságos bejelentkezéshez."
 msgid "Used as the fallback Open Graph image when a page has none. Recommended size: 1200×630."
 msgstr "Tartalék Open Graph képként használatos, ha az oldalhoz nincs kép megadva. Ajánlott méret: 1200×630."
 
-#: packages/admin/src/components/TaxonomyManager.tsx:666
+#: packages/admin/src/components/TaxonomyManager.tsx:828
 msgid "Used as the identifier. Lowercase letters, numbers, and underscores only."
 msgstr "Azonosítóként használatos. Csak kisbetűk, számok és aláhúzások."
 
@@ -8568,7 +8596,7 @@ msgstr "A bejegyzés utolsó módosításának ideje"
 msgid "When the entry was published"
 msgstr "A bejegyzés publikálásának ideje"
 
-#: packages/admin/src/components/TaxonomyManager.tsx:680
+#: packages/admin/src/components/TaxonomyManager.tsx:842
 msgid "Which content types can use this taxonomy"
 msgstr "Mely tartalomtípusok használhatják ezt a taxonómiát"
 
@@ -8580,19 +8608,19 @@ msgstr "Egész szám"
 msgid "Why can't this be changed?"
 msgstr ""
 
-#: packages/admin/src/components/SeoPanel.tsx:209
+#: packages/admin/src/components/SeoPanel.tsx:221
 msgid "Why is this important for duplicate pages?"
 msgstr ""
 
-#: packages/admin/src/components/SeoPanel.tsx:185
+#: packages/admin/src/components/SeoPanel.tsx:196
 msgid "Why is this important for search result summaries?"
 msgstr ""
 
-#: packages/admin/src/components/SeoPanel.tsx:165
+#: packages/admin/src/components/SeoPanel.tsx:175
 msgid "Why is this important for search result titles?"
 msgstr ""
 
-#: packages/admin/src/components/SeoPanel.tsx:228
+#: packages/admin/src/components/SeoPanel.tsx:240
 msgid "Why is this important for search visibility?"
 msgstr ""
 
@@ -8744,7 +8772,7 @@ msgstr "Teljes hozzáférésed van a weboldal kezeléséhez, beleértve a felhas
 msgid "You need admin permissions to manage byline schema."
 msgstr "A szerzői sor sémájának kezeléséhez admin jogosultság szükséges."
 
-#: packages/admin/src/router.tsx:1505
+#: packages/admin/src/router.tsx:1513
 msgid "You need Editor permissions to moderate comments."
 msgstr "A hozzászólások moderálásához szerkesztői jogosultság szükséges."
 
