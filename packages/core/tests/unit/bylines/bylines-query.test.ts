@@ -205,6 +205,12 @@ describe("Byline query functions", () => {
 			}
 		});
 
+		it("returns an empty list on a database without the bylines table", async () => {
+			await db.schema.dropTable("_emdash_bylines").execute();
+
+			await expect(getBylines()).resolves.toEqual({ items: [] });
+		});
+
 		it("paginates with a cursor", async () => {
 			for (const displayName of ["Cara", "Alba", "Bruno"]) {
 				await bylineRepo.create({ slug: displayName.toLowerCase(), displayName });

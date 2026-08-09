@@ -154,7 +154,12 @@ export async function getBylines(
 		if (options.limit !== undefined) repoOptions.limit = options.limit;
 		if (options.cursor !== undefined) repoOptions.cursor = options.cursor;
 
-		return repo.findManyAlphabetical(repoOptions);
+		try {
+			return await repo.findManyAlphabetical(repoOptions);
+		} catch (error) {
+			if (isMissingTableError(error)) return { items: [] };
+			throw error;
+		}
 	});
 }
 
