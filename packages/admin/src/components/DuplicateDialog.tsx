@@ -55,6 +55,7 @@ export function DuplicateDialog({
 	const [mapping, setMapping] = React.useState<DuplicateFieldMapping>({});
 	const [saveMapping, setSaveMapping] = React.useState(false);
 	const [trashSource, setTrashSource] = React.useState(false);
+	const mappedPair = React.useRef<string | null>(null);
 
 	// Each run starts from a clean slate: `trashSource` is deliberately never
 	// persisted, and the mapping is re-resolved for the chosen pair.
@@ -62,6 +63,7 @@ export function DuplicateDialog({
 		if (!open) return;
 		setTarget(collection);
 		setMapping({});
+		mappedPair.current = null;
 		setSaveMapping(false);
 		setTrashSource(false);
 	}, [open, collection]);
@@ -80,8 +82,15 @@ export function DuplicateDialog({
 		enabled: open && target !== "",
 	});
 
+	// The resolved mapping seeds the selects once per collection pair. A refetch
+	// (the query goes stale after a minute, and returning to the tab revalidates
+	// it) must not throw away the pairings the user has since chosen.
 	React.useEffect(() => {
-		if (resolved) setMapping(resolved.mapping);
+		if (!resolved) return;
+		const pair = `${resolved.sourceCollection.slug}->${resolved.targetCollection.slug}`;
+		if (mappedPair.current === pair) return;
+		mappedPair.current = pair;
+		setMapping(resolved.mapping);
 	}, [resolved]);
 
 	const duplicateMutation = useMutation({
@@ -126,7 +135,14 @@ export function DuplicateDialog({
 
 	return (
 		<Dialog.Root open={open} onOpenChange={onOpenChange} disablePointerDismissal>
-			<Dialog className="flex max-h-[85vh] flex-col p-6" size="lg">
+			{/* `size="lg"` carries a 32rem minimum that beats any max-width, and Kumo's
+			    cap is in `vw`, which counts the scrollbar the dialog can't occupy. Both
+			    push the panel past the window edge, and in RTL the content sits against
+			    that edge. */}
+			<Dialog
+				className="flex max-h-[85vh] min-w-0 max-w-[calc(100%-2rem)] flex-col p-6 sm:min-w-[32rem]"
+				size="lg"
+			>
 				<Dialog.Title className="text-lg font-semibold">{t`Duplicate`}</Dialog.Title>
 				<Dialog.Description className="text-kumo-subtle">
 					{plural(ids.length, {

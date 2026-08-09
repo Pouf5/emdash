@@ -546,6 +546,7 @@ export async function handleContentDuplicateMany(
 			// can't end up copied with its source still in place.
 			if (
 				trashSource &&
+				actor &&
 				!canActOnOwn(actor, item.authorId ?? "", "content:delete_own", "content:delete_any")
 			) {
 				results.push({
