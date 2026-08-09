@@ -89,7 +89,7 @@ msgid "{0, plural, one {# comment imported} other {# comments imported}}"
 msgstr "{0, plural, one {# kommentar importerad} other {# kommentarer importerade}}"
 
 #. placeholder {0}: result.affected
-#: packages/admin/src/router.tsx:1484
+#: packages/admin/src/router.tsx:1492
 msgid "{0, plural, one {# comment updated} other {# comments updated}}"
 msgstr "{0, plural, one {# kommentar uppdaterad} other {# kommentarer uppdaterade}}"
 
@@ -306,7 +306,7 @@ msgid "{0}{1}"
 msgstr "{0}{1}"
 
 #. placeholder {0}: draft.description.length
-#: packages/admin/src/components/SeoPanel.tsx:195
+#: packages/admin/src/components/SeoPanel.tsx:206
 msgid "{0}/160 characters"
 msgstr "{0}/160 tecken"
 
@@ -569,7 +569,7 @@ msgstr "Acceptera inbjudan"
 msgid "Access denied"
 msgstr "Åtkomst nekad"
 
-#: packages/admin/src/router.tsx:1504
+#: packages/admin/src/router.tsx:1512
 msgid "Access Denied"
 msgstr "Åtkomst nekad"
 
@@ -613,7 +613,7 @@ msgid "Active"
 msgstr "Aktiv"
 
 #: packages/admin/src/components/AllowedTypesEditor.tsx:171
-#: packages/admin/src/components/ContentSettingsPanel.tsx:919
+#: packages/admin/src/components/ContentSettingsPanel.tsx:923
 #: packages/admin/src/components/MenuEditor.tsx:441
 #: packages/admin/src/components/TaxonomySidebar.tsx:496
 msgid "Add"
@@ -726,7 +726,7 @@ msgstr "Lägg till ny"
 msgid "Add new {0}"
 msgstr "Lägg till ny {0}"
 
-#: packages/admin/src/components/SeoPanel.tsx:227
+#: packages/admin/src/components/SeoPanel.tsx:239
 msgid "Add noindex meta tag"
 msgstr "Lägg till noindex-metatagg"
 
@@ -963,19 +963,20 @@ msgstr "Alternativt kan du exportera från WordPress (Verktyg → Exportera) och
 #: packages/admin/src/router.tsx:439
 #: packages/admin/src/router.tsx:453
 #: packages/admin/src/router.tsx:467
-#: packages/admin/src/router.tsx:944
-#: packages/admin/src/router.tsx:1005
-#: packages/admin/src/router.tsx:1023
-#: packages/admin/src/router.tsx:1041
-#: packages/admin/src/router.tsx:1062
-#: packages/admin/src/router.tsx:1083
-#: packages/admin/src/router.tsx:1104
-#: packages/admin/src/router.tsx:1135
-#: packages/admin/src/router.tsx:1155
-#: packages/admin/src/router.tsx:1449
-#: packages/admin/src/router.tsx:1465
-#: packages/admin/src/router.tsx:1490
-#: packages/admin/src/router.tsx:1979
+#: packages/admin/src/router.tsx:671
+#: packages/admin/src/router.tsx:953
+#: packages/admin/src/router.tsx:1013
+#: packages/admin/src/router.tsx:1031
+#: packages/admin/src/router.tsx:1049
+#: packages/admin/src/router.tsx:1070
+#: packages/admin/src/router.tsx:1091
+#: packages/admin/src/router.tsx:1112
+#: packages/admin/src/router.tsx:1143
+#: packages/admin/src/router.tsx:1163
+#: packages/admin/src/router.tsx:1457
+#: packages/admin/src/router.tsx:1473
+#: packages/admin/src/router.tsx:1498
+#: packages/admin/src/router.tsx:1987
 #: packages/admin/src/routes/byline-schema.tsx:103
 #: packages/admin/src/routes/byline-schema.tsx:123
 #: packages/admin/src/routes/byline-schema.tsx:139
@@ -1121,7 +1122,7 @@ msgstr "Autentiseringen avbröts eller tog för lång tid. Försök igen."
 
 #: packages/admin/src/components/comments/CommentDetail.tsx:77
 #: packages/admin/src/components/comments/CommentInbox.tsx:288
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1129
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1133
 #: packages/admin/src/components/users/roleDefinitions.ts:30
 #: packages/admin/src/components/WelcomeModal.tsx:27
 msgid "Author"
@@ -1181,7 +1182,7 @@ msgstr "Automatiska säkerhetskopior"
 msgid "Automatic backups need a storage backend (R2, S3, or local storage). Configure storage in your EmDash config to enable them."
 msgstr "Automatiska säkerhetskopior kräver en lagringsbackend (R2, S3 eller lokal lagring). Konfigurera lagring i din EmDash-konfiguration för att aktivera dem."
 
-#: packages/admin/src/router.tsx:1004
+#: packages/admin/src/router.tsx:1012
 msgid "Autosave failed"
 msgstr "Automatisk sparning misslyckades"
 
@@ -1307,7 +1308,7 @@ msgstr "Fet"
 msgid "Boolean"
 msgstr "Boolean"
 
-#: packages/admin/src/components/SeoPanel.tsx:184
+#: packages/admin/src/components/SeoPanel.tsx:195
 msgid "Brief summary shown below the title in search results"
 msgstr "Kort sammanfattning som visas under titeln i sökresultat"
 
@@ -1391,9 +1392,9 @@ msgstr "Kan visa innehåll"
 #: packages/admin/src/components/ContentPickerModal.tsx:241
 #: packages/admin/src/components/ContentSettingsPanel.tsx:92
 #: packages/admin/src/components/ContentSettingsPanel.tsx:534
-#: packages/admin/src/components/ContentSettingsPanel.tsx:730
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1033
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1086
+#: packages/admin/src/components/ContentSettingsPanel.tsx:734
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1037
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1090
 #: packages/admin/src/components/editor/CodeBlockNode.tsx:193
 #: packages/admin/src/components/editor/CodeBlockNode.tsx:194
 #: packages/admin/src/components/editor/ImageDetailPanel.tsx:586
@@ -1439,8 +1440,8 @@ msgstr "Sektioner från temat kan inte tas bort"
 msgid "Cannot determine MIME type from URL. Use a URL ending in a recognized image extension (e.g. .jpg, .png, .webp)."
 msgstr "Kan inte fastställa MIME-typ från URL. Använd en URL som slutar med en igenkänd bildfiländelse (t.ex. .jpg, .png, .webp)."
 
-#: packages/admin/src/components/SeoPanel.tsx:212
-#: packages/admin/src/components/SeoPanel.tsx:216
+#: packages/admin/src/components/SeoPanel.tsx:224
+#: packages/admin/src/components/SeoPanel.tsx:228
 msgid "Canonical URL"
 msgstr "Kanonisk URL"
 
@@ -1514,7 +1515,7 @@ msgstr "Ändra logotyp"
 msgid "Changelog"
 msgstr "Ändringslogg"
 
-#: packages/admin/src/router.tsx:1055
+#: packages/admin/src/router.tsx:1063
 msgid "Changes discarded"
 msgstr "Ändringarna kasserades"
 
@@ -1799,7 +1800,7 @@ msgstr "Innehållsfel ({0})"
 msgid "Content found:"
 msgstr "Innehåll hittat:"
 
-#: packages/admin/src/router.tsx:1077
+#: packages/admin/src/router.tsx:1085
 msgid "Content has been scheduled for publishing"
 msgstr "Innehållet har schemalagts för publicering"
 
@@ -1811,7 +1812,7 @@ msgstr "Innehållet har uppdaterats till den valda revisionen."
 msgid "Content ID:"
 msgstr "Innehålls-ID:"
 
-#: packages/admin/src/router.tsx:1018
+#: packages/admin/src/router.tsx:1026
 msgid "Content is now live"
 msgstr "Innehållet är nu publicerat"
 
@@ -1823,11 +1824,11 @@ msgstr "innehållsobjekt"
 msgid "Content Read"
 msgstr "Läsa innehåll"
 
-#: packages/admin/src/router.tsx:1036
+#: packages/admin/src/router.tsx:1044
 msgid "Content removed from public view"
 msgstr "Innehållet har tagits bort från offentlig visning"
 
-#: packages/admin/src/router.tsx:1098
+#: packages/admin/src/router.tsx:1106
 msgid "Content reverted to draft"
 msgstr "Innehållet återställdes till utkast"
 
@@ -1936,7 +1937,7 @@ msgstr "Kunde inte läsa in anpassade fält."
 msgid "Couldn't map \"{draft}\" to a MIME type. Type the MIME directly."
 msgstr "Kunde inte matcha \"{draft}\" mot en MIME-typ. Ange MIME-typen direkt."
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:925
+#: packages/admin/src/components/ContentSettingsPanel.tsx:929
 msgid "Couldn't search bylines. Please try again."
 msgstr "Kunde inte söka bland bylines. Försök igen."
 
@@ -1949,7 +1950,7 @@ msgstr "Kunde inte kontrollera hur många värden som refererar till \"{0}\". Bo
 msgid "Count"
 msgstr "Antal"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1057
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1061
 #: packages/admin/src/components/MenuList.tsx:178
 #: packages/admin/src/components/Redirects.tsx:192
 #: packages/admin/src/components/Sections.tsx:212
@@ -1985,7 +1986,7 @@ msgstr "Skapa konto"
 msgid "Create an account"
 msgstr "Skapa ett konto"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1005
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1009
 #: packages/admin/src/routes/bylines.tsx:476
 msgid "Create byline"
 msgstr "Skapa byline"
@@ -2123,7 +2124,7 @@ msgid "Created {0}"
 msgstr "Skapad {0}"
 
 #. placeholder {0}: result.locale?.toUpperCase() ?? t`new`
-#: packages/admin/src/router.tsx:1129
+#: packages/admin/src/router.tsx:1137
 msgid "Created {0} translation"
 msgstr "Skapade {0}-översättning"
 
@@ -2135,7 +2136,7 @@ msgstr "Skapad"
 msgid "Creating collections and fields..."
 msgstr "Skapar samlingar och fält …"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1057
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1061
 #: packages/admin/src/components/MenuList.tsx:178
 #: packages/admin/src/components/Redirects.tsx:189
 #: packages/admin/src/components/Sections.tsx:212
@@ -2625,8 +2626,8 @@ msgstr "Visa en navigeringsmeny"
 msgid "Display category list"
 msgstr "Visa kategorilista"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1008
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1070
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1012
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1074
 #: packages/admin/src/routes/bylines.tsx:481
 msgid "Display name"
 msgstr "Visningsnamn"
@@ -2691,7 +2692,7 @@ msgstr "Har du inget konto? <0>Registrera dig</0>"
 msgid "Done"
 msgstr "Klar"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:951
+#: packages/admin/src/components/ContentSettingsPanel.tsx:955
 msgid "Down"
 msgstr "Ner"
 
@@ -2811,7 +2812,7 @@ msgstr "t.ex. CI/CD-pipeline"
 msgid "e.g., MacBook Pro, iPhone"
 msgstr "t.ex. MacBook Pro, iPhone"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:960
+#: packages/admin/src/components/ContentSettingsPanel.tsx:964
 #: packages/admin/src/components/editor/PluginBlockNode.tsx:367
 #: packages/admin/src/components/editor/PluginBlockNode.tsx:368
 #: packages/admin/src/components/MenuEditor.tsx:544
@@ -2847,7 +2848,7 @@ msgstr ""
 msgid "Edit {title}"
 msgstr "Redigera {title}"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1067
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1071
 msgid "Edit byline"
 msgstr "Redigera byline"
 
@@ -3073,7 +3074,7 @@ msgstr "Ange URL:en till din WordPress-webbplats"
 #: packages/admin/src/components/MenuEditor.tsx:233
 #: packages/admin/src/components/SetupWizard.tsx:539
 #: packages/admin/src/components/Widgets.tsx:769
-#: packages/admin/src/router.tsx:2193
+#: packages/admin/src/router.tsx:2201
 msgid "Error"
 msgstr "Fel"
 
@@ -3184,7 +3185,7 @@ msgstr "Det gick inte att skapa administratören"
 msgid "Failed to create backup"
 msgstr "Det gick inte att skapa säkerhetskopia"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1051
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1055
 msgid "Failed to create byline"
 msgstr "Det gick inte att skapa byline"
 
@@ -3208,14 +3209,14 @@ msgstr "Det gick inte att skapa vissa samlingar"
 msgid "Failed to create term"
 msgstr "Det gick inte att skapa term"
 
-#: packages/admin/src/router.tsx:1134
+#: packages/admin/src/router.tsx:1142
 msgid "Failed to create translation"
 msgstr "Det gick inte att skapa översättning"
 
 #: packages/admin/src/router.tsx:423
 #: packages/admin/src/router.tsx:452
 #: packages/admin/src/router.tsx:535
-#: packages/admin/src/router.tsx:1154
+#: packages/admin/src/router.tsx:1162
 msgid "Failed to delete"
 msgstr "Det gick inte att ta bort"
 
@@ -3240,7 +3241,7 @@ msgid "Failed to delete collection"
 msgstr "Det gick inte att ta bort samlingen"
 
 #: packages/admin/src/lib/api/comments.ts:111
-#: packages/admin/src/router.tsx:1464
+#: packages/admin/src/router.tsx:1472
 msgid "Failed to delete comment"
 msgstr "Det gick inte att ta bort kommentaren"
 
@@ -3306,7 +3307,7 @@ msgstr "Det gick inte att inaktivera sökning"
 msgid "Failed to disable user"
 msgstr "Det gick inte att inaktivera användaren"
 
-#: packages/admin/src/router.tsx:1061
+#: packages/admin/src/router.tsx:1069
 msgid "Failed to discard changes"
 msgstr "Det gick inte att kassera ändringarna"
 
@@ -3421,8 +3422,8 @@ msgstr "Det gick inte att hämta termer"
 #: packages/admin/src/lib/api/current-user.ts:22
 #: packages/admin/src/lib/api/users.ts:88
 #: packages/admin/src/lib/api/users.ts:93
-#: packages/admin/src/router.tsx:853
-#: packages/admin/src/router.tsx:1395
+#: packages/admin/src/router.tsx:862
+#: packages/admin/src/router.tsx:1403
 msgid "Failed to fetch user"
 msgstr "Det gick inte att hämta användaren"
 
@@ -3533,7 +3534,7 @@ msgstr "Det gick inte att läsa in användare: {0}"
 msgid "Failed to load widget"
 msgstr "Det gick inte att läsa in widgeten"
 
-#: packages/admin/src/router.tsx:1489
+#: packages/admin/src/router.tsx:1497
 msgid "Failed to perform bulk action"
 msgstr "Det gick inte att utföra massåtgärden"
 
@@ -3546,7 +3547,7 @@ msgid "Failed to prepare import"
 msgstr "Det gick inte att förbereda importen"
 
 #: packages/admin/src/router.tsx:491
-#: packages/admin/src/router.tsx:1022
+#: packages/admin/src/router.tsx:1030
 msgid "Failed to publish"
 msgstr "Det gick inte att publicera"
 
@@ -3601,8 +3602,9 @@ msgstr "Det gick inte att återkalla API-token"
 msgid "Failed to rewrite URLs"
 msgstr "Det gick inte att skriva om URL:erna"
 
-#: packages/admin/src/router.tsx:943
-#: packages/admin/src/router.tsx:1978
+#: packages/admin/src/router.tsx:670
+#: packages/admin/src/router.tsx:952
+#: packages/admin/src/router.tsx:1986
 msgid "Failed to save"
 msgstr "Det gick inte att spara"
 
@@ -3621,7 +3623,7 @@ msgstr "Det gick inte att spara fältet"
 msgid "Failed to save settings"
 msgstr "Det gick inte att spara inställningar"
 
-#: packages/admin/src/router.tsx:1082
+#: packages/admin/src/router.tsx:1090
 msgid "Failed to schedule"
 msgstr "Det gick inte att schemalägga"
 
@@ -3652,11 +3654,11 @@ msgstr "Det gick inte att ange termer för posten"
 msgid "Failed to uninstall plugin"
 msgstr "Det gick inte att avinstallera tillägget"
 
-#: packages/admin/src/router.tsx:1040
+#: packages/admin/src/router.tsx:1048
 msgid "Failed to unpublish"
 msgstr "Det gick inte att avpublicera"
 
-#: packages/admin/src/router.tsx:1103
+#: packages/admin/src/router.tsx:1111
 msgid "Failed to unschedule"
 msgstr "Det gick inte att avboka schemaläggningen"
 
@@ -3673,7 +3675,7 @@ msgstr "Det gick inte att uppdatera {0}"
 msgid "Failed to update backup settings"
 msgstr "Det gick inte att uppdatera säkerhetskopieringsinställningar"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1101
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1105
 msgid "Failed to update byline"
 msgstr "Det gick inte att uppdatera byline"
 
@@ -3710,7 +3712,7 @@ msgstr "Det gick inte att uppdatera sektionen"
 msgid "Failed to update settings"
 msgstr "Det gick inte att uppdatera inställningar"
 
-#: packages/admin/src/router.tsx:1448
+#: packages/admin/src/router.tsx:1456
 msgid "Failed to update status"
 msgstr "Det gick inte att uppdatera statusen"
 
@@ -3929,7 +3931,7 @@ msgid "Go"
 msgstr "Go"
 
 #: packages/admin/src/components/WordPressImport.tsx:2418
-#: packages/admin/src/router.tsx:2213
+#: packages/admin/src/router.tsx:2221
 msgid "Go to Dashboard"
 msgstr "Gå till översikten"
 
@@ -4016,8 +4018,8 @@ msgstr "Hero-banner"
 msgid "hero, banner, cta"
 msgstr "hero, banner, cta"
 
-#: packages/admin/src/components/SeoPanel.tsx:230
-#: packages/admin/src/components/SeoPanel.tsx:233
+#: packages/admin/src/components/SeoPanel.tsx:242
+#: packages/admin/src/components/SeoPanel.tsx:245
 msgid "Hide from search engines"
 msgstr "Dölj för sökmotorer"
 
@@ -4465,7 +4467,7 @@ msgstr "JSX"
 msgid "Keep this tab open. The import runs in small steps and can be safely re-run if interrupted."
 msgstr "Håll denna flik öppen. Importen körs i små steg och kan köras om säkert om den avbryts."
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:930
+#: packages/admin/src/components/ContentSettingsPanel.tsx:934
 msgid "Keep typing to narrow down more bylines."
 msgstr "Fortsätt skriva för att begränsa antalet bylines ytterligare."
 
@@ -4636,7 +4638,7 @@ msgstr "Läs in mer"
 msgid "Load More"
 msgstr "Läs in mer"
 
-#: packages/admin/src/router.tsx:2168
+#: packages/admin/src/router.tsx:2176
 msgid "Loading"
 msgstr ""
 
@@ -4652,8 +4654,8 @@ msgstr "Läser in samlingar …"
 msgid "Loading comments..."
 msgstr "Läser in kommentarer …"
 
-#: packages/admin/src/router.tsx:2170
-#: packages/admin/src/router.tsx:2182
+#: packages/admin/src/router.tsx:2178
+#: packages/admin/src/router.tsx:2190
 msgid "Loading configuration..."
 msgstr "Läser in konfiguration …"
 
@@ -4799,7 +4801,7 @@ msgstr "Hantera"
 msgid "Manage {0} for {1}"
 msgstr "Hantera {0} för {1}"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:892
+#: packages/admin/src/components/ContentSettingsPanel.tsx:896
 msgid "Manage bylines in {entryLocale}"
 msgstr "Hantera bylines i {entryLocale}"
 
@@ -5000,8 +5002,8 @@ msgstr "Menyer ({0})"
 msgid "Menus Manage"
 msgstr "Hantera menyer"
 
-#: packages/admin/src/components/SeoPanel.tsx:188
-#: packages/admin/src/components/SeoPanel.tsx:192
+#: packages/admin/src/components/SeoPanel.tsx:199
+#: packages/admin/src/components/SeoPanel.tsx:203
 msgid "Meta Description"
 msgstr "Metabeskrivning"
 
@@ -5093,14 +5095,14 @@ msgstr "Flytta till papperskorgen"
 
 #: packages/admin/src/components/ContentList.tsx:473
 #: packages/admin/src/components/ContentList.tsx:1073
-#: packages/admin/src/components/ContentSettingsPanel.tsx:717
-#: packages/admin/src/components/ContentSettingsPanel.tsx:737
+#: packages/admin/src/components/ContentSettingsPanel.tsx:721
+#: packages/admin/src/components/ContentSettingsPanel.tsx:741
 msgid "Move to Trash"
 msgstr "Flytta till papperskorgen"
 
 #: packages/admin/src/components/ContentList.tsx:451
 #: packages/admin/src/components/ContentList.tsx:1058
-#: packages/admin/src/components/ContentSettingsPanel.tsx:722
+#: packages/admin/src/components/ContentSettingsPanel.tsx:726
 msgid "Move to Trash?"
 msgstr "Flytta till papperskorgen?"
 
@@ -5161,7 +5163,7 @@ msgstr "Navigering"
 msgid "Never"
 msgstr "Aldrig"
 
-#: packages/admin/src/router.tsx:1129
+#: packages/admin/src/router.tsx:1137
 msgid "new"
 msgstr "ny"
 
@@ -5294,7 +5296,7 @@ msgstr "Inga godkända kommentarer ännu."
 msgid "No byline fields yet."
 msgstr "Inga byline-fält ännu."
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:884
+#: packages/admin/src/components/ContentSettingsPanel.tsx:888
 msgid "No bylines available in {entryLocale}. Create a variant from the Bylines page before crediting one on this entry."
 msgstr "Inga bylines tillgängliga i {entryLocale}. Skapa en variant på sidan Bylines innan du krediterar den på denna post."
 
@@ -5302,7 +5304,7 @@ msgstr "Inga bylines tillgängliga i {entryLocale}. Skapa en variant på sidan B
 msgid "No bylines found"
 msgstr "Inga bylines hittades"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:992
+#: packages/admin/src/components/ContentSettingsPanel.tsx:996
 msgid "No bylines selected."
 msgstr "Inga bylines valda."
 
@@ -5400,7 +5402,7 @@ msgstr "Ingen länkad användare"
 msgid "No matches"
 msgstr "Inga matchningar"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:927
+#: packages/admin/src/components/ContentSettingsPanel.tsx:931
 msgid "No matching bylines."
 msgstr "Inga matchande bylines."
 
@@ -5704,12 +5706,12 @@ msgstr "Ordning sparad"
 msgid "Original:"
 msgstr "Original:"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:684
+#: packages/admin/src/components/ContentSettingsPanel.tsx:688
 #: packages/admin/src/components/editor/DocumentOutline.tsx:191
 msgid "Outline"
 msgstr "Disposition"
 
-#: packages/admin/src/components/SeoPanel.tsx:164
+#: packages/admin/src/components/SeoPanel.tsx:174
 msgid "Overrides the page title in search engine results"
 msgstr "Åsidosätter sidtiteln i sökmotorresultat"
 
@@ -5722,7 +5724,7 @@ msgstr "Ägarskap"
 msgid "Package"
 msgstr "Paket"
 
-#: packages/admin/src/router.tsx:2208
+#: packages/admin/src/router.tsx:2216
 msgid "Page Not Found"
 msgstr "Sidan hittades inte"
 
@@ -6004,7 +6006,7 @@ msgstr "Tillägg"
 msgid "Point-in-Time Restore"
 msgstr "Återställning till en tidpunkt"
 
-#: packages/admin/src/components/SeoPanel.tsx:208
+#: packages/admin/src/components/SeoPanel.tsx:220
 msgid "Points search engines to the original version of this page, if it's duplicated from another URL"
 msgstr "Pekar sökmotorer till den ursprungliga versionen av sidan, om den är duplicerad från en annan URL"
 
@@ -6097,7 +6099,7 @@ msgid "Publish date"
 msgstr ""
 
 #: packages/admin/src/components/ContentList.tsx:747
-#: packages/admin/src/router.tsx:1018
+#: packages/admin/src/router.tsx:1026
 msgid "Published"
 msgstr "Publicerad"
 
@@ -6122,7 +6124,7 @@ msgstr "Publicerad av"
 msgid "Python"
 msgstr "Python"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1000
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1004
 msgid "Quick create byline"
 msgstr "Snabbskapa byline"
 
@@ -6262,7 +6264,7 @@ msgstr "Versionen är för ny för att installeras"
 
 #: packages/admin/src/components/BlockKitMediaPickerField.tsx:84
 #: packages/admin/src/components/BlockKitMediaPickerField.tsx:115
-#: packages/admin/src/components/ContentSettingsPanel.tsx:969
+#: packages/admin/src/components/ContentSettingsPanel.tsx:973
 #: packages/admin/src/components/editor/ImageDetailPanel.tsx:199
 #: packages/admin/src/components/PortableTextEditor.tsx:4129
 #: packages/admin/src/components/settings/GeneralSettings.tsx:229
@@ -6469,7 +6471,7 @@ msgstr "Återställer …"
 #: packages/admin/src/components/MarketplaceBrowse.tsx:143
 #: packages/admin/src/components/PluginFieldErrorBoundary.tsx:44
 #: packages/admin/src/components/ThemeMarketplaceBrowse.tsx:122
-#: packages/admin/src/router.tsx:2196
+#: packages/admin/src/router.tsx:2204
 #: packages/admin/src/routes/byline-schema.tsx:280
 msgid "Retry"
 msgstr "Försök igen"
@@ -6478,7 +6480,7 @@ msgstr "Försök igen"
 msgid "Reusable content blocks you can insert into any content"
 msgstr "Återanvändbara innehållsblock som du kan infoga i vilket innehåll som helst"
 
-#: packages/admin/src/router.tsx:1056
+#: packages/admin/src/router.tsx:1064
 msgid "Reverted to published version"
 msgstr "Återställd till publicerad version"
 
@@ -6494,7 +6496,7 @@ msgstr "Granska nya behörigheter"
 msgid "Revision restored"
 msgstr "Revision återställd"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:692
+#: packages/admin/src/components/ContentSettingsPanel.tsx:696
 #: packages/admin/src/components/ContentTypeEditor.tsx:76
 #: packages/admin/src/components/RevisionHistory.tsx:168
 msgid "Revisions"
@@ -6556,7 +6558,7 @@ msgstr "Roll"
 msgid "Role {role}"
 msgstr "Roll {role}"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:974
+#: packages/admin/src/components/ContentSettingsPanel.tsx:978
 msgid "Role label"
 msgstr "Rolletikett"
 
@@ -6582,7 +6584,7 @@ msgstr "Rust"
 msgid "Same window"
 msgstr "Samma fönster"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1107
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1111
 #: packages/admin/src/components/editor/ImageDetailPanel.tsx:395
 #: packages/admin/src/components/editor/ImageDetailPanel.tsx:589
 #: packages/admin/src/components/editor/ImageNode.tsx:264
@@ -6634,7 +6636,7 @@ msgstr "Sparad"
 msgid "Saved \"{0}\"."
 msgstr "Sparade \"{0}\"."
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1107
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1111
 #: packages/admin/src/components/FieldEditor.tsx:660
 #: packages/admin/src/components/MediaDetailPanel.tsx:425
 #: packages/admin/src/components/MenuEditor.tsx:626
@@ -6676,7 +6678,7 @@ msgstr "Schemalägg för senare"
 
 #: packages/admin/src/components/ContentList.tsx:738
 #: packages/admin/src/components/ContentStatusBadge.tsx:63
-#: packages/admin/src/router.tsx:1076
+#: packages/admin/src/router.tsx:1084
 msgid "Scheduled"
 msgstr "Schemalagd"
 
@@ -6765,12 +6767,12 @@ msgstr "Sök efter filnamn …"
 msgid "Search by name or email..."
 msgstr "Sök efter namn eller e-post …"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:901
+#: packages/admin/src/components/ContentSettingsPanel.tsx:905
 #: packages/admin/src/routes/bylines.tsx:401
 msgid "Search bylines"
 msgstr "Sök bland bylines"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:900
+#: packages/admin/src/components/ContentSettingsPanel.tsx:904
 msgid "Search bylines to add..."
 msgstr "Sök bland bylines att lägga till …"
 
@@ -6849,7 +6851,7 @@ msgstr "Sök …"
 msgid "Searchable"
 msgstr "Sökbar"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:905
+#: packages/admin/src/components/ContentSettingsPanel.tsx:909
 msgid "Searching..."
 msgstr "Söker …"
 
@@ -7113,8 +7115,8 @@ msgstr "SEO-inställningar (Yoast)"
 msgid "SEO settings saved"
 msgstr "SEO-inställningar sparade"
 
-#: packages/admin/src/components/SeoPanel.tsx:168
-#: packages/admin/src/components/SeoPanel.tsx:172
+#: packages/admin/src/components/SeoPanel.tsx:178
+#: packages/admin/src/components/SeoPanel.tsx:182
 msgid "SEO Title"
 msgstr "SEO-titel"
 
@@ -7336,8 +7338,8 @@ msgstr "Överhoppad"
 
 #: packages/admin/src/components/BylineFieldEditor.tsx:239
 #: packages/admin/src/components/ContentSettingsPanel.tsx:462
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1016
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1078
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1020
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1082
 #: packages/admin/src/components/ContentTypeEditor.tsx:111
 #: packages/admin/src/components/ContentTypeEditor.tsx:402
 #: packages/admin/src/components/ContentTypeList.tsx:99
@@ -7654,7 +7656,7 @@ msgstr "Menyn har tagits bort."
 msgid "The name of your site, used in the header and metadata"
 msgstr "Namnet på din webbplats, används i sidhuvudet och metadata"
 
-#: packages/admin/src/router.tsx:2210
+#: packages/admin/src/router.tsx:2218
 msgid "The page you're looking for doesn't exist."
 msgstr "Sidan du letar efter finns inte."
 
@@ -7798,7 +7800,7 @@ msgstr "Detta tar bort widgetområdet och alla dess widgetar. Åtgärden kan int
 msgid "This will grant CLI access with your permissions."
 msgstr "Detta ger CLI-åtkomst med dina behörigheter."
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:724
+#: packages/admin/src/components/ContentSettingsPanel.tsx:728
 msgid "This will move the item to trash. You can restore it later from the trash."
 msgstr "Detta flyttar objektet till papperskorgen. Du kan återställa det senare från papperskorgen."
 
@@ -7931,7 +7933,7 @@ msgstr "Översätter …"
 
 #: packages/admin/src/components/MenuEditor.tsx:143
 #: packages/admin/src/components/TaxonomyManager.tsx:782
-#: packages/admin/src/router.tsx:1128
+#: packages/admin/src/router.tsx:1136
 msgid "Translation created"
 msgstr "Översättning skapad"
 
@@ -8044,8 +8046,8 @@ msgstr "TypeScript"
 msgid "Unable to reach marketplace"
 msgstr "Kunde inte nå marknadsplatsen"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1121
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1138
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1125
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1142
 msgid "Unassigned"
 msgstr "Otilldelad"
 
@@ -8110,7 +8112,7 @@ msgstr "Namnlös passkey"
 msgid "Unpublish {itemLabel}"
 msgstr ""
 
-#: packages/admin/src/router.tsx:1036
+#: packages/admin/src/router.tsx:1044
 msgid "Unpublished"
 msgstr "Avpublicerad"
 
@@ -8122,7 +8124,7 @@ msgstr "Oregistrerade innehållstabeller hittades"
 msgid "Unschedule"
 msgstr "Avboka schemaläggning"
 
-#: packages/admin/src/router.tsx:1097
+#: packages/admin/src/router.tsx:1105
 msgid "Unscheduled"
 msgstr "Ej schemalagd"
 
@@ -8148,7 +8150,7 @@ msgstr "Widget utan namn"
 msgid "Unverified publisher"
 msgstr "Overifierad utgivare"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:948
+#: packages/admin/src/components/ContentSettingsPanel.tsx:952
 msgid "Up"
 msgstr "Upp"
 
@@ -8580,19 +8582,19 @@ msgstr "Heltal"
 msgid "Why can't this be changed?"
 msgstr "Varför kan detta inte ändras?"
 
-#: packages/admin/src/components/SeoPanel.tsx:209
+#: packages/admin/src/components/SeoPanel.tsx:221
 msgid "Why is this important for duplicate pages?"
 msgstr "Varför är detta viktigt för duplicerade sidor?"
 
-#: packages/admin/src/components/SeoPanel.tsx:185
+#: packages/admin/src/components/SeoPanel.tsx:196
 msgid "Why is this important for search result summaries?"
 msgstr "Varför är detta viktigt för sammanfattningar i sökresultat?"
 
-#: packages/admin/src/components/SeoPanel.tsx:165
+#: packages/admin/src/components/SeoPanel.tsx:175
 msgid "Why is this important for search result titles?"
 msgstr "Varför är detta viktigt för titlar i sökresultat?"
 
-#: packages/admin/src/components/SeoPanel.tsx:228
+#: packages/admin/src/components/SeoPanel.tsx:240
 msgid "Why is this important for search visibility?"
 msgstr "Varför är detta viktigt för synlighet i sökmotorer?"
 
@@ -8744,7 +8746,7 @@ msgstr "Du har full åtkomst att hantera denna webbplats, inklusive användare, 
 msgid "You need admin permissions to manage byline schema."
 msgstr "Du behöver administratörsbehörighet för att hantera byline-schema."
 
-#: packages/admin/src/router.tsx:1505
+#: packages/admin/src/router.tsx:1513
 msgid "You need Editor permissions to moderate comments."
 msgstr "Du behöver redaktörsbehörighet för att moderera kommentarer."
 

@@ -1206,6 +1206,10 @@ export class ContentRepository {
 	 * Lets callers resolve many edge groups without an N+1 per group. The caller
 	 * groups the flat result by `translationGroup` itself.
 	 *
+	 * `translation_group` leads the sort so the ordering follows
+	 * `idx_{table}_del_tg_locale` past its `deleted_at` equality; callers group by
+	 * `translationGroup`, so the per-group locale order they rely on is preserved.
+	 *
 	 * `publishedOnly` restricts the result to `status = 'published'` — reference
 	 * reads pass this for callers without `content:read_drafts` so draft/scheduled
 	 * entries never leak through an edge traversal.
@@ -1232,7 +1236,7 @@ export class ContentRepository {
 					WHERE translation_group IN (${sql.join(chunk)})
 					AND deleted_at IS NULL
 					${publishedFilter}
-					ORDER BY locale ASC
+					ORDER BY translation_group ASC, locale ASC
 				`.execute(this.db);
 				for (const row of result.rows) items.push(this.mapRow(type, row));
 			}

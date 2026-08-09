@@ -89,7 +89,7 @@ msgid "{0, plural, one {# comment imported} other {# comments imported}}"
 msgstr "{0, plural, one {# коментар імпортовано} few {# коментарі імпортовано} many {# коментарів імпортовано} other {# коментарів імпортовано}}"
 
 #. placeholder {0}: result.affected
-#: packages/admin/src/router.tsx:1484
+#: packages/admin/src/router.tsx:1492
 msgid "{0, plural, one {# comment updated} other {# comments updated}}"
 msgstr "{0, plural, one {# коментар оновлено} few {# коментарі оновлено} many {# коментарів оновлено} other {# коментарів оновлено}}"
 
@@ -306,7 +306,7 @@ msgid "{0}{1}"
 msgstr "{0}{1}"
 
 #. placeholder {0}: draft.description.length
-#: packages/admin/src/components/SeoPanel.tsx:195
+#: packages/admin/src/components/SeoPanel.tsx:206
 msgid "{0}/160 characters"
 msgstr "{0}/160 символів"
 
@@ -569,7 +569,7 @@ msgstr "Прийняти запрошення"
 msgid "Access denied"
 msgstr "Доступ заборонено"
 
-#: packages/admin/src/router.tsx:1504
+#: packages/admin/src/router.tsx:1512
 msgid "Access Denied"
 msgstr "Доступ заборонено"
 
@@ -613,7 +613,7 @@ msgid "Active"
 msgstr "Активний"
 
 #: packages/admin/src/components/AllowedTypesEditor.tsx:171
-#: packages/admin/src/components/ContentSettingsPanel.tsx:919
+#: packages/admin/src/components/ContentSettingsPanel.tsx:923
 #: packages/admin/src/components/MenuEditor.tsx:441
 #: packages/admin/src/components/TaxonomySidebar.tsx:496
 msgid "Add"
@@ -726,7 +726,7 @@ msgstr "Додати"
 msgid "Add new {0}"
 msgstr "Додати {0}"
 
-#: packages/admin/src/components/SeoPanel.tsx:227
+#: packages/admin/src/components/SeoPanel.tsx:239
 msgid "Add noindex meta tag"
 msgstr "Додати meta-тег noindex"
 
@@ -963,19 +963,20 @@ msgstr "Або експортуйте з WordPress (Інструменти → �
 #: packages/admin/src/router.tsx:439
 #: packages/admin/src/router.tsx:453
 #: packages/admin/src/router.tsx:467
-#: packages/admin/src/router.tsx:944
-#: packages/admin/src/router.tsx:1005
-#: packages/admin/src/router.tsx:1023
-#: packages/admin/src/router.tsx:1041
-#: packages/admin/src/router.tsx:1062
-#: packages/admin/src/router.tsx:1083
-#: packages/admin/src/router.tsx:1104
-#: packages/admin/src/router.tsx:1135
-#: packages/admin/src/router.tsx:1155
-#: packages/admin/src/router.tsx:1449
-#: packages/admin/src/router.tsx:1465
-#: packages/admin/src/router.tsx:1490
-#: packages/admin/src/router.tsx:1979
+#: packages/admin/src/router.tsx:671
+#: packages/admin/src/router.tsx:953
+#: packages/admin/src/router.tsx:1013
+#: packages/admin/src/router.tsx:1031
+#: packages/admin/src/router.tsx:1049
+#: packages/admin/src/router.tsx:1070
+#: packages/admin/src/router.tsx:1091
+#: packages/admin/src/router.tsx:1112
+#: packages/admin/src/router.tsx:1143
+#: packages/admin/src/router.tsx:1163
+#: packages/admin/src/router.tsx:1457
+#: packages/admin/src/router.tsx:1473
+#: packages/admin/src/router.tsx:1498
+#: packages/admin/src/router.tsx:1987
 #: packages/admin/src/routes/byline-schema.tsx:103
 #: packages/admin/src/routes/byline-schema.tsx:123
 #: packages/admin/src/routes/byline-schema.tsx:139
@@ -1121,7 +1122,7 @@ msgstr "Автентифікацію скасовано або час вичер
 
 #: packages/admin/src/components/comments/CommentDetail.tsx:77
 #: packages/admin/src/components/comments/CommentInbox.tsx:288
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1129
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1133
 #: packages/admin/src/components/users/roleDefinitions.ts:30
 #: packages/admin/src/components/WelcomeModal.tsx:27
 msgid "Author"
@@ -1181,7 +1182,7 @@ msgstr "Автоматичні резервні копії"
 msgid "Automatic backups need a storage backend (R2, S3, or local storage). Configure storage in your EmDash config to enable them."
 msgstr "Автоматичні резервні копії потребують сховища (R2, S3 або локальне). Налаштуйте сховище в конфігурації EmDash, щоб увімкнути їх."
 
-#: packages/admin/src/router.tsx:1004
+#: packages/admin/src/router.tsx:1012
 msgid "Autosave failed"
 msgstr "Автозбереження не вдалося"
 
@@ -1307,7 +1308,7 @@ msgstr "Жирний"
 msgid "Boolean"
 msgstr "Логічний"
 
-#: packages/admin/src/components/SeoPanel.tsx:184
+#: packages/admin/src/components/SeoPanel.tsx:195
 msgid "Brief summary shown below the title in search results"
 msgstr "Короткий опис під заголовком у результатах пошуку"
 
@@ -1391,9 +1392,9 @@ msgstr "Може переглядати вміст"
 #: packages/admin/src/components/ContentPickerModal.tsx:241
 #: packages/admin/src/components/ContentSettingsPanel.tsx:92
 #: packages/admin/src/components/ContentSettingsPanel.tsx:534
-#: packages/admin/src/components/ContentSettingsPanel.tsx:730
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1033
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1086
+#: packages/admin/src/components/ContentSettingsPanel.tsx:734
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1037
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1090
 #: packages/admin/src/components/editor/CodeBlockNode.tsx:193
 #: packages/admin/src/components/editor/CodeBlockNode.tsx:194
 #: packages/admin/src/components/editor/ImageDetailPanel.tsx:586
@@ -1439,8 +1440,8 @@ msgstr "Неможливо видалити секції теми"
 msgid "Cannot determine MIME type from URL. Use a URL ending in a recognized image extension (e.g. .jpg, .png, .webp)."
 msgstr "Неможливо визначити MIME-тип з URL. Використовуйте URL із розпізнаним розширенням зображення (напр. .jpg, .png, .webp)."
 
-#: packages/admin/src/components/SeoPanel.tsx:212
-#: packages/admin/src/components/SeoPanel.tsx:216
+#: packages/admin/src/components/SeoPanel.tsx:224
+#: packages/admin/src/components/SeoPanel.tsx:228
 msgid "Canonical URL"
 msgstr "Канонічний URL"
 
@@ -1514,7 +1515,7 @@ msgstr "Змінити логотип"
 msgid "Changelog"
 msgstr "Журнал змін"
 
-#: packages/admin/src/router.tsx:1055
+#: packages/admin/src/router.tsx:1063
 msgid "Changes discarded"
 msgstr "Зміни скасовано"
 
@@ -1799,7 +1800,7 @@ msgstr "Помилки вмісту ({0})"
 msgid "Content found:"
 msgstr "Знайдено вмісту:"
 
-#: packages/admin/src/router.tsx:1077
+#: packages/admin/src/router.tsx:1085
 msgid "Content has been scheduled for publishing"
 msgstr "Вміст заплановано до публікації"
 
@@ -1811,7 +1812,7 @@ msgstr "Вміст оновлено до обраної ревізії."
 msgid "Content ID:"
 msgstr "ID вмісту:"
 
-#: packages/admin/src/router.tsx:1018
+#: packages/admin/src/router.tsx:1026
 msgid "Content is now live"
 msgstr "Вміст тепер опубліковано"
 
@@ -1823,11 +1824,11 @@ msgstr "елементи вмісту"
 msgid "Content Read"
 msgstr "Читання вмісту"
 
-#: packages/admin/src/router.tsx:1036
+#: packages/admin/src/router.tsx:1044
 msgid "Content removed from public view"
 msgstr "Вміст прибрано з публічного перегляду"
 
-#: packages/admin/src/router.tsx:1098
+#: packages/admin/src/router.tsx:1106
 msgid "Content reverted to draft"
 msgstr "Вміст повернуто до чернетки"
 
@@ -1936,7 +1937,7 @@ msgstr "Не вдалося завантажити власні поля."
 msgid "Couldn't map \"{draft}\" to a MIME type. Type the MIME directly."
 msgstr "Не вдалося визначити MIME-тип для \"{draft}\". Введіть MIME безпосередньо."
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:925
+#: packages/admin/src/components/ContentSettingsPanel.tsx:929
 msgid "Couldn't search bylines. Please try again."
 msgstr "Не вдалося шукати підписи. Спробуйте ще раз."
 
@@ -1949,7 +1950,7 @@ msgstr "Не вдалося перевірити, скільки значень 
 msgid "Count"
 msgstr "Кількість"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1057
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1061
 #: packages/admin/src/components/MenuList.tsx:178
 #: packages/admin/src/components/Redirects.tsx:192
 #: packages/admin/src/components/Sections.tsx:212
@@ -1985,7 +1986,7 @@ msgstr "Створити обліковий запис"
 msgid "Create an account"
 msgstr "Створити обліковий запис"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1005
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1009
 #: packages/admin/src/routes/bylines.tsx:476
 msgid "Create byline"
 msgstr "Створити підпис"
@@ -2123,7 +2124,7 @@ msgid "Created {0}"
 msgstr "Створено {0}"
 
 #. placeholder {0}: result.locale?.toUpperCase() ?? t`new`
-#: packages/admin/src/router.tsx:1129
+#: packages/admin/src/router.tsx:1137
 msgid "Created {0} translation"
 msgstr "Створено переклад {0}"
 
@@ -2135,7 +2136,7 @@ msgstr "Створено"
 msgid "Creating collections and fields..."
 msgstr "Створення колекцій і полів..."
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1057
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1061
 #: packages/admin/src/components/MenuList.tsx:178
 #: packages/admin/src/components/Redirects.tsx:189
 #: packages/admin/src/components/Sections.tsx:212
@@ -2625,8 +2626,8 @@ msgstr "Показати навігаційне меню"
 msgid "Display category list"
 msgstr "Показати список категорій"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1008
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1070
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1012
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1074
 #: packages/admin/src/routes/bylines.tsx:481
 msgid "Display name"
 msgstr "Відображуване ім'я"
@@ -2691,7 +2692,7 @@ msgstr "Немає облікового запису? <0>Зареєструва�
 msgid "Done"
 msgstr "Готово"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:951
+#: packages/admin/src/components/ContentSettingsPanel.tsx:955
 msgid "Down"
 msgstr "Вниз"
 
@@ -2811,7 +2812,7 @@ msgstr "напр., CI/CD Pipeline"
 msgid "e.g., MacBook Pro, iPhone"
 msgstr "напр., MacBook Pro, iPhone"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:960
+#: packages/admin/src/components/ContentSettingsPanel.tsx:964
 #: packages/admin/src/components/editor/PluginBlockNode.tsx:367
 #: packages/admin/src/components/editor/PluginBlockNode.tsx:368
 #: packages/admin/src/components/MenuEditor.tsx:544
@@ -2847,7 +2848,7 @@ msgstr ""
 msgid "Edit {title}"
 msgstr "Редагувати {title}"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1067
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1071
 msgid "Edit byline"
 msgstr "Редагувати підпис"
 
@@ -3073,7 +3074,7 @@ msgstr "Введіть URL сайту WordPress"
 #: packages/admin/src/components/MenuEditor.tsx:233
 #: packages/admin/src/components/SetupWizard.tsx:539
 #: packages/admin/src/components/Widgets.tsx:769
-#: packages/admin/src/router.tsx:2193
+#: packages/admin/src/router.tsx:2201
 msgid "Error"
 msgstr "Помилка"
 
@@ -3184,7 +3185,7 @@ msgstr "Не вдалося створити адміністратора"
 msgid "Failed to create backup"
 msgstr "Не вдалося створити резервну копію"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1051
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1055
 msgid "Failed to create byline"
 msgstr "Не вдалося створити підпис"
 
@@ -3208,14 +3209,14 @@ msgstr "Не вдалося створити деякі колекції"
 msgid "Failed to create term"
 msgstr "Не вдалося створити термін"
 
-#: packages/admin/src/router.tsx:1134
+#: packages/admin/src/router.tsx:1142
 msgid "Failed to create translation"
 msgstr "Не вдалося створити переклад"
 
 #: packages/admin/src/router.tsx:423
 #: packages/admin/src/router.tsx:452
 #: packages/admin/src/router.tsx:535
-#: packages/admin/src/router.tsx:1154
+#: packages/admin/src/router.tsx:1162
 msgid "Failed to delete"
 msgstr "Не вдалося видалити"
 
@@ -3240,7 +3241,7 @@ msgid "Failed to delete collection"
 msgstr "Не вдалося видалити колекцію"
 
 #: packages/admin/src/lib/api/comments.ts:111
-#: packages/admin/src/router.tsx:1464
+#: packages/admin/src/router.tsx:1472
 msgid "Failed to delete comment"
 msgstr "Не вдалося видалити коментар"
 
@@ -3306,7 +3307,7 @@ msgstr "Не вдалося вимкнути пошук"
 msgid "Failed to disable user"
 msgstr "Не вдалося вимкнути користувача"
 
-#: packages/admin/src/router.tsx:1061
+#: packages/admin/src/router.tsx:1069
 msgid "Failed to discard changes"
 msgstr "Не вдалося скасувати зміни"
 
@@ -3421,8 +3422,8 @@ msgstr "Не вдалося отримати терміни"
 #: packages/admin/src/lib/api/current-user.ts:22
 #: packages/admin/src/lib/api/users.ts:88
 #: packages/admin/src/lib/api/users.ts:93
-#: packages/admin/src/router.tsx:853
-#: packages/admin/src/router.tsx:1395
+#: packages/admin/src/router.tsx:862
+#: packages/admin/src/router.tsx:1403
 msgid "Failed to fetch user"
 msgstr "Не вдалося отримати користувача"
 
@@ -3533,7 +3534,7 @@ msgstr "Не вдалося завантажити користувачів: {0}
 msgid "Failed to load widget"
 msgstr "Не вдалося завантажити віджет"
 
-#: packages/admin/src/router.tsx:1489
+#: packages/admin/src/router.tsx:1497
 msgid "Failed to perform bulk action"
 msgstr "Не вдалося виконати масову дію"
 
@@ -3546,7 +3547,7 @@ msgid "Failed to prepare import"
 msgstr "Не вдалося підготувати імпорт"
 
 #: packages/admin/src/router.tsx:491
-#: packages/admin/src/router.tsx:1022
+#: packages/admin/src/router.tsx:1030
 msgid "Failed to publish"
 msgstr "Не вдалося опублікувати"
 
@@ -3601,8 +3602,9 @@ msgstr "Не вдалося відкликати API-токен"
 msgid "Failed to rewrite URLs"
 msgstr "Не вдалося переписати URL"
 
-#: packages/admin/src/router.tsx:943
-#: packages/admin/src/router.tsx:1978
+#: packages/admin/src/router.tsx:670
+#: packages/admin/src/router.tsx:952
+#: packages/admin/src/router.tsx:1986
 msgid "Failed to save"
 msgstr "Не вдалося зберегти"
 
@@ -3621,7 +3623,7 @@ msgstr "Не вдалося зберегти поле"
 msgid "Failed to save settings"
 msgstr "Не вдалося зберегти налаштування"
 
-#: packages/admin/src/router.tsx:1082
+#: packages/admin/src/router.tsx:1090
 msgid "Failed to schedule"
 msgstr "Не вдалося запланувати"
 
@@ -3652,11 +3654,11 @@ msgstr "Не вдалося встановити терміни запису"
 msgid "Failed to uninstall plugin"
 msgstr "Не вдалося видалити плагін"
 
-#: packages/admin/src/router.tsx:1040
+#: packages/admin/src/router.tsx:1048
 msgid "Failed to unpublish"
 msgstr "Не вдалося зняти з публікації"
 
-#: packages/admin/src/router.tsx:1103
+#: packages/admin/src/router.tsx:1111
 msgid "Failed to unschedule"
 msgstr "Не вдалося скасувати планування"
 
@@ -3673,7 +3675,7 @@ msgstr "Не вдалося оновити {0}"
 msgid "Failed to update backup settings"
 msgstr "Не вдалося оновити налаштування резервного копіювання"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1101
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1105
 msgid "Failed to update byline"
 msgstr "Не вдалося оновити підпис"
 
@@ -3710,7 +3712,7 @@ msgstr "Не вдалося оновити секцію"
 msgid "Failed to update settings"
 msgstr "Не вдалося оновити налаштування"
 
-#: packages/admin/src/router.tsx:1448
+#: packages/admin/src/router.tsx:1456
 msgid "Failed to update status"
 msgstr "Не вдалося оновити статус"
 
@@ -3929,7 +3931,7 @@ msgid "Go"
 msgstr "Перейти"
 
 #: packages/admin/src/components/WordPressImport.tsx:2418
-#: packages/admin/src/router.tsx:2213
+#: packages/admin/src/router.tsx:2221
 msgid "Go to Dashboard"
 msgstr "Перейти до панелі"
 
@@ -4016,8 +4018,8 @@ msgstr "Головний банер"
 msgid "hero, banner, cta"
 msgstr "hero, banner, cta"
 
-#: packages/admin/src/components/SeoPanel.tsx:230
-#: packages/admin/src/components/SeoPanel.tsx:233
+#: packages/admin/src/components/SeoPanel.tsx:242
+#: packages/admin/src/components/SeoPanel.tsx:245
 msgid "Hide from search engines"
 msgstr "Приховати від пошукових систем"
 
@@ -4465,7 +4467,7 @@ msgstr "JSX"
 msgid "Keep this tab open. The import runs in small steps and can be safely re-run if interrupted."
 msgstr "Тримайте цю вкладку відкритою. Імпорт виконується невеликими кроками і його можна безпечно перезапустити при перериванні."
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:930
+#: packages/admin/src/components/ContentSettingsPanel.tsx:934
 msgid "Keep typing to narrow down more bylines."
 msgstr "Продовжуйте вводити, щоб звузити список підписів."
 
@@ -4636,7 +4638,7 @@ msgstr "Завантажити ще"
 msgid "Load More"
 msgstr "Завантажити ще"
 
-#: packages/admin/src/router.tsx:2168
+#: packages/admin/src/router.tsx:2176
 msgid "Loading"
 msgstr ""
 
@@ -4652,8 +4654,8 @@ msgstr "Завантаження колекцій..."
 msgid "Loading comments..."
 msgstr "Завантаження коментарів..."
 
-#: packages/admin/src/router.tsx:2170
-#: packages/admin/src/router.tsx:2182
+#: packages/admin/src/router.tsx:2178
+#: packages/admin/src/router.tsx:2190
 msgid "Loading configuration..."
 msgstr "Завантаження конфігурації..."
 
@@ -4799,7 +4801,7 @@ msgstr "Керувати"
 msgid "Manage {0} for {1}"
 msgstr "Керувати {0} для {1}"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:892
+#: packages/admin/src/components/ContentSettingsPanel.tsx:896
 msgid "Manage bylines in {entryLocale}"
 msgstr "Керувати підписами в {entryLocale}"
 
@@ -5000,8 +5002,8 @@ msgstr "Меню ({0})"
 msgid "Menus Manage"
 msgstr "Керування меню"
 
-#: packages/admin/src/components/SeoPanel.tsx:188
-#: packages/admin/src/components/SeoPanel.tsx:192
+#: packages/admin/src/components/SeoPanel.tsx:199
+#: packages/admin/src/components/SeoPanel.tsx:203
 msgid "Meta Description"
 msgstr "Метаопис"
 
@@ -5093,14 +5095,14 @@ msgstr "Перемістити в кошик"
 
 #: packages/admin/src/components/ContentList.tsx:473
 #: packages/admin/src/components/ContentList.tsx:1073
-#: packages/admin/src/components/ContentSettingsPanel.tsx:717
-#: packages/admin/src/components/ContentSettingsPanel.tsx:737
+#: packages/admin/src/components/ContentSettingsPanel.tsx:721
+#: packages/admin/src/components/ContentSettingsPanel.tsx:741
 msgid "Move to Trash"
 msgstr "Перемістити в кошик"
 
 #: packages/admin/src/components/ContentList.tsx:451
 #: packages/admin/src/components/ContentList.tsx:1058
-#: packages/admin/src/components/ContentSettingsPanel.tsx:722
+#: packages/admin/src/components/ContentSettingsPanel.tsx:726
 msgid "Move to Trash?"
 msgstr "Перемістити в кошик?"
 
@@ -5161,7 +5163,7 @@ msgstr "Навігація"
 msgid "Never"
 msgstr "Ніколи"
 
-#: packages/admin/src/router.tsx:1129
+#: packages/admin/src/router.tsx:1137
 msgid "new"
 msgstr "новий"
 
@@ -5294,7 +5296,7 @@ msgstr "Ще немає схвалених коментарів."
 msgid "No byline fields yet."
 msgstr "Ще немає полів підпису."
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:884
+#: packages/admin/src/components/ContentSettingsPanel.tsx:888
 msgid "No bylines available in {entryLocale}. Create a variant from the Bylines page before crediting one on this entry."
 msgstr "Немає доступних підписів у {entryLocale}. Створіть варіант на сторінці Підписи, перш ніж вказати його в цьому записі."
 
@@ -5302,7 +5304,7 @@ msgstr "Немає доступних підписів у {entryLocale}. Ств�
 msgid "No bylines found"
 msgstr "Підписи не знайдено"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:992
+#: packages/admin/src/components/ContentSettingsPanel.tsx:996
 msgid "No bylines selected."
 msgstr "Підписи не вибрано."
 
@@ -5400,7 +5402,7 @@ msgstr "Немає пов'язаного користувача"
 msgid "No matches"
 msgstr "Немає збігів"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:927
+#: packages/admin/src/components/ContentSettingsPanel.tsx:931
 msgid "No matching bylines."
 msgstr "Немає відповідних підписів."
 
@@ -5704,12 +5706,12 @@ msgstr "Порядок збережено"
 msgid "Original:"
 msgstr "Оригінал:"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:684
+#: packages/admin/src/components/ContentSettingsPanel.tsx:688
 #: packages/admin/src/components/editor/DocumentOutline.tsx:191
 msgid "Outline"
 msgstr "Структура"
 
-#: packages/admin/src/components/SeoPanel.tsx:164
+#: packages/admin/src/components/SeoPanel.tsx:174
 msgid "Overrides the page title in search engine results"
 msgstr "Замінює заголовок сторінки в результатах пошуку"
 
@@ -5722,7 +5724,7 @@ msgstr "Власність"
 msgid "Package"
 msgstr "Пакет"
 
-#: packages/admin/src/router.tsx:2208
+#: packages/admin/src/router.tsx:2216
 msgid "Page Not Found"
 msgstr "Сторінку не знайдено"
 
@@ -6004,7 +6006,7 @@ msgstr "Плагіни"
 msgid "Point-in-Time Restore"
 msgstr "Відновлення на момент часу"
 
-#: packages/admin/src/components/SeoPanel.tsx:208
+#: packages/admin/src/components/SeoPanel.tsx:220
 msgid "Points search engines to the original version of this page, if it's duplicated from another URL"
 msgstr "Вказує пошуковим системам на оригінальну версію цієї сторінки, якщо вона дублюється з іншої URL-адреси"
 
@@ -6097,7 +6099,7 @@ msgid "Publish date"
 msgstr ""
 
 #: packages/admin/src/components/ContentList.tsx:747
-#: packages/admin/src/router.tsx:1018
+#: packages/admin/src/router.tsx:1026
 msgid "Published"
 msgstr "Опубліковано"
 
@@ -6122,7 +6124,7 @@ msgstr "Опубліковано"
 msgid "Python"
 msgstr "Python"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1000
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1004
 msgid "Quick create byline"
 msgstr "Швидко створити авторський рядок"
 
@@ -6262,7 +6264,7 @@ msgstr "Реліз занадто новий для встановлення"
 
 #: packages/admin/src/components/BlockKitMediaPickerField.tsx:84
 #: packages/admin/src/components/BlockKitMediaPickerField.tsx:115
-#: packages/admin/src/components/ContentSettingsPanel.tsx:969
+#: packages/admin/src/components/ContentSettingsPanel.tsx:973
 #: packages/admin/src/components/editor/ImageDetailPanel.tsx:199
 #: packages/admin/src/components/PortableTextEditor.tsx:4129
 #: packages/admin/src/components/settings/GeneralSettings.tsx:229
@@ -6469,7 +6471,7 @@ msgstr "Відновлення..."
 #: packages/admin/src/components/MarketplaceBrowse.tsx:143
 #: packages/admin/src/components/PluginFieldErrorBoundary.tsx:44
 #: packages/admin/src/components/ThemeMarketplaceBrowse.tsx:122
-#: packages/admin/src/router.tsx:2196
+#: packages/admin/src/router.tsx:2204
 #: packages/admin/src/routes/byline-schema.tsx:280
 msgid "Retry"
 msgstr "Повторити"
@@ -6478,7 +6480,7 @@ msgstr "Повторити"
 msgid "Reusable content blocks you can insert into any content"
 msgstr "Багаторазові блоки вмісту, які можна вставляти в будь-який вміст"
 
-#: packages/admin/src/router.tsx:1056
+#: packages/admin/src/router.tsx:1064
 msgid "Reverted to published version"
 msgstr "Повернуто до опублікованої версії"
 
@@ -6494,7 +6496,7 @@ msgstr "Переглянути нові дозволи"
 msgid "Revision restored"
 msgstr "Ревізію відновлено"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:692
+#: packages/admin/src/components/ContentSettingsPanel.tsx:696
 #: packages/admin/src/components/ContentTypeEditor.tsx:76
 #: packages/admin/src/components/RevisionHistory.tsx:168
 msgid "Revisions"
@@ -6556,7 +6558,7 @@ msgstr "Роль"
 msgid "Role {role}"
 msgstr "Роль {role}"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:974
+#: packages/admin/src/components/ContentSettingsPanel.tsx:978
 msgid "Role label"
 msgstr "Мітка ролі"
 
@@ -6582,7 +6584,7 @@ msgstr "Rust"
 msgid "Same window"
 msgstr "Те саме вікно"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1107
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1111
 #: packages/admin/src/components/editor/ImageDetailPanel.tsx:395
 #: packages/admin/src/components/editor/ImageDetailPanel.tsx:589
 #: packages/admin/src/components/editor/ImageNode.tsx:264
@@ -6634,7 +6636,7 @@ msgstr "Збережено"
 msgid "Saved \"{0}\"."
 msgstr "Збережено \"{0}\"."
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1107
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1111
 #: packages/admin/src/components/FieldEditor.tsx:660
 #: packages/admin/src/components/MediaDetailPanel.tsx:425
 #: packages/admin/src/components/MenuEditor.tsx:626
@@ -6676,7 +6678,7 @@ msgstr "Запланувати на пізніше"
 
 #: packages/admin/src/components/ContentList.tsx:738
 #: packages/admin/src/components/ContentStatusBadge.tsx:63
-#: packages/admin/src/router.tsx:1076
+#: packages/admin/src/router.tsx:1084
 msgid "Scheduled"
 msgstr "Заплановано"
 
@@ -6765,12 +6767,12 @@ msgstr "Шукати за іменем файлу..."
 msgid "Search by name or email..."
 msgstr "Шукати за іменем або email..."
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:901
+#: packages/admin/src/components/ContentSettingsPanel.tsx:905
 #: packages/admin/src/routes/bylines.tsx:401
 msgid "Search bylines"
 msgstr "Шукати авторські рядки"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:900
+#: packages/admin/src/components/ContentSettingsPanel.tsx:904
 msgid "Search bylines to add..."
 msgstr "Шукати авторські рядки для додавання..."
 
@@ -6849,7 +6851,7 @@ msgstr "Пошук..."
 msgid "Searchable"
 msgstr "Доступно для пошуку"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:905
+#: packages/admin/src/components/ContentSettingsPanel.tsx:909
 msgid "Searching..."
 msgstr "Пошук..."
 
@@ -7113,8 +7115,8 @@ msgstr "SEO-налаштування (Yoast)"
 msgid "SEO settings saved"
 msgstr "SEO-налаштування збережено"
 
-#: packages/admin/src/components/SeoPanel.tsx:168
-#: packages/admin/src/components/SeoPanel.tsx:172
+#: packages/admin/src/components/SeoPanel.tsx:178
+#: packages/admin/src/components/SeoPanel.tsx:182
 msgid "SEO Title"
 msgstr "SEO-заголовок"
 
@@ -7336,8 +7338,8 @@ msgstr "Пропущено"
 
 #: packages/admin/src/components/BylineFieldEditor.tsx:239
 #: packages/admin/src/components/ContentSettingsPanel.tsx:462
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1016
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1078
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1020
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1082
 #: packages/admin/src/components/ContentTypeEditor.tsx:111
 #: packages/admin/src/components/ContentTypeEditor.tsx:402
 #: packages/admin/src/components/ContentTypeList.tsx:99
@@ -7654,7 +7656,7 @@ msgstr "Меню видалено."
 msgid "The name of your site, used in the header and metadata"
 msgstr "Назва вашого сайту, що використовується в заголовку та метаданих"
 
-#: packages/admin/src/router.tsx:2210
+#: packages/admin/src/router.tsx:2218
 msgid "The page you're looking for doesn't exist."
 msgstr "Сторінку, яку ви шукаєте, не знайдено."
 
@@ -7798,7 +7800,7 @@ msgstr "Це видалить область віджетів і всі відж
 msgid "This will grant CLI access with your permissions."
 msgstr "Це надасть доступ до CLI з вашими дозволами."
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:724
+#: packages/admin/src/components/ContentSettingsPanel.tsx:728
 msgid "This will move the item to trash. You can restore it later from the trash."
 msgstr "Елемент буде переміщено в кошик. Пізніше його можна відновити з кошика."
 
@@ -7931,7 +7933,7 @@ msgstr "Переклад..."
 
 #: packages/admin/src/components/MenuEditor.tsx:143
 #: packages/admin/src/components/TaxonomyManager.tsx:782
-#: packages/admin/src/router.tsx:1128
+#: packages/admin/src/router.tsx:1136
 msgid "Translation created"
 msgstr "Переклад створено"
 
@@ -8044,8 +8046,8 @@ msgstr "TypeScript"
 msgid "Unable to reach marketplace"
 msgstr "Не вдалося підключитися до маркетплейсу"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1121
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1138
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1125
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1142
 msgid "Unassigned"
 msgstr "Не призначено"
 
@@ -8110,7 +8112,7 @@ msgstr "Passkey без назви"
 msgid "Unpublish {itemLabel}"
 msgstr ""
 
-#: packages/admin/src/router.tsx:1036
+#: packages/admin/src/router.tsx:1044
 msgid "Unpublished"
 msgstr "Неопубліковано"
 
@@ -8122,7 +8124,7 @@ msgstr "Знайдено незареєстровані таблиці конт�
 msgid "Unschedule"
 msgstr "Скасувати публікацію за розкладом"
 
-#: packages/admin/src/router.tsx:1097
+#: packages/admin/src/router.tsx:1105
 msgid "Unscheduled"
 msgstr "Без розкладу"
 
@@ -8148,7 +8150,7 @@ msgstr "Віджет без назви"
 msgid "Unverified publisher"
 msgstr "Неперевірений видавець"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:948
+#: packages/admin/src/components/ContentSettingsPanel.tsx:952
 msgid "Up"
 msgstr "Вгору"
 
@@ -8580,19 +8582,19 @@ msgstr "Ціле число"
 msgid "Why can't this be changed?"
 msgstr "Чому це не можна змінити?"
 
-#: packages/admin/src/components/SeoPanel.tsx:209
+#: packages/admin/src/components/SeoPanel.tsx:221
 msgid "Why is this important for duplicate pages?"
 msgstr "Чому це важливо для дублікатів сторінок?"
 
-#: packages/admin/src/components/SeoPanel.tsx:185
+#: packages/admin/src/components/SeoPanel.tsx:196
 msgid "Why is this important for search result summaries?"
 msgstr "Чому це важливо для описів у результатах пошуку?"
 
-#: packages/admin/src/components/SeoPanel.tsx:165
+#: packages/admin/src/components/SeoPanel.tsx:175
 msgid "Why is this important for search result titles?"
 msgstr "Чому це важливо для заголовків у результатах пошуку?"
 
-#: packages/admin/src/components/SeoPanel.tsx:228
+#: packages/admin/src/components/SeoPanel.tsx:240
 msgid "Why is this important for search visibility?"
 msgstr "Чому це важливо для видимості в пошуку?"
 
@@ -8744,7 +8746,7 @@ msgstr "У вас повний доступ до керування сайтом
 msgid "You need admin permissions to manage byline schema."
 msgstr "Для керування схемою підписів авторів потрібні права адміністратора."
 
-#: packages/admin/src/router.tsx:1505
+#: packages/admin/src/router.tsx:1513
 msgid "You need Editor permissions to moderate comments."
 msgstr "Для модерації коментарів потрібні права редактора."
 

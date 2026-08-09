@@ -93,7 +93,7 @@ msgid "{0, plural, one {# comment imported} other {# comments imported}}"
 msgstr ""
 
 #. placeholder {0}: result.affected
-#: packages/admin/src/router.tsx:1484
+#: packages/admin/src/router.tsx:1492
 msgid "{0, plural, one {# comment updated} other {# comments updated}}"
 msgstr "{0, plural, zero {لم تُحدَّث تعليقات} one {تعليق واحد محدَّث} two {تعليقان محدَّثان} few {# تعليقات محدَّثة} many {# تعليقًا محدَّثًا} other {# تعليق محدَّث}}"
 
@@ -310,7 +310,7 @@ msgid "{0}{1}"
 msgstr "{0}{1}"
 
 #. placeholder {0}: draft.description.length
-#: packages/admin/src/components/SeoPanel.tsx:195
+#: packages/admin/src/components/SeoPanel.tsx:206
 msgid "{0}/160 characters"
 msgstr "{0}/160 حرف"
 
@@ -573,7 +573,7 @@ msgstr "قبول الدعوة"
 msgid "Access denied"
 msgstr ""
 
-#: packages/admin/src/router.tsx:1504
+#: packages/admin/src/router.tsx:1512
 msgid "Access Denied"
 msgstr "الوصول مرفوض"
 
@@ -617,7 +617,7 @@ msgid "Active"
 msgstr "نشط"
 
 #: packages/admin/src/components/AllowedTypesEditor.tsx:171
-#: packages/admin/src/components/ContentSettingsPanel.tsx:919
+#: packages/admin/src/components/ContentSettingsPanel.tsx:923
 #: packages/admin/src/components/MenuEditor.tsx:441
 #: packages/admin/src/components/TaxonomySidebar.tsx:496
 msgid "Add"
@@ -730,7 +730,7 @@ msgstr "إضافة جديد"
 msgid "Add new {0}"
 msgstr "إضافة {0} جديد"
 
-#: packages/admin/src/components/SeoPanel.tsx:227
+#: packages/admin/src/components/SeoPanel.tsx:239
 msgid "Add noindex meta tag"
 msgstr "إضافة علامة noindex الذاتية"
 
@@ -967,19 +967,20 @@ msgstr "كبديل عن ذلك، يمكنك التصدير من WordPress (ال�
 #: packages/admin/src/router.tsx:439
 #: packages/admin/src/router.tsx:453
 #: packages/admin/src/router.tsx:467
-#: packages/admin/src/router.tsx:944
-#: packages/admin/src/router.tsx:1005
-#: packages/admin/src/router.tsx:1023
-#: packages/admin/src/router.tsx:1041
-#: packages/admin/src/router.tsx:1062
-#: packages/admin/src/router.tsx:1083
-#: packages/admin/src/router.tsx:1104
-#: packages/admin/src/router.tsx:1135
-#: packages/admin/src/router.tsx:1155
-#: packages/admin/src/router.tsx:1449
-#: packages/admin/src/router.tsx:1465
-#: packages/admin/src/router.tsx:1490
-#: packages/admin/src/router.tsx:1979
+#: packages/admin/src/router.tsx:671
+#: packages/admin/src/router.tsx:953
+#: packages/admin/src/router.tsx:1013
+#: packages/admin/src/router.tsx:1031
+#: packages/admin/src/router.tsx:1049
+#: packages/admin/src/router.tsx:1070
+#: packages/admin/src/router.tsx:1091
+#: packages/admin/src/router.tsx:1112
+#: packages/admin/src/router.tsx:1143
+#: packages/admin/src/router.tsx:1163
+#: packages/admin/src/router.tsx:1457
+#: packages/admin/src/router.tsx:1473
+#: packages/admin/src/router.tsx:1498
+#: packages/admin/src/router.tsx:1987
 #: packages/admin/src/routes/byline-schema.tsx:103
 #: packages/admin/src/routes/byline-schema.tsx:123
 #: packages/admin/src/routes/byline-schema.tsx:139
@@ -1125,7 +1126,7 @@ msgstr "تم إلغاء المصادقة أو انتهت مهلتها. يرجى 
 
 #: packages/admin/src/components/comments/CommentDetail.tsx:77
 #: packages/admin/src/components/comments/CommentInbox.tsx:288
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1129
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1133
 #: packages/admin/src/components/users/roleDefinitions.ts:30
 #: packages/admin/src/components/WelcomeModal.tsx:27
 msgid "Author"
@@ -1185,7 +1186,7 @@ msgstr ""
 msgid "Automatic backups need a storage backend (R2, S3, or local storage). Configure storage in your EmDash config to enable them."
 msgstr ""
 
-#: packages/admin/src/router.tsx:1004
+#: packages/admin/src/router.tsx:1012
 msgid "Autosave failed"
 msgstr "فشل الحفظ التلقائي"
 
@@ -1311,7 +1312,7 @@ msgstr "عريض"
 msgid "Boolean"
 msgstr "منطقي"
 
-#: packages/admin/src/components/SeoPanel.tsx:184
+#: packages/admin/src/components/SeoPanel.tsx:195
 msgid "Brief summary shown below the title in search results"
 msgstr "ملخص مختصر يظهر أسفل العنوان في نتائج البحث"
 
@@ -1395,9 +1396,9 @@ msgstr "يمكنه عرض المحتوى"
 #: packages/admin/src/components/ContentPickerModal.tsx:241
 #: packages/admin/src/components/ContentSettingsPanel.tsx:92
 #: packages/admin/src/components/ContentSettingsPanel.tsx:534
-#: packages/admin/src/components/ContentSettingsPanel.tsx:730
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1033
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1086
+#: packages/admin/src/components/ContentSettingsPanel.tsx:734
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1037
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1090
 #: packages/admin/src/components/editor/CodeBlockNode.tsx:193
 #: packages/admin/src/components/editor/CodeBlockNode.tsx:194
 #: packages/admin/src/components/editor/ImageDetailPanel.tsx:586
@@ -1443,8 +1444,8 @@ msgstr "لا يمكن حذف أقسام المظهر"
 msgid "Cannot determine MIME type from URL. Use a URL ending in a recognized image extension (e.g. .jpg, .png, .webp)."
 msgstr "تعذّر تحديد نوع MIME من الرابط. استخدم رابطًا ينتهي بامتداد صورة معروف (مثل: .jpg, .png, .webp)."
 
-#: packages/admin/src/components/SeoPanel.tsx:212
-#: packages/admin/src/components/SeoPanel.tsx:216
+#: packages/admin/src/components/SeoPanel.tsx:224
+#: packages/admin/src/components/SeoPanel.tsx:228
 msgid "Canonical URL"
 msgstr "الرابط الأساسي"
 
@@ -1518,7 +1519,7 @@ msgstr "تغيير الشعار"
 msgid "Changelog"
 msgstr ""
 
-#: packages/admin/src/router.tsx:1055
+#: packages/admin/src/router.tsx:1063
 msgid "Changes discarded"
 msgstr "تم تجاهل التغييرات"
 
@@ -1803,7 +1804,7 @@ msgstr "أخطاء المحتوى ({0})"
 msgid "Content found:"
 msgstr "المحتوى الذي تم العثور عليه:"
 
-#: packages/admin/src/router.tsx:1077
+#: packages/admin/src/router.tsx:1085
 msgid "Content has been scheduled for publishing"
 msgstr "تمت جدولة المحتوى للنشر"
 
@@ -1815,7 +1816,7 @@ msgstr "تم تحديث المحتوى إلى المراجعة المحددة."
 msgid "Content ID:"
 msgstr "معرف المحتوى:"
 
-#: packages/admin/src/router.tsx:1018
+#: packages/admin/src/router.tsx:1026
 msgid "Content is now live"
 msgstr "المحتوى منشور الآن"
 
@@ -1827,11 +1828,11 @@ msgstr "عناصر المحتوى"
 msgid "Content Read"
 msgstr "قراءة المحتوى"
 
-#: packages/admin/src/router.tsx:1036
+#: packages/admin/src/router.tsx:1044
 msgid "Content removed from public view"
 msgstr "أُزيل المحتوى من العرض العام"
 
-#: packages/admin/src/router.tsx:1098
+#: packages/admin/src/router.tsx:1106
 msgid "Content reverted to draft"
 msgstr "أُعيد المحتوى إلى المسودة"
 
@@ -1940,7 +1941,7 @@ msgstr ""
 msgid "Couldn't map \"{draft}\" to a MIME type. Type the MIME directly."
 msgstr "تعذّر تعيين \"{draft}\" إلى نوع MIME. اكتب نوع MIME مباشرةً."
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:925
+#: packages/admin/src/components/ContentSettingsPanel.tsx:929
 msgid "Couldn't search bylines. Please try again."
 msgstr ""
 
@@ -1953,7 +1954,7 @@ msgstr ""
 msgid "Count"
 msgstr "العدد"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1057
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1061
 #: packages/admin/src/components/MenuList.tsx:178
 #: packages/admin/src/components/Redirects.tsx:192
 #: packages/admin/src/components/Sections.tsx:212
@@ -1989,7 +1990,7 @@ msgstr "إنشاء حساب"
 msgid "Create an account"
 msgstr "إنشاء حساب"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1005
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1009
 #: packages/admin/src/routes/bylines.tsx:476
 msgid "Create byline"
 msgstr "إنشاء كاتب"
@@ -2127,7 +2128,7 @@ msgid "Created {0}"
 msgstr "تم إنشاء {0}"
 
 #. placeholder {0}: result.locale?.toUpperCase() ?? t`new`
-#: packages/admin/src/router.tsx:1129
+#: packages/admin/src/router.tsx:1137
 msgid "Created {0} translation"
 msgstr "تم إنشاء ترجمة {0}"
 
@@ -2139,7 +2140,7 @@ msgstr "تم الإنشاء في"
 msgid "Creating collections and fields..."
 msgstr "جاري إنشاء المجموعات والحقول..."
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1057
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1061
 #: packages/admin/src/components/MenuList.tsx:178
 #: packages/admin/src/components/Redirects.tsx:189
 #: packages/admin/src/components/Sections.tsx:212
@@ -2629,8 +2630,8 @@ msgstr "عرض قائمة تنقل"
 msgid "Display category list"
 msgstr ""
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1008
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1070
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1012
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1074
 #: packages/admin/src/routes/bylines.tsx:481
 msgid "Display name"
 msgstr "اسم العرض"
@@ -2695,7 +2696,7 @@ msgstr "أليس لديك حساب؟ قم ب<0>التسجيل</0>"
 msgid "Done"
 msgstr "تم"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:951
+#: packages/admin/src/components/ContentSettingsPanel.tsx:955
 msgid "Down"
 msgstr "أسفل"
 
@@ -2815,7 +2816,7 @@ msgstr "على سبيل المثال، خط CI/CD"
 msgid "e.g., MacBook Pro, iPhone"
 msgstr "مثال: MacBook Pro, iPhone"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:960
+#: packages/admin/src/components/ContentSettingsPanel.tsx:964
 #: packages/admin/src/components/editor/PluginBlockNode.tsx:367
 #: packages/admin/src/components/editor/PluginBlockNode.tsx:368
 #: packages/admin/src/components/MenuEditor.tsx:544
@@ -2851,7 +2852,7 @@ msgstr ""
 msgid "Edit {title}"
 msgstr "تعديل {title}"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1067
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1071
 msgid "Edit byline"
 msgstr "تعديل الكاتب"
 
@@ -3074,7 +3075,7 @@ msgstr "أدخل رابط موقع WordPress الخاص بك"
 #: packages/admin/src/components/MenuEditor.tsx:233
 #: packages/admin/src/components/SetupWizard.tsx:539
 #: packages/admin/src/components/Widgets.tsx:769
-#: packages/admin/src/router.tsx:2193
+#: packages/admin/src/router.tsx:2201
 msgid "Error"
 msgstr "خطأ"
 
@@ -3185,7 +3186,7 @@ msgstr "فشل إنشاء حساب المسؤول"
 msgid "Failed to create backup"
 msgstr ""
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1051
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1055
 msgid "Failed to create byline"
 msgstr "فشل إنشاء الكاتب"
 
@@ -3209,14 +3210,14 @@ msgstr "فشل في إنشاء بعض المجموعات"
 msgid "Failed to create term"
 msgstr "فشل إنشاء المصطلح"
 
-#: packages/admin/src/router.tsx:1134
+#: packages/admin/src/router.tsx:1142
 msgid "Failed to create translation"
 msgstr "فشل إنشاء الترجمة"
 
 #: packages/admin/src/router.tsx:423
 #: packages/admin/src/router.tsx:452
 #: packages/admin/src/router.tsx:535
-#: packages/admin/src/router.tsx:1154
+#: packages/admin/src/router.tsx:1162
 msgid "Failed to delete"
 msgstr "فشل الحذف"
 
@@ -3241,7 +3242,7 @@ msgid "Failed to delete collection"
 msgstr "فشل حذف المجموعة"
 
 #: packages/admin/src/lib/api/comments.ts:111
-#: packages/admin/src/router.tsx:1464
+#: packages/admin/src/router.tsx:1472
 msgid "Failed to delete comment"
 msgstr "فشل حذف التعليق"
 
@@ -3307,7 +3308,7 @@ msgstr ""
 msgid "Failed to disable user"
 msgstr "فشل تعطيل المستخدم"
 
-#: packages/admin/src/router.tsx:1061
+#: packages/admin/src/router.tsx:1069
 msgid "Failed to discard changes"
 msgstr "فشل تجاهل التغييرات"
 
@@ -3422,8 +3423,8 @@ msgstr "فشل جلب المصطلحات"
 #: packages/admin/src/lib/api/current-user.ts:22
 #: packages/admin/src/lib/api/users.ts:88
 #: packages/admin/src/lib/api/users.ts:93
-#: packages/admin/src/router.tsx:853
-#: packages/admin/src/router.tsx:1395
+#: packages/admin/src/router.tsx:862
+#: packages/admin/src/router.tsx:1403
 msgid "Failed to fetch user"
 msgstr "فشل جلب بيانات المستخدم"
 
@@ -3534,7 +3535,7 @@ msgstr "فشل تحميل المستخدمين: {0}"
 msgid "Failed to load widget"
 msgstr "فشل تحميل عنصر الواجهة"
 
-#: packages/admin/src/router.tsx:1489
+#: packages/admin/src/router.tsx:1497
 msgid "Failed to perform bulk action"
 msgstr "فشل تنفيذ الإجراء الجماعي"
 
@@ -3547,7 +3548,7 @@ msgid "Failed to prepare import"
 msgstr "فشل تحضير الاستيراد"
 
 #: packages/admin/src/router.tsx:491
-#: packages/admin/src/router.tsx:1022
+#: packages/admin/src/router.tsx:1030
 msgid "Failed to publish"
 msgstr "فشل النشر"
 
@@ -3602,8 +3603,9 @@ msgstr "فشل إلغاء رمز API"
 msgid "Failed to rewrite URLs"
 msgstr "فشل إعادة كتابة الروابط"
 
-#: packages/admin/src/router.tsx:943
-#: packages/admin/src/router.tsx:1978
+#: packages/admin/src/router.tsx:670
+#: packages/admin/src/router.tsx:952
+#: packages/admin/src/router.tsx:1986
 msgid "Failed to save"
 msgstr "فشل الحفظ"
 
@@ -3622,7 +3624,7 @@ msgstr ""
 msgid "Failed to save settings"
 msgstr "فشل في حفظ الإعدادات"
 
-#: packages/admin/src/router.tsx:1082
+#: packages/admin/src/router.tsx:1090
 msgid "Failed to schedule"
 msgstr "فشل الجدولة"
 
@@ -3653,11 +3655,11 @@ msgstr "فشل تعيين مصطلحات المدخل"
 msgid "Failed to uninstall plugin"
 msgstr "فشل إلغاء تثبيت الإضافة"
 
-#: packages/admin/src/router.tsx:1040
+#: packages/admin/src/router.tsx:1048
 msgid "Failed to unpublish"
 msgstr "فشل إلغاء النشر"
 
-#: packages/admin/src/router.tsx:1103
+#: packages/admin/src/router.tsx:1111
 msgid "Failed to unschedule"
 msgstr "فشل إلغاء الجدولة"
 
@@ -3674,7 +3676,7 @@ msgstr "فشل تحديث {0}"
 msgid "Failed to update backup settings"
 msgstr ""
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1101
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1105
 msgid "Failed to update byline"
 msgstr "فشل تحديث الكاتب"
 
@@ -3711,7 +3713,7 @@ msgstr ""
 msgid "Failed to update settings"
 msgstr ""
 
-#: packages/admin/src/router.tsx:1448
+#: packages/admin/src/router.tsx:1456
 msgid "Failed to update status"
 msgstr "فشل تحديث الحالة"
 
@@ -3930,7 +3932,7 @@ msgid "Go"
 msgstr ""
 
 #: packages/admin/src/components/WordPressImport.tsx:2418
-#: packages/admin/src/router.tsx:2213
+#: packages/admin/src/router.tsx:2221
 msgid "Go to Dashboard"
 msgstr "الذهاب إلى لوحة المعلومات"
 
@@ -4017,8 +4019,8 @@ msgstr "لافتة رئيسية"
 msgid "hero, banner, cta"
 msgstr "رئيسية، لافتة، دعوة للإجراء"
 
-#: packages/admin/src/components/SeoPanel.tsx:230
-#: packages/admin/src/components/SeoPanel.tsx:233
+#: packages/admin/src/components/SeoPanel.tsx:242
+#: packages/admin/src/components/SeoPanel.tsx:245
 msgid "Hide from search engines"
 msgstr "إخفاء من محركات البحث"
 
@@ -4466,7 +4468,7 @@ msgstr ""
 msgid "Keep this tab open. The import runs in small steps and can be safely re-run if interrupted."
 msgstr ""
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:930
+#: packages/admin/src/components/ContentSettingsPanel.tsx:934
 msgid "Keep typing to narrow down more bylines."
 msgstr ""
 
@@ -4637,7 +4639,7 @@ msgstr "تحميل المزيد"
 msgid "Load More"
 msgstr "تحميل المزيد"
 
-#: packages/admin/src/router.tsx:2168
+#: packages/admin/src/router.tsx:2176
 msgid "Loading"
 msgstr ""
 
@@ -4653,8 +4655,8 @@ msgstr "جاري تحميل المجموعات..."
 msgid "Loading comments..."
 msgstr "جاري تحميل التعليقات..."
 
-#: packages/admin/src/router.tsx:2170
-#: packages/admin/src/router.tsx:2182
+#: packages/admin/src/router.tsx:2178
+#: packages/admin/src/router.tsx:2190
 msgid "Loading configuration..."
 msgstr "جارٍ تحميل الإعدادات..."
 
@@ -4800,7 +4802,7 @@ msgstr "إدارة"
 msgid "Manage {0} for {1}"
 msgstr "إدارة {0} لـ {1}"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:892
+#: packages/admin/src/components/ContentSettingsPanel.tsx:896
 msgid "Manage bylines in {entryLocale}"
 msgstr "إدارة الكُتّاب في {entryLocale}"
 
@@ -5001,8 +5003,8 @@ msgstr "القوائم ({0})"
 msgid "Menus Manage"
 msgstr "إدارة القوائم"
 
-#: packages/admin/src/components/SeoPanel.tsx:188
-#: packages/admin/src/components/SeoPanel.tsx:192
+#: packages/admin/src/components/SeoPanel.tsx:199
+#: packages/admin/src/components/SeoPanel.tsx:203
 msgid "Meta Description"
 msgstr "الوصف التعريفي"
 
@@ -5094,14 +5096,14 @@ msgstr ""
 
 #: packages/admin/src/components/ContentList.tsx:473
 #: packages/admin/src/components/ContentList.tsx:1073
-#: packages/admin/src/components/ContentSettingsPanel.tsx:717
-#: packages/admin/src/components/ContentSettingsPanel.tsx:737
+#: packages/admin/src/components/ContentSettingsPanel.tsx:721
+#: packages/admin/src/components/ContentSettingsPanel.tsx:741
 msgid "Move to Trash"
 msgstr "نقل إلى سلة المحذوفات"
 
 #: packages/admin/src/components/ContentList.tsx:451
 #: packages/admin/src/components/ContentList.tsx:1058
-#: packages/admin/src/components/ContentSettingsPanel.tsx:722
+#: packages/admin/src/components/ContentSettingsPanel.tsx:726
 msgid "Move to Trash?"
 msgstr "نقل إلى سلة المحذوفات؟"
 
@@ -5162,7 +5164,7 @@ msgstr "التنقل"
 msgid "Never"
 msgstr "أبدًا"
 
-#: packages/admin/src/router.tsx:1129
+#: packages/admin/src/router.tsx:1137
 msgid "new"
 msgstr "جديد"
 
@@ -5295,7 +5297,7 @@ msgstr "لا توجد تعليقات موافق عليها بعد."
 msgid "No byline fields yet."
 msgstr ""
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:884
+#: packages/admin/src/components/ContentSettingsPanel.tsx:888
 msgid "No bylines available in {entryLocale}. Create a variant from the Bylines page before crediting one on this entry."
 msgstr "لا يوجد كُتّاب متاحون في {entryLocale}. أنشئ نسخة من صفحة الكُتّاب قبل إسناد كاتب لهذا المدخل."
 
@@ -5303,7 +5305,7 @@ msgstr "لا يوجد كُتّاب متاحون في {entryLocale}. أنشئ ن�
 msgid "No bylines found"
 msgstr "لم يُعثر على كُتّاب"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:992
+#: packages/admin/src/components/ContentSettingsPanel.tsx:996
 msgid "No bylines selected."
 msgstr "لم يتم اختيار أي كاتب."
 
@@ -5401,7 +5403,7 @@ msgstr "لا يوجد مستخدم مرتبط"
 msgid "No matches"
 msgstr "لا توجد نتائج"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:927
+#: packages/admin/src/components/ContentSettingsPanel.tsx:931
 msgid "No matching bylines."
 msgstr ""
 
@@ -5705,12 +5707,12 @@ msgstr "تم حفظ الترتيب"
 msgid "Original:"
 msgstr "الأصلي:"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:684
+#: packages/admin/src/components/ContentSettingsPanel.tsx:688
 #: packages/admin/src/components/editor/DocumentOutline.tsx:191
 msgid "Outline"
 msgstr "مخطط المستند"
 
-#: packages/admin/src/components/SeoPanel.tsx:164
+#: packages/admin/src/components/SeoPanel.tsx:174
 msgid "Overrides the page title in search engine results"
 msgstr "يَحل محل عنوان الصفحة في نتائج محركات البحث"
 
@@ -5723,7 +5725,7 @@ msgstr "الملكية"
 msgid "Package"
 msgstr "الحزمة"
 
-#: packages/admin/src/router.tsx:2208
+#: packages/admin/src/router.tsx:2216
 msgid "Page Not Found"
 msgstr "الصفحة غير موجودة"
 
@@ -6005,7 +6007,7 @@ msgstr "الإضافات"
 msgid "Point-in-Time Restore"
 msgstr ""
 
-#: packages/admin/src/components/SeoPanel.tsx:208
+#: packages/admin/src/components/SeoPanel.tsx:220
 msgid "Points search engines to the original version of this page, if it's duplicated from another URL"
 msgstr "يرشد محركات البحث إلى النسخة الأصلية من هذه الصفحة، إذا كانت مكررة من رابط آخر"
 
@@ -6098,7 +6100,7 @@ msgid "Publish date"
 msgstr ""
 
 #: packages/admin/src/components/ContentList.tsx:747
-#: packages/admin/src/router.tsx:1018
+#: packages/admin/src/router.tsx:1026
 msgid "Published"
 msgstr "منشور"
 
@@ -6123,7 +6125,7 @@ msgstr "بقلم"
 msgid "Python"
 msgstr ""
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1000
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1004
 msgid "Quick create byline"
 msgstr "إنشاء كاتب بشكل سريع"
 
@@ -6263,7 +6265,7 @@ msgstr "الإصدار حديث جدًا للتثبيت"
 
 #: packages/admin/src/components/BlockKitMediaPickerField.tsx:84
 #: packages/admin/src/components/BlockKitMediaPickerField.tsx:115
-#: packages/admin/src/components/ContentSettingsPanel.tsx:969
+#: packages/admin/src/components/ContentSettingsPanel.tsx:973
 #: packages/admin/src/components/editor/ImageDetailPanel.tsx:199
 #: packages/admin/src/components/PortableTextEditor.tsx:4129
 #: packages/admin/src/components/settings/GeneralSettings.tsx:229
@@ -6470,7 +6472,7 @@ msgstr "جاري الاستعادة..."
 #: packages/admin/src/components/MarketplaceBrowse.tsx:143
 #: packages/admin/src/components/PluginFieldErrorBoundary.tsx:44
 #: packages/admin/src/components/ThemeMarketplaceBrowse.tsx:122
-#: packages/admin/src/router.tsx:2196
+#: packages/admin/src/router.tsx:2204
 #: packages/admin/src/routes/byline-schema.tsx:280
 msgid "Retry"
 msgstr "إعادة المحاولة"
@@ -6479,7 +6481,7 @@ msgstr "إعادة المحاولة"
 msgid "Reusable content blocks you can insert into any content"
 msgstr "كتل محتوى قابلة لإعادة الاستخدام يمكنك إدراجها في أي محتوى"
 
-#: packages/admin/src/router.tsx:1056
+#: packages/admin/src/router.tsx:1064
 msgid "Reverted to published version"
 msgstr "تمت الإعادة إلى النسخة المنشورة"
 
@@ -6495,7 +6497,7 @@ msgstr "مراجعة الصلاحيات الجديدة"
 msgid "Revision restored"
 msgstr "تم استعادة المراجعة"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:692
+#: packages/admin/src/components/ContentSettingsPanel.tsx:696
 #: packages/admin/src/components/ContentTypeEditor.tsx:76
 #: packages/admin/src/components/RevisionHistory.tsx:168
 msgid "Revisions"
@@ -6557,7 +6559,7 @@ msgstr "الدور"
 msgid "Role {role}"
 msgstr "الدور {role}"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:974
+#: packages/admin/src/components/ContentSettingsPanel.tsx:978
 msgid "Role label"
 msgstr "تسمية الدور"
 
@@ -6583,7 +6585,7 @@ msgstr ""
 msgid "Same window"
 msgstr "نفس النافذة"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1107
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1111
 #: packages/admin/src/components/editor/ImageDetailPanel.tsx:395
 #: packages/admin/src/components/editor/ImageDetailPanel.tsx:589
 #: packages/admin/src/components/editor/ImageNode.tsx:264
@@ -6635,7 +6637,7 @@ msgstr "تم الحفظ"
 msgid "Saved \"{0}\"."
 msgstr ""
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1107
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1111
 #: packages/admin/src/components/FieldEditor.tsx:660
 #: packages/admin/src/components/MediaDetailPanel.tsx:425
 #: packages/admin/src/components/MenuEditor.tsx:626
@@ -6677,7 +6679,7 @@ msgstr "جدولة لوقت لاحق"
 
 #: packages/admin/src/components/ContentList.tsx:738
 #: packages/admin/src/components/ContentStatusBadge.tsx:63
-#: packages/admin/src/router.tsx:1076
+#: packages/admin/src/router.tsx:1084
 msgid "Scheduled"
 msgstr "مجدول"
 
@@ -6766,12 +6768,12 @@ msgstr ""
 msgid "Search by name or email..."
 msgstr "ابحث بالاسم أو البريد الإلكتروني..."
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:901
+#: packages/admin/src/components/ContentSettingsPanel.tsx:905
 #: packages/admin/src/routes/bylines.tsx:401
 msgid "Search bylines"
 msgstr "البحث في الكُتّاب"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:900
+#: packages/admin/src/components/ContentSettingsPanel.tsx:904
 msgid "Search bylines to add..."
 msgstr ""
 
@@ -6850,7 +6852,7 @@ msgstr "بحث..."
 msgid "Searchable"
 msgstr "قابل للبحث"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:905
+#: packages/admin/src/components/ContentSettingsPanel.tsx:909
 msgid "Searching..."
 msgstr ""
 
@@ -7114,8 +7116,8 @@ msgstr "إعدادات تحسين محركات البحث (Yoast)"
 msgid "SEO settings saved"
 msgstr "تم حفظ إعدادات تحسين محركات البحث"
 
-#: packages/admin/src/components/SeoPanel.tsx:168
-#: packages/admin/src/components/SeoPanel.tsx:172
+#: packages/admin/src/components/SeoPanel.tsx:178
+#: packages/admin/src/components/SeoPanel.tsx:182
 msgid "SEO Title"
 msgstr "عنوان تحسين محركات البحث"
 
@@ -7337,8 +7339,8 @@ msgstr "تم التخطي"
 
 #: packages/admin/src/components/BylineFieldEditor.tsx:239
 #: packages/admin/src/components/ContentSettingsPanel.tsx:462
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1016
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1078
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1020
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1082
 #: packages/admin/src/components/ContentTypeEditor.tsx:111
 #: packages/admin/src/components/ContentTypeEditor.tsx:402
 #: packages/admin/src/components/ContentTypeList.tsx:99
@@ -7655,7 +7657,7 @@ msgstr "تم حذف القائمة."
 msgid "The name of your site, used in the header and metadata"
 msgstr "اسم موقعك، يُستخدم في الترويسة والبيانات الوصفية"
 
-#: packages/admin/src/router.tsx:2210
+#: packages/admin/src/router.tsx:2218
 msgid "The page you're looking for doesn't exist."
 msgstr "الصفحة التي تبحث عنها غير موجودة."
 
@@ -7799,7 +7801,7 @@ msgstr "سيُحذف هذا منطقة عناصر الواجهة وجميع عن
 msgid "This will grant CLI access with your permissions."
 msgstr "سيمنح هذا وصول CLI بنفس صلاحياتك."
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:724
+#: packages/admin/src/components/ContentSettingsPanel.tsx:728
 msgid "This will move the item to trash. You can restore it later from the trash."
 msgstr "سيؤدي هذا إلى نقل العنصر إلى سلة المحذوفات. يمكنك استعادته لاحقًا من سلة المحذوفات."
 
@@ -7932,7 +7934,7 @@ msgstr "جارٍ الترجمة..."
 
 #: packages/admin/src/components/MenuEditor.tsx:143
 #: packages/admin/src/components/TaxonomyManager.tsx:782
-#: packages/admin/src/router.tsx:1128
+#: packages/admin/src/router.tsx:1136
 msgid "Translation created"
 msgstr "تم إنشاء الترجمة"
 
@@ -8045,8 +8047,8 @@ msgstr ""
 msgid "Unable to reach marketplace"
 msgstr "تعذّر الوصول إلى السوق"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1121
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1138
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1125
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1142
 msgid "Unassigned"
 msgstr "لم يتم التعيين"
 
@@ -8111,7 +8113,7 @@ msgstr "مفتاح مرور بدون اسم"
 msgid "Unpublish {itemLabel}"
 msgstr ""
 
-#: packages/admin/src/router.tsx:1036
+#: packages/admin/src/router.tsx:1044
 msgid "Unpublished"
 msgstr "غير منشور"
 
@@ -8123,7 +8125,7 @@ msgstr "تم العثور على جداول محتوى غير مسجلة"
 msgid "Unschedule"
 msgstr "إلغاء الجدولة"
 
-#: packages/admin/src/router.tsx:1097
+#: packages/admin/src/router.tsx:1105
 msgid "Unscheduled"
 msgstr "غير مجدول"
 
@@ -8149,7 +8151,7 @@ msgstr "عنصر واجهة بلا عنوان"
 msgid "Unverified publisher"
 msgstr "ناشر غير موثَّق"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:948
+#: packages/admin/src/components/ContentSettingsPanel.tsx:952
 msgid "Up"
 msgstr "أعلى"
 
@@ -8581,19 +8583,19 @@ msgstr "عدد صحيح"
 msgid "Why can't this be changed?"
 msgstr ""
 
-#: packages/admin/src/components/SeoPanel.tsx:209
+#: packages/admin/src/components/SeoPanel.tsx:221
 msgid "Why is this important for duplicate pages?"
 msgstr ""
 
-#: packages/admin/src/components/SeoPanel.tsx:185
+#: packages/admin/src/components/SeoPanel.tsx:196
 msgid "Why is this important for search result summaries?"
 msgstr ""
 
-#: packages/admin/src/components/SeoPanel.tsx:165
+#: packages/admin/src/components/SeoPanel.tsx:175
 msgid "Why is this important for search result titles?"
 msgstr ""
 
-#: packages/admin/src/components/SeoPanel.tsx:228
+#: packages/admin/src/components/SeoPanel.tsx:240
 msgid "Why is this important for search visibility?"
 msgstr ""
 
@@ -8745,7 +8747,7 @@ msgstr "لديك الصلاحية الكاملة لإدارة هذا الموق�
 msgid "You need admin permissions to manage byline schema."
 msgstr ""
 
-#: packages/admin/src/router.tsx:1505
+#: packages/admin/src/router.tsx:1513
 msgid "You need Editor permissions to moderate comments."
 msgstr "تحتاج إلى صلاحيات المحرر للإشراف على التعليقات."
 

@@ -89,7 +89,7 @@ msgid "{0, plural, one {# comment imported} other {# comments imported}}"
 msgstr ""
 
 #. placeholder {0}: result.affected
-#: packages/admin/src/router.tsx:1484
+#: packages/admin/src/router.tsx:1492
 msgid "{0, plural, one {# comment updated} other {# comments updated}}"
 msgstr "{0, plural, one {# hozzászólás frissítve} other {# hozzászólás frissítve}}"
 
@@ -306,7 +306,7 @@ msgid "{0}{1}"
 msgstr "{0}{1}"
 
 #. placeholder {0}: draft.description.length
-#: packages/admin/src/components/SeoPanel.tsx:195
+#: packages/admin/src/components/SeoPanel.tsx:206
 msgid "{0}/160 characters"
 msgstr "{0}/160 karakter"
 
@@ -569,7 +569,7 @@ msgstr "Meghívás elfogadása"
 msgid "Access denied"
 msgstr "Hozzáférés megtagadva"
 
-#: packages/admin/src/router.tsx:1504
+#: packages/admin/src/router.tsx:1512
 msgid "Access Denied"
 msgstr "Hozzáférés megtagadva"
 
@@ -613,7 +613,7 @@ msgid "Active"
 msgstr "Aktív"
 
 #: packages/admin/src/components/AllowedTypesEditor.tsx:171
-#: packages/admin/src/components/ContentSettingsPanel.tsx:919
+#: packages/admin/src/components/ContentSettingsPanel.tsx:923
 #: packages/admin/src/components/MenuEditor.tsx:441
 #: packages/admin/src/components/TaxonomySidebar.tsx:496
 msgid "Add"
@@ -726,7 +726,7 @@ msgstr "Új hozzáadása"
 msgid "Add new {0}"
 msgstr "Új {0} hozzáadása"
 
-#: packages/admin/src/components/SeoPanel.tsx:227
+#: packages/admin/src/components/SeoPanel.tsx:239
 msgid "Add noindex meta tag"
 msgstr "noindex meta tag hozzáadása"
 
@@ -963,19 +963,20 @@ msgstr "Másik lehetőségként exportálhatsz WordPressből (Eszközök → Exp
 #: packages/admin/src/router.tsx:439
 #: packages/admin/src/router.tsx:453
 #: packages/admin/src/router.tsx:467
-#: packages/admin/src/router.tsx:944
-#: packages/admin/src/router.tsx:1005
-#: packages/admin/src/router.tsx:1023
-#: packages/admin/src/router.tsx:1041
-#: packages/admin/src/router.tsx:1062
-#: packages/admin/src/router.tsx:1083
-#: packages/admin/src/router.tsx:1104
-#: packages/admin/src/router.tsx:1135
-#: packages/admin/src/router.tsx:1155
-#: packages/admin/src/router.tsx:1449
-#: packages/admin/src/router.tsx:1465
-#: packages/admin/src/router.tsx:1490
-#: packages/admin/src/router.tsx:1979
+#: packages/admin/src/router.tsx:671
+#: packages/admin/src/router.tsx:953
+#: packages/admin/src/router.tsx:1013
+#: packages/admin/src/router.tsx:1031
+#: packages/admin/src/router.tsx:1049
+#: packages/admin/src/router.tsx:1070
+#: packages/admin/src/router.tsx:1091
+#: packages/admin/src/router.tsx:1112
+#: packages/admin/src/router.tsx:1143
+#: packages/admin/src/router.tsx:1163
+#: packages/admin/src/router.tsx:1457
+#: packages/admin/src/router.tsx:1473
+#: packages/admin/src/router.tsx:1498
+#: packages/admin/src/router.tsx:1987
 #: packages/admin/src/routes/byline-schema.tsx:103
 #: packages/admin/src/routes/byline-schema.tsx:123
 #: packages/admin/src/routes/byline-schema.tsx:139
@@ -1121,7 +1122,7 @@ msgstr "A hitelesítés megszakadt vagy időtúllépés történt. Próbáld új
 
 #: packages/admin/src/components/comments/CommentDetail.tsx:77
 #: packages/admin/src/components/comments/CommentInbox.tsx:288
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1129
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1133
 #: packages/admin/src/components/users/roleDefinitions.ts:30
 #: packages/admin/src/components/WelcomeModal.tsx:27
 msgid "Author"
@@ -1181,7 +1182,7 @@ msgstr ""
 msgid "Automatic backups need a storage backend (R2, S3, or local storage). Configure storage in your EmDash config to enable them."
 msgstr ""
 
-#: packages/admin/src/router.tsx:1004
+#: packages/admin/src/router.tsx:1012
 msgid "Autosave failed"
 msgstr "Az automatikus mentés sikertelen"
 
@@ -1307,7 +1308,7 @@ msgstr "Félkövér"
 msgid "Boolean"
 msgstr "Logikai érték"
 
-#: packages/admin/src/components/SeoPanel.tsx:184
+#: packages/admin/src/components/SeoPanel.tsx:195
 msgid "Brief summary shown below the title in search results"
 msgstr "A keresési találatokban a cím alatt megjelenő rövid összefoglaló"
 
@@ -1391,9 +1392,9 @@ msgstr "Tartalmat tekinthet meg"
 #: packages/admin/src/components/ContentPickerModal.tsx:241
 #: packages/admin/src/components/ContentSettingsPanel.tsx:92
 #: packages/admin/src/components/ContentSettingsPanel.tsx:534
-#: packages/admin/src/components/ContentSettingsPanel.tsx:730
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1033
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1086
+#: packages/admin/src/components/ContentSettingsPanel.tsx:734
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1037
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1090
 #: packages/admin/src/components/editor/CodeBlockNode.tsx:193
 #: packages/admin/src/components/editor/CodeBlockNode.tsx:194
 #: packages/admin/src/components/editor/ImageDetailPanel.tsx:586
@@ -1439,8 +1440,8 @@ msgstr "A téma szakaszai nem törölhetők"
 msgid "Cannot determine MIME type from URL. Use a URL ending in a recognized image extension (e.g. .jpg, .png, .webp)."
 msgstr "Nem állapítható meg a MIME-típus az URL-ből. Olyan URL-t használj, amely ismert képkiterjesztésre végződik (pl. .jpg, .png, .webp)."
 
-#: packages/admin/src/components/SeoPanel.tsx:212
-#: packages/admin/src/components/SeoPanel.tsx:216
+#: packages/admin/src/components/SeoPanel.tsx:224
+#: packages/admin/src/components/SeoPanel.tsx:228
 msgid "Canonical URL"
 msgstr "Kanonikus URL"
 
@@ -1514,7 +1515,7 @@ msgstr "Logó módosítása"
 msgid "Changelog"
 msgstr "Változásnapló"
 
-#: packages/admin/src/router.tsx:1055
+#: packages/admin/src/router.tsx:1063
 msgid "Changes discarded"
 msgstr "Módosítások elvetve"
 
@@ -1799,7 +1800,7 @@ msgstr "Tartalmi hibák ({0})"
 msgid "Content found:"
 msgstr "Talált tartalom:"
 
-#: packages/admin/src/router.tsx:1077
+#: packages/admin/src/router.tsx:1085
 msgid "Content has been scheduled for publishing"
 msgstr "A tartalom publikálása ütemezve"
 
@@ -1811,7 +1812,7 @@ msgstr "A tartalom frissült a kiválasztott verzióra."
 msgid "Content ID:"
 msgstr "Tartalom ID:"
 
-#: packages/admin/src/router.tsx:1018
+#: packages/admin/src/router.tsx:1026
 msgid "Content is now live"
 msgstr "A tartalom élesítve"
 
@@ -1823,11 +1824,11 @@ msgstr "tartalmi elemek"
 msgid "Content Read"
 msgstr "Tartalom olvasása"
 
-#: packages/admin/src/router.tsx:1036
+#: packages/admin/src/router.tsx:1044
 msgid "Content removed from public view"
 msgstr "A tartalom eltávolítva a nyilvános nézetből"
 
-#: packages/admin/src/router.tsx:1098
+#: packages/admin/src/router.tsx:1106
 msgid "Content reverted to draft"
 msgstr "A tartalom visszaállítva vázlatra"
 
@@ -1936,7 +1937,7 @@ msgstr "Nem sikerült betölteni az egyéni mezőket."
 msgid "Couldn't map \"{draft}\" to a MIME type. Type the MIME directly."
 msgstr "Nem sikerült \"{draft}\" értéket MIME-típushoz rendelni. Add meg közvetlenül a MIME-típust."
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:925
+#: packages/admin/src/components/ContentSettingsPanel.tsx:929
 msgid "Couldn't search bylines. Please try again."
 msgstr "Nem sikerült keresni a szerzők között. Próbáld újra."
 
@@ -1949,7 +1950,7 @@ msgstr "Nem sikerült ellenőrizni, hány érték hivatkozik erre: \"{0}\". A t�
 msgid "Count"
 msgstr "Darab"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1057
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1061
 #: packages/admin/src/components/MenuList.tsx:178
 #: packages/admin/src/components/Redirects.tsx:192
 #: packages/admin/src/components/Sections.tsx:212
@@ -1985,7 +1986,7 @@ msgstr "Fiók létrehozása"
 msgid "Create an account"
 msgstr "Fiók létrehozása"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1005
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1009
 #: packages/admin/src/routes/bylines.tsx:476
 msgid "Create byline"
 msgstr "Szerző létrehozása"
@@ -2123,7 +2124,7 @@ msgid "Created {0}"
 msgstr "{0} létrehozva"
 
 #. placeholder {0}: result.locale?.toUpperCase() ?? t`new`
-#: packages/admin/src/router.tsx:1129
+#: packages/admin/src/router.tsx:1137
 msgid "Created {0} translation"
 msgstr "{0} fordítás létrehozva"
 
@@ -2135,7 +2136,7 @@ msgstr "Létrehozva"
 msgid "Creating collections and fields..."
 msgstr "Gyűjtemények és mezők létrehozása..."
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1057
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1061
 #: packages/admin/src/components/MenuList.tsx:178
 #: packages/admin/src/components/Redirects.tsx:189
 #: packages/admin/src/components/Sections.tsx:212
@@ -2625,8 +2626,8 @@ msgstr "Navigációs menü megjelenítése"
 msgid "Display category list"
 msgstr ""
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1008
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1070
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1012
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1074
 #: packages/admin/src/routes/bylines.tsx:481
 msgid "Display name"
 msgstr "Megjelenített név"
@@ -2691,7 +2692,7 @@ msgstr "Nincs még fiókod? <0>Regisztráció</0>"
 msgid "Done"
 msgstr "Kész"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:951
+#: packages/admin/src/components/ContentSettingsPanel.tsx:955
 msgid "Down"
 msgstr "Le"
 
@@ -2811,7 +2812,7 @@ msgstr "pl. CI/CD Pipeline"
 msgid "e.g., MacBook Pro, iPhone"
 msgstr "pl. MacBook Pro, iPhone"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:960
+#: packages/admin/src/components/ContentSettingsPanel.tsx:964
 #: packages/admin/src/components/editor/PluginBlockNode.tsx:367
 #: packages/admin/src/components/editor/PluginBlockNode.tsx:368
 #: packages/admin/src/components/MenuEditor.tsx:544
@@ -2847,7 +2848,7 @@ msgstr ""
 msgid "Edit {title}"
 msgstr "{title} szerkesztése"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1067
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1071
 msgid "Edit byline"
 msgstr "Szerző szerkesztése"
 
@@ -3073,7 +3074,7 @@ msgstr "Add meg a WordPress weboldal URL-jét"
 #: packages/admin/src/components/MenuEditor.tsx:233
 #: packages/admin/src/components/SetupWizard.tsx:539
 #: packages/admin/src/components/Widgets.tsx:769
-#: packages/admin/src/router.tsx:2193
+#: packages/admin/src/router.tsx:2201
 msgid "Error"
 msgstr "Hiba"
 
@@ -3184,7 +3185,7 @@ msgstr "Nem sikerült admint létrehozni"
 msgid "Failed to create backup"
 msgstr ""
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1051
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1055
 msgid "Failed to create byline"
 msgstr "Nem sikerült a szerzőt létrehozni"
 
@@ -3208,14 +3209,14 @@ msgstr "Nem sikerült néhány gyűjteményt létrehozni"
 msgid "Failed to create term"
 msgstr "Nem sikerült kifejezést létrehozni"
 
-#: packages/admin/src/router.tsx:1134
+#: packages/admin/src/router.tsx:1142
 msgid "Failed to create translation"
 msgstr "Nem sikerült fordítást létrehozni"
 
 #: packages/admin/src/router.tsx:423
 #: packages/admin/src/router.tsx:452
 #: packages/admin/src/router.tsx:535
-#: packages/admin/src/router.tsx:1154
+#: packages/admin/src/router.tsx:1162
 msgid "Failed to delete"
 msgstr "Nem sikerült törölni"
 
@@ -3240,7 +3241,7 @@ msgid "Failed to delete collection"
 msgstr "Nem sikerült gyűjteményt törölni"
 
 #: packages/admin/src/lib/api/comments.ts:111
-#: packages/admin/src/router.tsx:1464
+#: packages/admin/src/router.tsx:1472
 msgid "Failed to delete comment"
 msgstr "Nem sikerült hozzászólást törölni"
 
@@ -3306,7 +3307,7 @@ msgstr "Nem sikerült keresést letiltani"
 msgid "Failed to disable user"
 msgstr "Nem sikerült felhasználót letiltani"
 
-#: packages/admin/src/router.tsx:1061
+#: packages/admin/src/router.tsx:1069
 msgid "Failed to discard changes"
 msgstr "Nem sikerült módosításokat elvetni"
 
@@ -3421,8 +3422,8 @@ msgstr "Nem sikerült kifejezéseket lekérni"
 #: packages/admin/src/lib/api/current-user.ts:22
 #: packages/admin/src/lib/api/users.ts:88
 #: packages/admin/src/lib/api/users.ts:93
-#: packages/admin/src/router.tsx:853
-#: packages/admin/src/router.tsx:1395
+#: packages/admin/src/router.tsx:862
+#: packages/admin/src/router.tsx:1403
 msgid "Failed to fetch user"
 msgstr "Nem sikerült felhasználót lekérni"
 
@@ -3533,7 +3534,7 @@ msgstr "Nem sikerült betölteni a felhasználókat: {0}"
 msgid "Failed to load widget"
 msgstr "Nem sikerült betölteni a widgetet"
 
-#: packages/admin/src/router.tsx:1489
+#: packages/admin/src/router.tsx:1497
 msgid "Failed to perform bulk action"
 msgstr "Nem sikerült tömeges műveletet végrehajtani"
 
@@ -3546,7 +3547,7 @@ msgid "Failed to prepare import"
 msgstr "Nem sikerült importot előkészíteni"
 
 #: packages/admin/src/router.tsx:491
-#: packages/admin/src/router.tsx:1022
+#: packages/admin/src/router.tsx:1030
 msgid "Failed to publish"
 msgstr "Nem sikerült publikálni"
 
@@ -3601,8 +3602,9 @@ msgstr "Az API tokent nem sikerült visszavonni"
 msgid "Failed to rewrite URLs"
 msgstr "URL-ek átírása nem sikerült"
 
-#: packages/admin/src/router.tsx:943
-#: packages/admin/src/router.tsx:1978
+#: packages/admin/src/router.tsx:670
+#: packages/admin/src/router.tsx:952
+#: packages/admin/src/router.tsx:1986
 msgid "Failed to save"
 msgstr "Nem sikerült a mentés"
 
@@ -3621,7 +3623,7 @@ msgstr "Nem sikerült a mezők mentése"
 msgid "Failed to save settings"
 msgstr "Nem sikerült a beállítások mentése"
 
-#: packages/admin/src/router.tsx:1082
+#: packages/admin/src/router.tsx:1090
 msgid "Failed to schedule"
 msgstr "Az ütemezés nem sikerült"
 
@@ -3652,11 +3654,11 @@ msgstr "Nem sikerült bejegyzés kifejezéseit beállítani"
 msgid "Failed to uninstall plugin"
 msgstr "Nem sikerült a plugin eltávolítása"
 
-#: packages/admin/src/router.tsx:1040
+#: packages/admin/src/router.tsx:1048
 msgid "Failed to unpublish"
 msgstr "Nem sikerült a közzététel visszavonása"
 
-#: packages/admin/src/router.tsx:1103
+#: packages/admin/src/router.tsx:1111
 msgid "Failed to unschedule"
 msgstr "Nem sikerült az ütemezés törlése"
 
@@ -3673,7 +3675,7 @@ msgstr "Nem sikerült frissíteni: {0}"
 msgid "Failed to update backup settings"
 msgstr ""
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1101
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1105
 msgid "Failed to update byline"
 msgstr "Nem sikerült a szerzőt frissíteni"
 
@@ -3710,7 +3712,7 @@ msgstr "Nem sikerült a szakasz frissítése"
 msgid "Failed to update settings"
 msgstr "Nem sikerült frissíteni a beállításokat"
 
-#: packages/admin/src/router.tsx:1448
+#: packages/admin/src/router.tsx:1456
 msgid "Failed to update status"
 msgstr "Nem sikerült frissíteni az állapotot"
 
@@ -3929,7 +3931,7 @@ msgid "Go"
 msgstr "Go"
 
 #: packages/admin/src/components/WordPressImport.tsx:2418
-#: packages/admin/src/router.tsx:2213
+#: packages/admin/src/router.tsx:2221
 msgid "Go to Dashboard"
 msgstr "Ugrás a vezérlőpultra"
 
@@ -4016,8 +4018,8 @@ msgstr "Hero banner"
 msgid "hero, banner, cta"
 msgstr "hero, banner, cta"
 
-#: packages/admin/src/components/SeoPanel.tsx:230
-#: packages/admin/src/components/SeoPanel.tsx:233
+#: packages/admin/src/components/SeoPanel.tsx:242
+#: packages/admin/src/components/SeoPanel.tsx:245
 msgid "Hide from search engines"
 msgstr "Elrejtés a keresők elől"
 
@@ -4465,7 +4467,7 @@ msgstr "JSX"
 msgid "Keep this tab open. The import runs in small steps and can be safely re-run if interrupted."
 msgstr ""
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:930
+#: packages/admin/src/components/ContentSettingsPanel.tsx:934
 msgid "Keep typing to narrow down more bylines."
 msgstr "Gépelj tovább a szerzők szűréséhez."
 
@@ -4636,7 +4638,7 @@ msgstr "Továbbiak betöltése"
 msgid "Load More"
 msgstr "Továbbiak betöltése"
 
-#: packages/admin/src/router.tsx:2168
+#: packages/admin/src/router.tsx:2176
 msgid "Loading"
 msgstr ""
 
@@ -4652,8 +4654,8 @@ msgstr "Gyűjtemények betöltése..."
 msgid "Loading comments..."
 msgstr "Hozzászólások betöltése..."
 
-#: packages/admin/src/router.tsx:2170
-#: packages/admin/src/router.tsx:2182
+#: packages/admin/src/router.tsx:2178
+#: packages/admin/src/router.tsx:2190
 msgid "Loading configuration..."
 msgstr "Konfiguráció betöltése..."
 
@@ -4799,7 +4801,7 @@ msgstr "Kezelés"
 msgid "Manage {0} for {1}"
 msgstr "{0} kezelése ehhez: {1}"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:892
+#: packages/admin/src/components/ContentSettingsPanel.tsx:896
 msgid "Manage bylines in {entryLocale}"
 msgstr "Szerzői sorok kezelése ezen a nyelven: {entryLocale}"
 
@@ -5000,8 +5002,8 @@ msgstr "Menük ({0})"
 msgid "Menus Manage"
 msgstr "Menük kezelése"
 
-#: packages/admin/src/components/SeoPanel.tsx:188
-#: packages/admin/src/components/SeoPanel.tsx:192
+#: packages/admin/src/components/SeoPanel.tsx:199
+#: packages/admin/src/components/SeoPanel.tsx:203
 msgid "Meta Description"
 msgstr "Meta leírás"
 
@@ -5093,14 +5095,14 @@ msgstr ""
 
 #: packages/admin/src/components/ContentList.tsx:473
 #: packages/admin/src/components/ContentList.tsx:1073
-#: packages/admin/src/components/ContentSettingsPanel.tsx:717
-#: packages/admin/src/components/ContentSettingsPanel.tsx:737
+#: packages/admin/src/components/ContentSettingsPanel.tsx:721
+#: packages/admin/src/components/ContentSettingsPanel.tsx:741
 msgid "Move to Trash"
 msgstr "Áthelyezés a kukába"
 
 #: packages/admin/src/components/ContentList.tsx:451
 #: packages/admin/src/components/ContentList.tsx:1058
-#: packages/admin/src/components/ContentSettingsPanel.tsx:722
+#: packages/admin/src/components/ContentSettingsPanel.tsx:726
 msgid "Move to Trash?"
 msgstr "Áthelyezés a kukába?"
 
@@ -5161,7 +5163,7 @@ msgstr "Navigáció"
 msgid "Never"
 msgstr "Soha"
 
-#: packages/admin/src/router.tsx:1129
+#: packages/admin/src/router.tsx:1137
 msgid "new"
 msgstr "új"
 
@@ -5294,7 +5296,7 @@ msgstr "Még nincs jóváhagyott hozzászólás."
 msgid "No byline fields yet."
 msgstr "Még nincsenek szerzői sor mezők."
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:884
+#: packages/admin/src/components/ContentSettingsPanel.tsx:888
 msgid "No bylines available in {entryLocale}. Create a variant from the Bylines page before crediting one on this entry."
 msgstr "Nincs elérhető szerző ezen a nyelven: {entryLocale}. Hozz létre egy változatot a Szerzők oldalon, mielőtt hozzárendelnéd ehhez a bejegyzéshez."
 
@@ -5302,7 +5304,7 @@ msgstr "Nincs elérhető szerző ezen a nyelven: {entryLocale}. Hozz létre egy 
 msgid "No bylines found"
 msgstr "Nem találhatók szerzők"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:992
+#: packages/admin/src/components/ContentSettingsPanel.tsx:996
 msgid "No bylines selected."
 msgstr "Nincs kiválasztott szerző."
 
@@ -5400,7 +5402,7 @@ msgstr "Nincs szerzőhöz kapcsolt felhasználó"
 msgid "No matches"
 msgstr "Nincs találat"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:927
+#: packages/admin/src/components/ContentSettingsPanel.tsx:931
 msgid "No matching bylines."
 msgstr "Nincs megfelelő szerző."
 
@@ -5704,12 +5706,12 @@ msgstr "Sorrend mentve"
 msgid "Original:"
 msgstr "Eredeti:"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:684
+#: packages/admin/src/components/ContentSettingsPanel.tsx:688
 #: packages/admin/src/components/editor/DocumentOutline.tsx:191
 msgid "Outline"
 msgstr "Dokumentum struktúra"
 
-#: packages/admin/src/components/SeoPanel.tsx:164
+#: packages/admin/src/components/SeoPanel.tsx:174
 msgid "Overrides the page title in search engine results"
 msgstr "Felülírja az oldal címét a keresési találatokban"
 
@@ -5722,7 +5724,7 @@ msgstr "Tulajdonjog"
 msgid "Package"
 msgstr "Csomag"
 
-#: packages/admin/src/router.tsx:2208
+#: packages/admin/src/router.tsx:2216
 msgid "Page Not Found"
 msgstr "Az oldal nem található"
 
@@ -6004,7 +6006,7 @@ msgstr "Pluginek"
 msgid "Point-in-Time Restore"
 msgstr ""
 
-#: packages/admin/src/components/SeoPanel.tsx:208
+#: packages/admin/src/components/SeoPanel.tsx:220
 msgid "Points search engines to the original version of this page, if it's duplicated from another URL"
 msgstr "A keresőmotorokat az oldal eredeti verziójára irányítja, ha az oldal egy másik URL-ről duplikált"
 
@@ -6097,7 +6099,7 @@ msgid "Publish date"
 msgstr ""
 
 #: packages/admin/src/components/ContentList.tsx:747
-#: packages/admin/src/router.tsx:1018
+#: packages/admin/src/router.tsx:1026
 msgid "Published"
 msgstr "Publikálva"
 
@@ -6122,7 +6124,7 @@ msgstr "Publikálta"
 msgid "Python"
 msgstr "Python"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1000
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1004
 msgid "Quick create byline"
 msgstr "Szerző gyors létrehozása"
 
@@ -6262,7 +6264,7 @@ msgstr "A kiadás túl új a telepítéshez"
 
 #: packages/admin/src/components/BlockKitMediaPickerField.tsx:84
 #: packages/admin/src/components/BlockKitMediaPickerField.tsx:115
-#: packages/admin/src/components/ContentSettingsPanel.tsx:969
+#: packages/admin/src/components/ContentSettingsPanel.tsx:973
 #: packages/admin/src/components/editor/ImageDetailPanel.tsx:199
 #: packages/admin/src/components/PortableTextEditor.tsx:4129
 #: packages/admin/src/components/settings/GeneralSettings.tsx:229
@@ -6469,7 +6471,7 @@ msgstr "Visszaállítás..."
 #: packages/admin/src/components/MarketplaceBrowse.tsx:143
 #: packages/admin/src/components/PluginFieldErrorBoundary.tsx:44
 #: packages/admin/src/components/ThemeMarketplaceBrowse.tsx:122
-#: packages/admin/src/router.tsx:2196
+#: packages/admin/src/router.tsx:2204
 #: packages/admin/src/routes/byline-schema.tsx:280
 msgid "Retry"
 msgstr "Újrapróbálkozás"
@@ -6478,7 +6480,7 @@ msgstr "Újrapróbálkozás"
 msgid "Reusable content blocks you can insert into any content"
 msgstr "Bármely tartalomba beszúrható újrahasznosítható tartalomblokkok"
 
-#: packages/admin/src/router.tsx:1056
+#: packages/admin/src/router.tsx:1064
 msgid "Reverted to published version"
 msgstr "Visszaállítva a publikált verzióra"
 
@@ -6494,7 +6496,7 @@ msgstr "Új engedélyek áttekintése"
 msgid "Revision restored"
 msgstr "Verzió visszaállítva"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:692
+#: packages/admin/src/components/ContentSettingsPanel.tsx:696
 #: packages/admin/src/components/ContentTypeEditor.tsx:76
 #: packages/admin/src/components/RevisionHistory.tsx:168
 msgid "Revisions"
@@ -6556,7 +6558,7 @@ msgstr "Szerepkör"
 msgid "Role {role}"
 msgstr "Szerepkör: {role}"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:974
+#: packages/admin/src/components/ContentSettingsPanel.tsx:978
 msgid "Role label"
 msgstr "Szerepkörcímke"
 
@@ -6582,7 +6584,7 @@ msgstr "Rust"
 msgid "Same window"
 msgstr "Azonos ablak"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1107
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1111
 #: packages/admin/src/components/editor/ImageDetailPanel.tsx:395
 #: packages/admin/src/components/editor/ImageDetailPanel.tsx:589
 #: packages/admin/src/components/editor/ImageNode.tsx:264
@@ -6634,7 +6636,7 @@ msgstr "Mentve"
 msgid "Saved \"{0}\"."
 msgstr "\"{0}\" mentve."
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1107
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1111
 #: packages/admin/src/components/FieldEditor.tsx:660
 #: packages/admin/src/components/MediaDetailPanel.tsx:425
 #: packages/admin/src/components/MenuEditor.tsx:626
@@ -6676,7 +6678,7 @@ msgstr "Ütemezés későbbre"
 
 #: packages/admin/src/components/ContentList.tsx:738
 #: packages/admin/src/components/ContentStatusBadge.tsx:63
-#: packages/admin/src/router.tsx:1076
+#: packages/admin/src/router.tsx:1084
 msgid "Scheduled"
 msgstr "Ütemezve"
 
@@ -6765,12 +6767,12 @@ msgstr "Keresés fájlnév alapján..."
 msgid "Search by name or email..."
 msgstr "Keresés név vagy e-mail alapján..."
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:901
+#: packages/admin/src/components/ContentSettingsPanel.tsx:905
 #: packages/admin/src/routes/bylines.tsx:401
 msgid "Search bylines"
 msgstr "Szerzők keresése"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:900
+#: packages/admin/src/components/ContentSettingsPanel.tsx:904
 msgid "Search bylines to add..."
 msgstr "Szerző keresése..."
 
@@ -6849,7 +6851,7 @@ msgstr "Keresés..."
 msgid "Searchable"
 msgstr "Kereshető"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:905
+#: packages/admin/src/components/ContentSettingsPanel.tsx:909
 msgid "Searching..."
 msgstr "Keresés..."
 
@@ -7113,8 +7115,8 @@ msgstr "SEO beállítások (Yoast)"
 msgid "SEO settings saved"
 msgstr "SEO beállítások mentve"
 
-#: packages/admin/src/components/SeoPanel.tsx:168
-#: packages/admin/src/components/SeoPanel.tsx:172
+#: packages/admin/src/components/SeoPanel.tsx:178
+#: packages/admin/src/components/SeoPanel.tsx:182
 msgid "SEO Title"
 msgstr "SEO cím"
 
@@ -7336,8 +7338,8 @@ msgstr "Kihagyva"
 
 #: packages/admin/src/components/BylineFieldEditor.tsx:239
 #: packages/admin/src/components/ContentSettingsPanel.tsx:462
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1016
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1078
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1020
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1082
 #: packages/admin/src/components/ContentTypeEditor.tsx:111
 #: packages/admin/src/components/ContentTypeEditor.tsx:402
 #: packages/admin/src/components/ContentTypeList.tsx:99
@@ -7654,7 +7656,7 @@ msgstr "A menü törölve lett."
 msgid "The name of your site, used in the header and metadata"
 msgstr "A weboldal neve, amely a fejlécben és a metaadatokban jelenik meg"
 
-#: packages/admin/src/router.tsx:2210
+#: packages/admin/src/router.tsx:2218
 msgid "The page you're looking for doesn't exist."
 msgstr "A keresett oldal nem létezik."
 
@@ -7798,7 +7800,7 @@ msgstr "Ez törli a widgetterületet és az összes widgetjét. A művelet nem v
 msgid "This will grant CLI access with your permissions."
 msgstr "Ez CLI-hozzáférést ad a te engedélyeiddel."
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:724
+#: packages/admin/src/components/ContentSettingsPanel.tsx:728
 msgid "This will move the item to trash. You can restore it later from the trash."
 msgstr "Ez az elemet a kukába helyezi. Később visszaállíthatod a kukából."
 
@@ -7931,7 +7933,7 @@ msgstr "Fordítás..."
 
 #: packages/admin/src/components/MenuEditor.tsx:143
 #: packages/admin/src/components/TaxonomyManager.tsx:782
-#: packages/admin/src/router.tsx:1128
+#: packages/admin/src/router.tsx:1136
 msgid "Translation created"
 msgstr "Fordítás létrehozva"
 
@@ -8044,8 +8046,8 @@ msgstr "TypeScript"
 msgid "Unable to reach marketplace"
 msgstr "A piactér nem érhető el"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1121
-#: packages/admin/src/components/ContentSettingsPanel.tsx:1138
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1125
+#: packages/admin/src/components/ContentSettingsPanel.tsx:1142
 msgid "Unassigned"
 msgstr "Nincs hozzárendelve"
 
@@ -8110,7 +8112,7 @@ msgstr "Névtelen passkey"
 msgid "Unpublish {itemLabel}"
 msgstr ""
 
-#: packages/admin/src/router.tsx:1036
+#: packages/admin/src/router.tsx:1044
 msgid "Unpublished"
 msgstr "Nincs publikálva"
 
@@ -8122,7 +8124,7 @@ msgstr "Nem regisztrált tartalomtáblák találhatók"
 msgid "Unschedule"
 msgstr "Ütemezés törlése"
 
-#: packages/admin/src/router.tsx:1097
+#: packages/admin/src/router.tsx:1105
 msgid "Unscheduled"
 msgstr "Nincs ütemezve"
 
@@ -8148,7 +8150,7 @@ msgstr "Cím nélküli widget"
 msgid "Unverified publisher"
 msgstr "Nem ellenőrzött kiadó"
 
-#: packages/admin/src/components/ContentSettingsPanel.tsx:948
+#: packages/admin/src/components/ContentSettingsPanel.tsx:952
 msgid "Up"
 msgstr "Fel"
 
@@ -8580,19 +8582,19 @@ msgstr "Egész szám"
 msgid "Why can't this be changed?"
 msgstr ""
 
-#: packages/admin/src/components/SeoPanel.tsx:209
+#: packages/admin/src/components/SeoPanel.tsx:221
 msgid "Why is this important for duplicate pages?"
 msgstr ""
 
-#: packages/admin/src/components/SeoPanel.tsx:185
+#: packages/admin/src/components/SeoPanel.tsx:196
 msgid "Why is this important for search result summaries?"
 msgstr ""
 
-#: packages/admin/src/components/SeoPanel.tsx:165
+#: packages/admin/src/components/SeoPanel.tsx:175
 msgid "Why is this important for search result titles?"
 msgstr ""
 
-#: packages/admin/src/components/SeoPanel.tsx:228
+#: packages/admin/src/components/SeoPanel.tsx:240
 msgid "Why is this important for search visibility?"
 msgstr ""
 
@@ -8744,7 +8746,7 @@ msgstr "Teljes hozzáférésed van a weboldal kezeléséhez, beleértve a felhas
 msgid "You need admin permissions to manage byline schema."
 msgstr "A szerzői sor sémájának kezeléséhez admin jogosultság szükséges."
 
-#: packages/admin/src/router.tsx:1505
+#: packages/admin/src/router.tsx:1513
 msgid "You need Editor permissions to moderate comments."
 msgstr "A hozzászólások moderálásához szerkesztői jogosultság szükséges."
 
