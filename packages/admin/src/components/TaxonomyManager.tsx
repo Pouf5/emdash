@@ -932,19 +932,17 @@ export function TaxonomyManager({ taxonomyName }: TaxonomyManagerProps) {
 	const reorderMutationKey = ["taxonomy-terms-reorder", taxonomyName];
 	const reorderMutation = useMutation({
 		mutationKey: reorderMutationKey,
-		// Clicking a caret repeatedly queues moves instead of racing them. Each
-		// request body is an absolute order taken from the optimistic list at
-		// click time, so applying them in click order is what makes the last one
-		// win; `scope` is what serializes them.
+		// Each body is an absolute order, so queued moves have to land in click
+		// order; a shared scope serializes them.
 		scope: { id: `taxonomy-reorder:${taxonomyName}` },
 		mutationFn: ({ parentId, ids }: { parentId: string | null; ids: string[] }) =>
 			reorderTerms(taxonomyName, { parentId, ids }),
 		onError: (error: Error) => {
 			toastManager.add({ title: t`Error`, description: error.message, type: "error" });
 		},
-		// Only the last of the queued moves refetches — an earlier one would serve
-		// a stale order and snap the list back.
 		onSettled: () => {
+			// The count includes this mutation, so >1 means another move is queued
+			// behind it and refetching now would serve a stale order.
 			if (queryClient.isMutating({ mutationKey: reorderMutationKey }) > 1) return;
 			void queryClient.invalidateQueries({ queryKey: ["taxonomy-terms", taxonomyName] });
 		},

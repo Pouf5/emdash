@@ -5,23 +5,20 @@ import { columnExists } from "../dialect-helpers.js";
 /**
  * Add `taxonomies.sort_order` and mint a position for every existing term.
  *
- * Groups are numbered by `(label, id)` — the order term listings used before
- * this migration — taking the label from the group's lowest row id, which is
- * the locale the term was first written in. That locale's rendered order is
- * unchanged the moment this runs; every other locale is re-sorted to match it,
- * because a position is shared by a whole translation_group and only one
- * locale's collation can win.
- *
  * A position belongs to a `translation_group`, not a row: every row of a group
- * carries the same value, and sibling groups are keyed on the raw `parent_id`
- * column, which holds the parent's translation_group. Numbering keys on
- * `parent_id`, so a group whose rows disagree about their parent is reconciled
- * first — otherwise it would be numbered into whichever sibling group one
- * arbitrary row happens to name.
+ * carries the same value. Groups are numbered by `(label, id)` — the order term
+ * listings used before this migration — taking the label from the group's lowest
+ * row id. That locale's rendered order is unchanged; every other locale is
+ * re-sorted to match it, since only one locale's collation can win.
  *
- * Only the `ALTER` is guarded; both passes below run unconditionally so a run
- * that dies partway can be retried. Guarding the whole migration strands a
- * partial numbering, because the retry early-returns on the column it added.
+ * Sibling groups are keyed on the raw `parent_id` column, which holds the
+ * parent's translation_group, so a group whose rows disagree about their parent
+ * is reconciled before numbering — otherwise it lands in whichever sibling group
+ * one arbitrary row happens to name.
+ *
+ * Only the `ALTER` is guarded; the passes below run unconditionally so a run that
+ * dies partway can be retried. Guarding the whole migration strands a partial
+ * numbering, because the retry early-returns on the column it added.
  */
 
 /**
@@ -38,7 +35,7 @@ interface TermRow {
 	name: string;
 	label: string | null;
 	parent_id: string | null;
-	translation_group: string | null;
+	translation_group: string;
 }
 
 export async function up(db: Kysely<unknown>): Promise<void> {
@@ -49,6 +46,16 @@ export async function up(db: Kysely<unknown>): Promise<void> {
 			.addColumn("sort_order", "integer", (col) => col.notNull().defaultTo(0))
 			.execute();
 	}
+
+	// Migration 036 seeded `translation_group = id` on every row it rebuilt, and
+	// the repository has set it on every insert since, so this normally matches
+	// nothing. It runs anyway because everything below keys sibling groups on the
+	// column directly: a row that slipped through with a null would be numbered
+	// into no group at all, and would already be invisible to translation lookups
+	// and to `content_taxonomies`, which joins on the same value.
+	await sql`UPDATE taxonomies SET translation_group = id WHERE translation_group IS NULL`.execute(
+		db,
+	);
 
 	const { rows } = await sql<TermRow>`
 		SELECT id, name, label, parent_id, translation_group FROM taxonomies
@@ -74,7 +81,7 @@ export async function up(db: Kysely<unknown>): Promise<void> {
 async function repairParents(db: Kysely<unknown>, rows: TermRow[]): Promise<void> {
 	const byGroup = new Map<string, TermRow[]>();
 	for (const row of rows) {
-		const group = row.translation_group ?? row.id;
+		const group = row.translation_group;
 		let members = byGroup.get(group);
 		if (!members) byGroup.set(group, (members = []));
 		members.push(row);
@@ -117,7 +124,7 @@ async function mintPositions(
 	// ULIDs, so "/" can't appear in either half of the sibling key.
 	const groups = new Map<string, { sibling: string; label: string; id: string }>();
 	for (const row of rows) {
-		const group = row.translation_group ?? row.id;
+		const group = row.translation_group;
 		const chosen = groups.get(group);
 		if (chosen && chosen.id <= row.id) continue;
 		groups.set(group, {
@@ -149,10 +156,6 @@ async function mintPositions(
 /**
  * Set one column per translation_group, chunked to stay inside the parameter
  * ceiling.
- *
- * Keyed on `COALESCE(translation_group, id)` because this reads rows it didn't
- * write: the column is nullable, and a group of one whose value was never
- * backfilled is still a term that needs a position.
  */
 async function applyByGroup(
 	db: Kysely<unknown>,
@@ -173,8 +176,8 @@ async function applyByGroup(
 		const keys = sql.join(chunk.map(([group]) => sql`${group}`));
 		await sql`
 			UPDATE taxonomies
-			SET ${sql.ref(column)} = CASE COALESCE(translation_group, id) ${arms} END
-			WHERE COALESCE(translation_group, id) IN (${keys})
+			SET ${sql.ref(column)} = CASE translation_group ${arms} END
+			WHERE translation_group IN (${keys})
 		`.execute(db);
 	}
 }

@@ -388,15 +388,12 @@ export class TaxonomyRepository {
 	}
 
 	/**
-	 * Write one position per translation_group.
+	 * Write one position per translation_group, GROUPS_PER_UPDATE at a time so
+	 * each statement stays inside D1's parameter ceiling.
 	 *
-	 * A statement per group would not be atomic — D1 has no transactions, so
-	 * `withTransaction` runs the callback bare there and a failure partway
-	 * leaves the group half-permuted. One `CASE` per chunk moves up to
-	 * GROUPS_PER_UPDATE groups or none of them, so a swap — two changed groups,
-	 * what the admin's carets issue — cannot tear. Only a renumbering wide enough
-	 * to span chunks can, and it leaves ties, which the next reorder renumbers
-	 * away.
+	 * D1 has no transactions — `withTransaction` runs its callback bare there —
+	 * so a chunk is the unit that can't tear. A reorder spanning several chunks
+	 * can, and leaves ties, which the next reorder renumbers away.
 	 */
 	private async applyPositions(positions: readonly (readonly [string, number])[]): Promise<void> {
 		for (let index = 0; index < positions.length; index += GROUPS_PER_UPDATE) {

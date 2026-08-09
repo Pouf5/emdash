@@ -570,4 +570,29 @@ describeEachDialect("taxonomy term reorder", (dialect) => {
 		}
 		expect(await listLocaleLabels("es")).toEqual(["Apple ES", "Zebra ES"]);
 	});
+
+	it("seeds a translation_group the term never got, so it can be reordered", async () => {
+		const [zebra, apple] = await createCategories(["Zebra", "Apple"]);
+		// A row that escaped migration 036's backfill. Sibling groups are keyed on
+		// the column directly, so a null leaves the term addressable by nothing.
+		await ctx.db
+			.updateTable("taxonomies")
+			.set({ translation_group: null })
+			.where("id", "=", apple!.id)
+			.execute();
+
+		await dropSortOrder(ctx.db);
+		await mintSortOrder(ctx.db);
+		invalidateTermCache();
+
+		expect(await listLabels()).toEqual(["Apple", "Zebra"]);
+
+		const result = await handleTermReorder(ctx.db, "category", {
+			ids: [zebra!.id, apple!.id],
+		});
+		invalidateTermCache();
+
+		expect(result.success).toBe(true);
+		expect(await listLabels()).toEqual(["Zebra", "Apple"]);
+	});
 });
