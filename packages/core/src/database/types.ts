@@ -22,6 +22,9 @@ export interface TaxonomyTable {
 	data: string | null; // JSON
 	locale: Generated<string>; // e.g. 'en', 'es', 'fr'
 	translation_group: string | null; // shared across translations of the same term
+	// Manual order within a sibling group. 0 for terms that were never
+	// explicitly reordered, so listings fall back to alphabetical.
+	sort_order: Generated<number>;
 }
 
 export interface ContentTaxonomyTable {
@@ -302,7 +305,7 @@ export interface CollectionTable {
 	icon: string | null;
 	supports: string | null; // JSON array
 	source: string | null;
-	search_config: string | null; // JSON: { enabled: boolean, weights: Record<string, number> }
+	search_config: string | null; // JSON: SearchConfig
 	has_seo: number; // 0 or 1 — opt-in SEO fields for this collection
 	url_pattern: string | null; // URL pattern with {slug} placeholder (e.g. "/blog/{slug}")
 	comments_enabled: Generated<number>; // 0 or 1
