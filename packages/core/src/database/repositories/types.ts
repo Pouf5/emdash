@@ -165,9 +165,10 @@ export interface ContentBylineFilter {
 	bylineIds?: string[];
 	includeInferred?: boolean;
 	/**
-	 * Locale an inferred credit has to resolve at — the locale the list is
-	 * scoped to. Only read when `includeInferred` is set. Defaults to each
-	 * entry's own locale when the list spans locales.
+	 * Locale a credit has to resolve at — the locale the list is scoped to.
+	 * Applies to explicit credits as well as inferred ones, since a byline
+	 * group credited to an entry renders only where it has a row at that
+	 * locale. Defaults to each entry's own locale when the list spans locales.
 	 */
 	locale?: string;
 }

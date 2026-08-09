@@ -182,6 +182,77 @@ describeEachDialect("content list byline filter", (dialect) => {
 		expect(slugsOf(none)).toEqual(["inferred"]);
 	});
 
+	it("ignores an explicit credit that does not resolve at the list's locale", async () => {
+		// Junction rows are copied to every translation of an entry
+		// (`copyContentBylines`) and store a translation_group, but a credit
+		// only renders where the group has a row at the list's locale. Ada
+		// exists in the default locale only, so an `fr` entry credited to her
+		// renders uncredited — and the filter has to agree in both directions.
+		const id = await idOfSlug("ada-only");
+		await sql`UPDATE ${sql.ref("ec_posts")} SET locale = 'fr' WHERE id = ${id}`.execute(ctx.db);
+
+		const list = await handleContentList(ctx.db, "posts", { locale: "fr" });
+		if (!list.success) throw new Error("list failed");
+		expect(list.data.items.find((i) => i.slug === "ada-only")?.bylines).toEqual([]);
+
+		const matched = await handleContentList(ctx.db, "posts", {
+			locale: "fr",
+			bylines: [adaGroup],
+		});
+		expect(slugsOf(matched)).toEqual([]);
+
+		const none = await handleContentList(ctx.db, "posts", { locale: "fr", bylinesNone: true });
+		expect(slugsOf(none)).toEqual(["ada-only"]);
+	});
+
+	it("does not infer a credit for an entry whose explicit credit fails to resolve", async () => {
+		// The entry carries an explicit credit that renders nothing at `fr`,
+		// and its author owns a byline that does exist at `fr`. Hydration still
+		// shows no credit: the author fallback applies only where the entry has
+		// no explicit credit at all, at any locale. So the inference gate stays
+		// locale-agnostic even though what renders is locale-scoped.
+		const bylines = new BylineRepository(ctx.db);
+		const ada = await bylines.findBySlug("ada");
+		const turing = await bylines.findBySlug("turing");
+		if (!ada || !turing) throw new Error("byline missing");
+		await bylines.create({
+			slug: "turing-fr",
+			displayName: "Alan Turing",
+			locale: "fr",
+			translationOf: turing.id,
+			userId: turing.userId ?? undefined,
+		});
+
+		const created = await handleContentCreate(ctx.db, "posts", {
+			slug: "credited-fr",
+			data: { title: "Credited FR" },
+			authorId: turing.userId ?? undefined,
+			bylines: [{ bylineId: ada.id }],
+		});
+		if (!created.success) throw new Error("seed credited-fr failed");
+		await sql`UPDATE ${sql.ref("ec_posts")} SET locale = 'fr' WHERE id = ${
+			created.data.item.id
+		}`.execute(ctx.db);
+
+		const list = await handleContentList(ctx.db, "posts", { locale: "fr" });
+		if (!list.success) throw new Error("list failed");
+		expect(list.data.items.find((i) => i.slug === "credited-fr")?.bylines).toEqual([]);
+
+		const matched = await handleContentList(ctx.db, "posts", {
+			locale: "fr",
+			bylines: [turingGroup],
+			includeInferredBylines: true,
+		});
+		expect(slugsOf(matched)).toEqual([]);
+
+		const none = await handleContentList(ctx.db, "posts", {
+			locale: "fr",
+			bylinesNone: true,
+			includeInferredBylines: true,
+		});
+		expect(slugsOf(none)).toEqual(["credited-fr"]);
+	});
+
 	it("composes with the status filter", async () => {
 		const result = await handleContentList(ctx.db, "posts", {
 			bylines: [adaGroup, graceGroup],
