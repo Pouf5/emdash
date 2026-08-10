@@ -2419,6 +2419,7 @@ export class EmDashRuntime {
 					supports: collection.supports || [],
 					hasSeo: collection.hasSeo,
 					urlPattern: collection.urlPattern,
+					...(collection.hidden ? { hidden: true } : {}),
 					fields,
 				};
 			}
