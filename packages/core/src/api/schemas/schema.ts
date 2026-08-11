@@ -91,6 +91,8 @@ export const createCollectionBody = z
 		source: z.string().regex(collectionSourcePattern).optional(),
 		urlPattern: z.string().optional(),
 		hasSeo: z.boolean().optional(),
+		hidden: z.boolean().optional(),
+		sortOrder: z.number().int().nullish(),
 	})
 	.meta({ id: "CreateCollectionBody" });
 
@@ -103,6 +105,8 @@ export const updateCollectionBody = z
 		supports: z.array(collectionSupportValues).optional(),
 		urlPattern: z.string().nullish(),
 		hasSeo: z.boolean().optional(),
+		hidden: z.boolean().optional(),
+		sortOrder: z.number().int().nullish(),
 		commentsEnabled: z.boolean().optional(),
 		commentsModeration: z.enum(["all", "first_time", "none"]).optional(),
 		commentsClosedAfterDays: z.number().int().min(0).optional(),
@@ -149,6 +153,13 @@ export const fieldReorderBody = z
 	})
 	.meta({ id: "FieldReorderBody" });
 
+export const collectionReorderBody = z
+	.object({
+		/** Full desired sidebar order. Collections left out fall back to alphabetical. */
+		slugs: z.array(z.string().min(1)),
+	})
+	.meta({ id: "CollectionReorderBody" });
+
 export const orphanRegisterBody = z
 	.object({
 		label: z.string().optional(),
@@ -184,6 +195,8 @@ export const collectionSchema = z
 		source: z.string().nullable(),
 		urlPattern: z.string().nullable(),
 		hasSeo: z.boolean(),
+		hidden: z.boolean(),
+		sortOrder: z.number().int().nullable(),
 		createdAt: z.string(),
 		updatedAt: z.string(),
 	})
