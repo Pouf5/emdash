@@ -2,7 +2,12 @@ import type { ColumnDataType, CreateTableBuilder, Insertable, Kysely, Selectable
 import { sql } from "kysely";
 import { ulid } from "ulidx";
 
-import { currentTimestamp, listTablesLike, tableExists } from "../database/dialect-helpers.js";
+import {
+	columnExists,
+	currentTimestamp,
+	listTablesLike,
+	tableExists,
+} from "../database/dialect-helpers.js";
 import { withTransaction } from "../database/transaction.js";
 import type { CollectionTable, Database, FieldTable } from "../database/types.js";
 import { validateIdentifier } from "../database/validate.js";
@@ -874,9 +879,16 @@ export class SchemaRegistry {
 				}
 
 				// Drop column from content table — safe now because FTS triggers are gone.
-				// Storage-less field types (e.g. reference) never had a column to begin
-				// with (see STORAGELESS_FIELD_TYPES), so skip the DDL.
-				if (!STORAGELESS_FIELD_TYPES.has(field.type)) {
+				// Whether a field is storage-less is a property of the row rather than of
+				// its type: reference fields created before they became storage-less
+				// still carry a column, and skipping the DDL would strand it and block
+				// the slug from ever being reused.
+				const hasColumn = await columnExists(
+					trx,
+					this.getTableName(collectionSlug),
+					this.getColumnName(fieldSlug),
+				);
+				if (hasColumn) {
 					await this.dropColumn(collectionSlug, fieldSlug, trx);
 				}
 			});

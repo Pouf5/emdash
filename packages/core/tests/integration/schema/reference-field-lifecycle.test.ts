@@ -1,3 +1,4 @@
+import { sql } from "kysely";
 import { expect, it } from "vitest";
 
 import {
@@ -5,6 +6,7 @@ import {
 	handleSchemaFieldDelete,
 	handleSchemaFieldUpdate,
 } from "../../../src/api/handlers/schema.js";
+import { columnExists } from "../../../src/database/dialect-helpers.js";
 import { RelationRepository } from "../../../src/database/repositories/relation.js";
 import { SchemaRegistry } from "../../../src/schema/registry.js";
 import { describeEachDialect, setupForDialect, teardownForDialect } from "../../utils/test-db.js";
@@ -86,6 +88,46 @@ describeEachDialect("reference field lifecycle", (dialect) => {
 
 			const field = await registry.getField("posts", "related");
 			expect(field).toBeNull();
+		} finally {
+			await teardownForDialect(ctx);
+		}
+	});
+
+	it("drops the column of a reference field that predates storage-less references", async () => {
+		ctx = await setupForDialect(dialect);
+		try {
+			const registry = new SchemaRegistry(ctx.db);
+			await registry.createCollection({ slug: "posts", label: "Posts", labelSingular: "Post" });
+			// Reference fields used to be column-backed. Create one as `string` so
+			// the column DDL runs, then relabel it to reproduce that row exactly.
+			await registry.createField("posts", { slug: "related", label: "Related", type: "string" });
+			await sql`UPDATE _emdash_fields SET type = 'reference' WHERE slug = 'related'`.execute(
+				ctx.db,
+			);
+
+			await registry.deleteField("posts", "related");
+
+			expect(await columnExists(ctx.db, "ec_posts", "related")).toBe(false);
+		} finally {
+			await teardownForDialect(ctx);
+		}
+	});
+
+	it("leaves no column behind when a storage-less reference field is deleted", async () => {
+		ctx = await setupForDialect(dialect);
+		try {
+			const registry = new SchemaRegistry(ctx.db);
+			await registry.createCollection({ slug: "posts", label: "Posts", labelSingular: "Post" });
+			await handleSchemaFieldCreate(ctx.db, "posts", {
+				slug: "related",
+				label: "Related",
+				type: "reference",
+				validation: { targetCollection: "posts", multiple: true },
+			});
+
+			await registry.deleteField("posts", "related");
+
+			expect(await columnExists(ctx.db, "ec_posts", "related")).toBe(false);
 		} finally {
 			await teardownForDialect(ctx);
 		}

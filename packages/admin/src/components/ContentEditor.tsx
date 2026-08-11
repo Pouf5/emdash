@@ -601,6 +601,15 @@ export function ContentEditor({
 		[collection, item?.id],
 	);
 
+	// Clearing the flag is the whole retry: the auto-page effect gates on it and
+	// re-fires against the unchanged `nextCursor`.
+	const handleRetryReferences = React.useCallback((group: string) => {
+		setReferenceState((prev) => {
+			const cur = prev[group];
+			return cur ? { ...prev, [group]: { ...cur, error: false } } : prev;
+		});
+	}, []);
+
 	// Autosave with debounce
 	// Track pending autosave to cancel on manual save
 	const autosaveTimeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -1030,6 +1039,7 @@ export function ContentEditor({
 										referenceState={referenceState}
 										onReferenceChange={handleReferenceCurrentChange}
 										onLoadMoreReferences={handleLoadMoreReferences}
+										onRetryReferences={handleRetryReferences}
 										// Existing entries carry their locale on `item`; new entries only
 										// have the URL-derived `entryLocale`. Mirror ContentSettingsPanel.
 										entryLocale={item?.locale ?? entryLocale}
@@ -1320,6 +1330,8 @@ interface FieldRendererProps {
 	onReferenceChange?: (group: string, rows: ReferenceEntryRow[]) => void;
 	/** Page the rest of a relation's hydrated set. */
 	onLoadMoreReferences?: (group: string) => void;
+	/** Clear a relation group's load error so paging resumes from the same cursor. */
+	onRetryReferences?: (group: string) => void;
 	/** Locale of the editing entry; threaded to reference pickers. */
 	entryLocale?: string | null;
 }
@@ -1341,6 +1353,7 @@ function FieldRenderer({
 	referenceState,
 	onReferenceChange,
 	onLoadMoreReferences,
+	onRetryReferences,
 	entryLocale,
 }: FieldRendererProps) {
 	const { t } = useLingui();
@@ -1652,6 +1665,7 @@ function FieldRenderer({
 					state={referenceState?.[relationGroup]}
 					onChange={(rows) => onReferenceChange?.(relationGroup, rows)}
 					onLoadMore={() => onLoadMoreReferences?.(relationGroup)}
+					onRetry={() => onRetryReferences?.(relationGroup)}
 					entryLocale={entryLocale}
 				/>
 			);
@@ -1723,6 +1737,7 @@ function ReferenceFieldRenderer({
 	state,
 	onChange,
 	onLoadMore,
+	onRetry,
 	entryLocale,
 }: {
 	label: string;
@@ -1732,6 +1747,7 @@ function ReferenceFieldRenderer({
 	state?: ReferenceGroupState;
 	onChange: (rows: ReferenceEntryRow[]) => void;
 	onLoadMore: () => void;
+	onRetry: () => void;
 	/** Locale of the editing entry; scopes the picker to one variant per target. */
 	entryLocale?: string | null;
 }) {
@@ -1874,10 +1890,19 @@ function ReferenceFieldRenderer({
 					</ul>
 				)}
 
-				{!fullyLoaded && (
-					<div className="flex items-center gap-2 text-sm text-kumo-subtle">
-						<Loader size="sm" /> {t`Loading references...`}
+				{loadError ? (
+					<div className="flex flex-wrap items-center gap-2 text-sm">
+						<span className="text-kumo-danger">{t`Couldn't load all references.`}</span>
+						<Button type="button" variant="outline" size="sm" onClick={onRetry}>
+							{t`Retry`}
+						</Button>
 					</div>
+				) : (
+					!fullyLoaded && (
+						<div className="flex items-center gap-2 text-sm text-kumo-subtle">
+							<Loader size="sm" /> {t`Loading references...`}
+						</div>
+					)
 				)}
 
 				<Button
