@@ -328,6 +328,9 @@ published credits -- a guest author added ahead of publication, or an author
 whose entries are all drafts. Deriving the list from `entry.data.bylines`
 misses those, and is bounded by whichever entries you fetched.
 
+Ordering ignores case and accents, so `alice cooper` files between `Adam Bell`
+and `Álvaro Núñez` rather than after them.
+
 Bylines returned by `getBylines()` have `customFields` set to `{}`; use
 `getByline()` or `getBylineBySlug()` when you need custom field values.
 

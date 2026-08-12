@@ -29,6 +29,7 @@ import { resolveLocale, resolveLocaleChain } from "../i18n/resolve.js";
 import { getDb } from "../loader.js";
 import { requestCached } from "../request-cache.js";
 import { isMissingTableError } from "../utils/db-errors.js";
+import { bylineListCacheKey } from "./cache-keys.js";
 
 /**
  * No-op — kept for API compatibility.
@@ -144,7 +145,7 @@ export async function getBylines(
 	options: { locale?: string; limit?: number; cursor?: string } = {},
 ): Promise<FindManyResult<BylineSummary>> {
 	const locale = resolveLocale(options.locale);
-	const cacheKey = `bylines:${locale ?? "*"}:${options.limit ?? "*"}:${options.cursor ?? "*"}`;
+	const cacheKey = bylineListCacheKey({ locale, limit: options.limit, cursor: options.cursor });
 	return requestCached(cacheKey, async () => {
 		const db = await getDb();
 		const repo = new BylineRepository(db);

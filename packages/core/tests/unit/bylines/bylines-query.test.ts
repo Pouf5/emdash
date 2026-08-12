@@ -6,6 +6,7 @@ import { ContentRepository } from "../../../src/database/repositories/content.js
 import { UserRepository } from "../../../src/database/repositories/user.js";
 import type { Database } from "../../../src/database/types.js";
 import { setI18nConfig } from "../../../src/i18n/config.js";
+import { runWithContext } from "../../../src/request-context.js";
 import { SQL_BATCH_SIZE } from "../../../src/utils/chunks.js";
 import { setupTestDatabaseWithCollections, teardownTestDatabase } from "../../utils/test-db.js";
 
@@ -209,6 +210,31 @@ describe("Byline query functions", () => {
 			await db.schema.dropTable("_emdash_bylines").execute();
 
 			await expect(getBylines()).resolves.toEqual({ items: [] });
+		});
+
+		it("reflects byline writes made after an earlier read in the same request", async () => {
+			// The list is request-cached, and the keys carry locale, limit, and
+			// cursor — so a write has to drop the whole namespace rather than
+			// name the entry it invalidates.
+			await runWithContext({ db: undefined, dbIsIsolated: false, metrics: undefined }, async () => {
+				const first = await bylineRepo.create({ slug: "first", displayName: "First Author" });
+				expect((await getBylines()).items.map((b) => b.displayName)).toEqual(["First Author"]);
+
+				await bylineRepo.create({ slug: "second", displayName: "Second Author" });
+				expect((await getBylines()).items.map((b) => b.displayName)).toEqual([
+					"First Author",
+					"Second Author",
+				]);
+
+				await bylineRepo.update(first.id, { displayName: "Zeta Author" });
+				expect((await getBylines()).items.map((b) => b.displayName)).toEqual([
+					"Second Author",
+					"Zeta Author",
+				]);
+
+				await bylineRepo.delete(first.id);
+				expect((await getBylines()).items.map((b) => b.displayName)).toEqual(["Second Author"]);
+			});
 		});
 
 		it("paginates with a cursor", async () => {

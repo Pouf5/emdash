@@ -145,6 +145,7 @@ describe("Database Migrations (Integration)", () => {
 			"056_taxonomy_term_sort_order",
 			"057_collection_hidden",
 			"058_collection_sort_order",
+			"059_byline_display_name_sort",
 		];
 
 		await db.deleteFrom("_emdash_migrations").where("name", "in", trailing).execute();

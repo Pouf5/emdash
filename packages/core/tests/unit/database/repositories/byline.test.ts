@@ -301,6 +301,64 @@ describe("BylineRepository", () => {
 			expect(new Set(seen).size).toBe(names.length);
 		});
 
+		it("alphabetizes names whatever their case or accents", async () => {
+			// Comparing `display_name` directly uses SQLite's BINARY collation,
+			// which files every capital before every lowercase letter and
+			// everything accented after `z`: Adam, Zoe, alice, Álvaro, Øyvind.
+			const names = ["Zoe Vance", "alice cooper", "Álvaro Núñez", "Adam Bell", "Øyvind Berg"];
+			for (const [i, displayName] of names.entries()) {
+				await bylineRepo.create({ slug: `author-${i}`, displayName });
+			}
+
+			const { items } = await bylineRepo.findManyAlphabetical();
+
+			expect(items.map((b) => b.displayName)).toEqual([
+				"Adam Bell",
+				"alice cooper",
+				"Álvaro Núñez",
+				"Øyvind Berg",
+				"Zoe Vance",
+			]);
+		});
+
+		it("pages a mixed-case list on the same key it orders by", async () => {
+			// The cursor seeks on whatever `ORDER BY` sorted on. If the two
+			// disagree, a page boundary that lands between a capital and a
+			// lowercase name drops rows or repeats them.
+			const names = ["Zoe Vance", "alice cooper", "Álvaro Núñez", "Adam Bell", "Øyvind Berg"];
+			for (const [i, displayName] of names.entries()) {
+				await bylineRepo.create({ slug: `author-${i}`, displayName });
+			}
+
+			const paged: string[] = [];
+			let cursor: string | undefined;
+			do {
+				const page = await bylineRepo.findManyAlphabetical(
+					cursor ? { limit: 2, cursor } : { limit: 2 },
+				);
+				paged.push(...page.items.map((b) => b.displayName));
+				cursor = page.nextCursor;
+			} while (cursor);
+
+			expect(paged).toEqual([
+				"Adam Bell",
+				"alice cooper",
+				"Álvaro Núñez",
+				"Øyvind Berg",
+				"Zoe Vance",
+			]);
+		});
+
+		it("re-sorts a byline after its display name changes", async () => {
+			const zed = await bylineRepo.create({ slug: "zed", displayName: "Zed Ames" });
+			await bylineRepo.create({ slug: "adam", displayName: "adam bell" });
+
+			await bylineRepo.update(zed.id, { displayName: "Aaron Ames" });
+
+			const { items } = await bylineRepo.findManyAlphabetical();
+			expect(items.map((b) => b.displayName)).toEqual(["Aaron Ames", "adam bell"]);
+		});
+
 		it("splits a display-name tie across pages without dropping or repeating a row", async () => {
 			// Two people with the same display name straddling a page boundary:
 			// the id half of the cursor is what keeps the seek unambiguous.
