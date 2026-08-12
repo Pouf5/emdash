@@ -1,12 +1,3 @@
-/**
- * Single-taxonomy read/update/delete.
- *
- * Terms are keyed on the taxonomy *name*, not on a definition row, so the
- * delete cascade and the per-locale scope of an update are the two things worth
- * pinning down: a delete that misses the pivot leaves assignments pointing at
- * terms that no longer exist, and an update that writes the whole
- * translation_group silently overwrites other locales' labels.
- */
 
 import { Role, type RoleLevel } from "@emdash-cms/auth";
 import type { APIContext } from "astro";
