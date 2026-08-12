@@ -409,6 +409,16 @@ export function injectCoreRoutes(
 	});
 
 	injectRoute({
+		pattern: "/_emdash/api/taxonomies/[name]",
+		entrypoint: resolveRoute("api/taxonomies/[name].ts"),
+	});
+
+	injectRoute({
+		pattern: "/_emdash/api/taxonomies/[name]/translations",
+		entrypoint: resolveRoute("api/taxonomies/[name]/translations.ts"),
+	});
+
+	injectRoute({
 		pattern: "/_emdash/api/taxonomies/[name]/reorder",
 		entrypoint: resolveRoute("api/taxonomies/[name]/reorder.ts"),
 	});
