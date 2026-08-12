@@ -349,7 +349,7 @@ function ContentListPage() {
 	// key so a new term restarts the cursor chain from a filtered first page.
 	const [searchTerm, setSearchTerm] = React.useState("");
 
-	// Filter state (#1288). All are part of the query key so changing any of
+	// Filter state. All are part of the query key so changing any of
 	// them restarts the cursor chain from a filtered first page.
 	const [statusFilter, setStatusFilter] = React.useState<ContentStatusFilter>("all");
 	const [authorFilter, setAuthorFilter] = React.useState("");
