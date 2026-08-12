@@ -1,4 +1,3 @@
-
 import { Role, type RoleLevel } from "@emdash-cms/auth";
 import type { APIContext } from "astro";
 import BetterSqlite3 from "better-sqlite3";
