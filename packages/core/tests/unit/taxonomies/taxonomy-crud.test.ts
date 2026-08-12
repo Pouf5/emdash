@@ -439,12 +439,6 @@ describeEachDialect("single-taxonomy CRUD", (dialect) => {
 	});
 });
 
-/**
- * Production turns FK enforcement on (`database/connection.ts`), which the
- * in-memory test databases don't. A taxonomy delete removes parents and
- * children in one statement, so it has to survive `taxonomies_parent_fk`
- * firing mid-delete.
- */
 describe("taxonomy delete with foreign keys enforced", () => {
 	let db: Kysely<DatabaseSchema>;
 
