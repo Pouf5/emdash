@@ -1,5 +1,5 @@
 /**
- * Single-taxonomy read/update/delete (Discussion #1346).
+ * Single-taxonomy read/update/delete.
  *
  * Terms are keyed on the taxonomy *name*, not on a definition row, so the
  * delete cascade and the per-locale scope of an update are the two things worth
