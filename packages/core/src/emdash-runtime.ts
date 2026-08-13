@@ -9,10 +9,11 @@
 
 import { Permissions } from "@emdash-cms/auth";
 import type { Element } from "@emdash-cms/blocks";
-import { Kysely, type Dialect } from "kysely";
+import { Kysely, sql, type Dialect } from "kysely";
 import virtualConfig from "virtual:emdash/config";
 import { z } from "zod";
 
+import { assertMediaUsageActivationWriteAllowed } from "./api/media-usage-write-fence.js";
 import { validateRev } from "./api/rev.js";
 import type {
 	EmDashConfig,
@@ -42,12 +43,26 @@ import { repairLocaleCasing } from "./i18n/repair-locale-casing.js";
 import { normalizeMediaValue } from "./media/normalize.js";
 import type { MediaProvider, MediaProviderCapabilities } from "./media/types.js";
 import {
+	MEDIA_USAGE_COLLECTION_DELETION_LIMITS,
+	processDueMediaUsageCollectionDeletions,
+} from "./media/usage/collection-deletion-processor.js";
+import {
 	deleteContentMediaUsage,
 	findNonTranslatableSiblingContentIds,
 	markContentMediaUsageCollectionStale,
 	refreshContentMediaUsageAfterWrite,
 } from "./media/usage/content-refresh.js";
+import {
+	MEDIA_USAGE_RECONCILIATION_LIMITS,
+	processDueMediaUsageReconciliation,
+} from "./media/usage/reconciliation-processor.js";
+import {
+	MEDIA_USAGE_WORK_PROCESSING_LIMITS,
+	processDueMediaUsageWork,
+	processMediaUsageWorkAfterWrite,
+} from "./media/usage/work-processor.js";
 import { createSandboxRunnerOptions } from "./plugins/sandbox/runner-options.js";
+import { getSandboxRouteErrorDetails } from "./plugins/sandbox/types.js";
 import type {
 	SandboxedPluginInstance,
 	SandboxRunner,
@@ -67,7 +82,7 @@ import type {
 	FieldWidgetConfig,
 	SettingField,
 } from "./plugins/types.js";
-import type { FieldType } from "./schema/types.js";
+import { MAX_COLLECTION_LIST_COLUMNS, type FieldType } from "./schema/types.js";
 import { hashString } from "./utils/hash.js";
 import { createInitLock, type InitLock, initWithLock } from "./utils/init-lock.js";
 import { createSingleFlightCache, singleFlightCached } from "./utils/single-flight-cache.js";
@@ -236,6 +251,16 @@ const FIELD_TYPE_TO_KIND: Record<FieldType, string> = {
 const DRAFT_ONLY_UPDATE_KEYS = new Set(["data", "slug", "locale", "skipRevision"]);
 const MAX_DRAFT_STAGE_ATTEMPTS = 32;
 
+const LIST_COLUMN_FIELD_TYPES: ReadonlySet<FieldType> = new Set([
+	"string",
+	"number",
+	"integer",
+	"boolean",
+	"datetime",
+	"select",
+	"multiSelect",
+]);
+
 /**
  * Sandboxed plugin entry from virtual module
  */
@@ -383,6 +408,7 @@ export interface EmDashRuntimeParts {
 	pipelineFactoryOptions: {
 		db: Kysely<Database>;
 		getDb?: () => Kysely<Database>;
+		beforeContentWrite?: () => Promise<void>;
 		storage?: Storage;
 		siteInfo?: {
 			siteName?: string;
@@ -514,6 +540,62 @@ const marketplaceManifestCache = new Map<
 const sandboxedRouteMetaCache = new Map<string, Map<string, RouteMeta>>();
 let sandboxRunner: SandboxRunner | null = null;
 
+export const MEDIA_USAGE_MAINTENANCE_QUERY_RESERVATIONS = Object.freeze({
+	entryWork: MEDIA_USAGE_WORK_PROCESSING_LIMITS.ordinaryStatementsPerJob,
+	collectionDeletion: MEDIA_USAGE_COLLECTION_DELETION_LIMITS.maxQueriesPerTick,
+	reconciliation: MEDIA_USAGE_RECONCILIATION_LIMITS.maxQueriesPerTick,
+	maxClassQueries: Math.max(
+		MEDIA_USAGE_WORK_PROCESSING_LIMITS.ordinaryStatementsPerJob,
+		MEDIA_USAGE_COLLECTION_DELETION_LIMITS.maxQueriesPerTick,
+		MEDIA_USAGE_RECONCILIATION_LIMITS.maxQueriesPerTick,
+	),
+	eventCeiling: 40,
+});
+
+export type MediaUsageMaintenanceTaskClass =
+	| "entry_work"
+	| "collection_deletion"
+	| "reconciliation";
+
+export type MediaUsageMaintenanceResult =
+	| { outcome: "inactive" | "admission_closed"; taskClass: null; turn: null }
+	| { outcome: "processed"; taskClass: MediaUsageMaintenanceTaskClass; turn: number };
+
+async function runScheduledMediaUsageLane(
+	db: Kysely<Database>,
+): Promise<MediaUsageMaintenanceResult> {
+	const queriesAlreadySpent = getRequestContext()?.metrics?.dbCount ?? 0;
+	if (
+		queriesAlreadySpent + 1 + MEDIA_USAGE_MAINTENANCE_QUERY_RESERVATIONS.maxClassQueries >
+		MEDIA_USAGE_MAINTENANCE_QUERY_RESERVATIONS.eventCeiling
+	) {
+		return { outcome: "admission_closed", taskClass: null, turn: null };
+	}
+
+	const activation = await db
+		.updateTable("_emdash_media_usage_activation")
+		.set({
+			media_usage_maintenance_turn: sql<number>`(media_usage_maintenance_turn + 1) % 3`,
+		})
+		.where("task_key", "=", "incremental_capture")
+		.where("state", "=", "active")
+		.returning("media_usage_maintenance_turn")
+		.executeTakeFirst();
+	if (!activation) return { outcome: "inactive", taskClass: null, turn: null };
+
+	const turn = activation.media_usage_maintenance_turn;
+	if (turn === 0) {
+		await processDueMediaUsageWork(db);
+		return { outcome: "processed", taskClass: "entry_work", turn };
+	}
+	if (turn === 1) {
+		await processDueMediaUsageCollectionDeletions(db);
+		return { outcome: "processed", taskClass: "collection_deletion", turn };
+	}
+	await processDueMediaUsageReconciliation(db);
+	return { outcome: "processed", taskClass: "reconciliation", turn };
+}
+
 /**
  * EmDashRuntime - singleton per worker
  */
@@ -575,6 +657,7 @@ export class EmDashRuntime {
 	private pipelineFactoryOptions: {
 		db: Kysely<Database>;
 		getDb?: () => Kysely<Database>;
+		beforeContentWrite?: () => Promise<void>;
 		storage?: Storage;
 		siteInfo?: {
 			siteName?: string;
@@ -647,8 +730,16 @@ export class EmDashRuntime {
 	 * Returns the items promoted so callers can invalidate their cache tags.
 	 */
 	async publishScheduled(): Promise<PublishedRef[]> {
+		return this.publishScheduledWithFence();
+	}
+
+	private async publishScheduledWithFence(
+		onPublished?: (refs: PublishedRef[]) => Promise<void>,
+	): Promise<PublishedRef[]> {
+		await assertMediaUsageActivationWriteAllowed(this.db);
 		return publishDueContent(this.db, {
 			publish: (collection, id, options) => this.handleContentPublish(collection, id, options),
+			onPublished,
 		});
 	}
 
@@ -686,11 +777,7 @@ export class EmDashRuntime {
 
 		let published: PublishedRef[] = [];
 		try {
-			// Route through the runtime wrapper so content:afterPublish hooks fire.
-			published = await publishDueContent(this.db, {
-				publish: (collection, id, opts) => this.handleContentPublish(collection, id, opts),
-				onPublished: options.onPublished,
-			});
+			published = await this.publishScheduledWithFence(options.onPublished);
 		} catch (error) {
 			console.error("[scheduled-publish] Sweep failed:", error);
 		}
@@ -711,6 +798,10 @@ export class EmDashRuntime {
 		await maybeRunScheduledBackup(this.db, this.storage ?? undefined);
 
 		return { published };
+	}
+
+	async runScheduledMediaUsageTasks(): Promise<MediaUsageMaintenanceResult> {
+		return runScheduledMediaUsageLane(this.db);
 	}
 
 	/**
@@ -1486,6 +1577,7 @@ export class EmDashRuntime {
 		const pipelineFactoryOptions = {
 			db,
 			getDb: resolveDb,
+			beforeContentWrite: () => assertMediaUsageActivationWriteAllowed(resolveDb()),
 			storage: storage ?? undefined,
 			siteInfo,
 		};
@@ -1631,6 +1723,14 @@ export class EmDashRuntime {
 				if (deps.createScheduler) {
 					const scheduler = deps.createScheduler(cronExecutor);
 					cronScheduler = scheduler;
+					const runMediaUsageMaintenance = async () => {
+						const runtime = runtimeRef.current;
+						if (runtime) {
+							await runtime.runScheduledMediaUsageTasks();
+						} else {
+							await runScheduledMediaUsageLane(db);
+						}
+					};
 
 					// Run scheduled publishing and system cleanup alongside each tick.
 					// Pass storage so cleanupPendingUploads can delete orphaned files.
@@ -1640,12 +1740,12 @@ export class EmDashRuntime {
 							// Falls back to the raw handler if (improbably) the tick beats
 							// the post-construction ref assignment.
 							const runtime = runtimeRef.current;
-							await publishDueContent(db, {
-								publish: runtime
-									? (collection, id, options) =>
-											runtime.handleContentPublish(collection, id, options)
-									: undefined,
-							});
+							if (runtime) {
+								await runtime.publishScheduled();
+							} else {
+								await assertMediaUsageActivationWriteAllowed(db);
+								await publishDueContent(db);
+							}
 						} catch (error) {
 							console.error("[scheduled-publish] Sweep failed:", error);
 						}
@@ -1663,7 +1763,15 @@ export class EmDashRuntime {
 						}
 						// Never throws; no-op unless scheduled backups are enabled and due.
 						await maybeRunScheduledBackup(db, storage ?? undefined);
+						if (!scheduler.setMediaUsageMaintenance) {
+							try {
+								await runMediaUsageMaintenance();
+							} catch (error) {
+								console.error("[media-usage] Scheduled maintenance failed:", error);
+							}
+						}
 					});
+					scheduler.setMediaUsageMaintenance?.(runMediaUsageMaintenance);
 
 					// start() is void on the timer scheduler but the interface
 					// allows a promise (alarm-backed schedulers); we don't block on it.
@@ -1967,6 +2075,7 @@ export class EmDashRuntime {
 				createSandboxRunnerOptions(
 					{
 						db,
+						beforeContentWrite: () => assertMediaUsageActivationWriteAllowed(db),
 						mediaStorage: mediaStorage
 							? {
 									upload: (opts) =>
@@ -2090,6 +2199,7 @@ export class EmDashRuntime {
 				createSandboxRunnerOptions(
 					{
 						db,
+						beforeContentWrite: () => assertMediaUsageActivationWriteAllowed(db),
 						mediaStorage: {
 							upload: (opts) =>
 								storage.upload({
@@ -2423,6 +2533,27 @@ export class EmDashRuntime {
 					fields[field.slug] = entry;
 				}
 
+				const configuredListColumns = collection.admin?.listColumns ?? [];
+				const fieldTypes = new Map(collection.fields.map((field) => [field.slug, field.type]));
+				const listColumns: string[] = [];
+				for (const slug of configuredListColumns) {
+					if (listColumns.includes(slug)) continue;
+					const fieldType = fieldTypes.get(slug);
+					if (!fieldType || !LIST_COLUMN_FIELD_TYPES.has(fieldType)) {
+						console.warn(
+							`EmDash: Ignoring unsupported or unknown list column "${slug}" in collection "${collection.slug}".`,
+						);
+						continue;
+					}
+					if (listColumns.length >= MAX_COLLECTION_LIST_COLUMNS) {
+						console.warn(
+							`EmDash: Collection "${collection.slug}" declares more than ${MAX_COLLECTION_LIST_COLUMNS} list columns; extra columns are ignored.`,
+						);
+						break;
+					}
+					listColumns.push(slug);
+				}
+
 				manifestCollections[collection.slug] = {
 					label: collection.label,
 					labelSingular: collection.labelSingular || collection.label,
@@ -2430,6 +2561,7 @@ export class EmDashRuntime {
 					hasSeo: collection.hasSeo,
 					urlPattern: collection.urlPattern,
 					...(collection.hidden ? { hidden: true } : {}),
+					listColumns: listColumns.length > 0 ? listColumns : undefined,
 					fields,
 				};
 			}
@@ -2678,6 +2810,9 @@ export class EmDashRuntime {
 			dateField?: ContentDateField;
 			dateFrom?: string;
 			dateTo?: string;
+			bylines?: string[];
+			bylinesNone?: boolean;
+			includeInferredBylines?: boolean;
 		},
 	) {
 		return handleContentList(this.db, collection, params);
@@ -3500,12 +3635,15 @@ export class EmDashRuntime {
 	): Promise<void> {
 		for (const contentId of new Set(contentIds)) {
 			try {
+				const work = await processMediaUsageWorkAfterWrite(this.db, collection, contentId);
+				if (work.outcome !== "inactive") return;
 				await refreshContentMediaUsageAfterWrite(this.db, collection, contentId);
 			} catch (error) {
 				console.error(
 					`[media-usage] Failed after content write ${collection}/${contentId}:`,
 					error,
 				);
+				return;
 			}
 		}
 	}
@@ -3515,6 +3653,8 @@ export class EmDashRuntime {
 		contentId: string,
 	): Promise<void> {
 		try {
+			const work = await processMediaUsageWorkAfterWrite(this.db, collection, contentId);
+			if (work.outcome !== "inactive") return;
 			const result = await deleteContentMediaUsage(this.db, collection, contentId);
 			if (!result.success) {
 				console.error(
@@ -4093,6 +4233,7 @@ export class EmDashRuntime {
 		success: boolean;
 		data?: unknown;
 		error?: { code: string; message: string };
+		status?: number;
 	}> {
 		const routeName = path.replace(LEADING_SLASH_PATTERN, "");
 
@@ -4111,6 +4252,17 @@ export class EmDashRuntime {
 			return { success: true, data: result };
 		} catch (error) {
 			console.error(`EmDash: Sandboxed plugin route error:`, error);
+			const sandboxRouteError = getSandboxRouteErrorDetails(error);
+			if (sandboxRouteError) {
+				return {
+					success: false,
+					status: sandboxRouteError.status,
+					error: {
+						code: sandboxRouteError.code,
+						message: sandboxRouteError.message,
+					},
+				};
+			}
 			return {
 				success: false,
 				error: {
