@@ -55,6 +55,7 @@ describe("Database Migrations (Integration)", () => {
 			"_emdash_media_usage_generation_writes",
 			"_emdash_media_usage_cleanup_fence",
 			"_emdash_media_usage_index_status",
+			"_emdash_media_usage_collection_deletions",
 		];
 
 		for (const table of tables) {
@@ -154,7 +155,8 @@ describe("Database Migrations (Integration)", () => {
 			"062_media_usage_cleanup_fence",
 			"063_media_usage_incremental_work",
 			"064_fts_plain_text",
-			"065_byline_display_name_sort",
+			"065_media_usage_collection_deletion",
+			"066_byline_display_name_sort",
 		];
 
 		await db.deleteFrom("_emdash_migrations").where("name", "in", trailing).execute();

@@ -4,10 +4,10 @@ import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
 import { createDatabase } from "../../../../src/database/connection.js";
 import { columnExists } from "../../../../src/database/dialect-helpers.js";
-import { down, up } from "../../../../src/database/migrations/065_byline_display_name_sort.js";
+import { down, up } from "../../../../src/database/migrations/066_byline_display_name_sort.js";
 import type { Database } from "../../../../src/database/types.js";
 
-/** `_emdash_bylines` reduced to the columns 065 reads and writes. */
+/** `_emdash_bylines` reduced to the columns 066 reads and writes. */
 async function seedBylinesTable(db: Kysely<Database>): Promise<void> {
 	await sql`
 		CREATE TABLE _emdash_bylines (
@@ -32,7 +32,7 @@ async function sortKeys(db: Kysely<Database>): Promise<Record<string, string>> {
 	return Object.fromEntries(rows.map((row) => [row.id, row.display_name_sort]));
 }
 
-describe("065_byline_display_name_sort migration", () => {
+describe("066_byline_display_name_sort migration", () => {
 	let db: Kysely<Database>;
 
 	beforeEach(async () => {
