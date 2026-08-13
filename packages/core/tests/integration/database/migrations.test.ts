@@ -156,7 +156,8 @@ describe("Database Migrations (Integration)", () => {
 			"063_media_usage_incremental_work",
 			"064_fts_plain_text",
 			"065_media_usage_collection_deletion",
-			"066_byline_display_name_sort",
+			"066_media_usage_reconciliation",
+			"067_byline_display_name_sort",
 		];
 
 		await db.deleteFrom("_emdash_migrations").where("name", "in", trailing).execute();
