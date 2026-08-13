@@ -659,7 +659,7 @@ msgstr "Lägg till {label}"
 msgid "Add a new passkey"
 msgstr "Lägg till en ny passkey"
 
-#: packages/admin/src/components/FieldEditor.tsx:544
+#: packages/admin/src/components/FieldEditor.tsx:573
 msgid "Add at least one sub-field to define the repeater structure."
 msgstr "Lägg till minst ett underfält för att definiera repeaterstrukturen."
 
@@ -688,8 +688,8 @@ msgid "Add Domain"
 msgstr "Lägg till domän"
 
 #: packages/admin/src/components/ContentTypeEditor.tsx:591
-#: packages/admin/src/components/FieldEditor.tsx:342
-#: packages/admin/src/components/FieldEditor.tsx:660
+#: packages/admin/src/components/FieldEditor.tsx:368
+#: packages/admin/src/components/FieldEditor.tsx:689
 msgid "Add Field"
 msgstr "Lägg till fält"
 
@@ -774,7 +774,7 @@ msgstr "Lägg till rad före"
 msgid "Add SEO metadata fields (title, description, image) and include in sitemap"
 msgstr "Lägg till SEO-metadatafält (titel, beskrivning, bild) och inkludera i webbplatskartan"
 
-#: packages/admin/src/components/FieldEditor.tsx:538
+#: packages/admin/src/components/FieldEditor.tsx:567
 msgid "Add Sub-Field"
 msgstr "Lägg till underfält"
 
@@ -1076,7 +1076,7 @@ msgstr "godkänd"
 msgid "Approved"
 msgstr "Godkänd"
 
-#: packages/admin/src/components/FieldEditor.tsx:223
+#: packages/admin/src/components/FieldEditor.tsx:252
 msgid "Arbitrary JSON data"
 msgstr "Godtycklig JSON-data"
 
@@ -1332,8 +1332,8 @@ msgid "Bold"
 msgstr "Fet"
 
 #: packages/admin/src/components/BylineFieldEditor.tsx:55
-#: packages/admin/src/components/FieldEditor.tsx:174
-#: packages/admin/src/components/FieldEditor.tsx:583
+#: packages/admin/src/components/FieldEditor.tsx:203
+#: packages/admin/src/components/FieldEditor.tsx:612
 msgid "Boolean"
 msgstr "Boolean"
 
@@ -1431,7 +1431,7 @@ msgstr "Kan visa innehåll"
 #: packages/admin/src/components/editor/ImageNode.tsx:252
 #: packages/admin/src/components/editor/ImageNode.tsx:253
 #: packages/admin/src/components/editor/PluginBlockNode.tsx:406
-#: packages/admin/src/components/FieldEditor.tsx:649
+#: packages/admin/src/components/FieldEditor.tsx:678
 #: packages/admin/src/components/MediaDetailPanel.tsx:416
 #: packages/admin/src/components/MediaPickerModal.tsx:805
 #: packages/admin/src/components/MenuEditor.tsx:438
@@ -1515,7 +1515,7 @@ msgstr "Centrera"
 #: packages/admin/src/components/BlockKitMediaPickerField.tsx:76
 #: packages/admin/src/components/BlockKitMediaPickerField.tsx:107
 #: packages/admin/src/components/ContentEditor.tsx:1692
-#: packages/admin/src/components/FieldEditor.tsx:402
+#: packages/admin/src/components/FieldEditor.tsx:428
 #: packages/admin/src/components/ImageFieldRenderer.tsx:208
 #: packages/admin/src/components/ImageFieldRenderer.tsx:237
 #: packages/admin/src/components/SeoImageField.tsx:53
@@ -1630,9 +1630,9 @@ msgstr "Klicka på länken i e-postmeddelandet för att logga in."
 #: packages/admin/src/components/editor/ImageDetailPanel.tsx:229
 #: packages/admin/src/components/editor/ImageDetailPanel.tsx:412
 #: packages/admin/src/components/editor/ImageDetailPanel.tsx:414
-#: packages/admin/src/components/FieldEditor.tsx:345
-#: packages/admin/src/components/FieldEditor.tsx:351
-#: packages/admin/src/components/FieldEditor.tsx:355
+#: packages/admin/src/components/FieldEditor.tsx:371
+#: packages/admin/src/components/FieldEditor.tsx:377
+#: packages/admin/src/components/FieldEditor.tsx:381
 #: packages/admin/src/components/MarketplacePluginDetail.tsx:449
 #: packages/admin/src/components/MediaDetailPanel.tsx:229
 #: packages/admin/src/components/MediaDetailPanel.tsx:416
@@ -1771,7 +1771,7 @@ msgstr "Slutför registrering"
 msgid "Component"
 msgstr "Komponent"
 
-#: packages/admin/src/components/FieldEditor.tsx:342
+#: packages/admin/src/components/FieldEditor.tsx:368
 msgid "Configure Field"
 msgstr "Konfigurera fält"
 
@@ -2237,12 +2237,12 @@ msgstr "Översikt"
 msgid "Date"
 msgstr "Datum"
 
-#: packages/admin/src/components/FieldEditor.tsx:180
-#: packages/admin/src/components/FieldEditor.tsx:584
+#: packages/admin/src/components/FieldEditor.tsx:209
+#: packages/admin/src/components/FieldEditor.tsx:613
 msgid "Date & Time"
 msgstr "Datum och tid"
 
-#: packages/admin/src/components/FieldEditor.tsx:181
+#: packages/admin/src/components/FieldEditor.tsx:210
 msgid "Date and time picker"
 msgstr "Väljare för datum och tid"
 
@@ -2254,7 +2254,7 @@ msgstr "Datumfält att filtrera på"
 msgid "Date Format"
 msgstr "Datumformat"
 
-#: packages/admin/src/components/FieldEditor.tsx:163
+#: packages/admin/src/components/FieldEditor.tsx:192
 msgid "Decimal number"
 msgstr "Decimaltal"
 
@@ -2890,7 +2890,7 @@ msgstr "Redigera byline-fält"
 msgid "Edit Domain"
 msgstr "Redigera domän"
 
-#: packages/admin/src/components/FieldEditor.tsx:342
+#: packages/admin/src/components/FieldEditor.tsx:368
 msgid "Edit Field"
 msgstr "Redigera fält"
 
@@ -3267,7 +3267,7 @@ msgstr "Det gick inte att ta bort byline"
 msgid "Failed to delete byline field"
 msgstr "Det gick inte att ta bort byline-fält"
 
-#: packages/admin/src/lib/api/schema.ts:237
+#: packages/admin/src/lib/api/schema.ts:240
 msgid "Failed to delete collection"
 msgstr "Det gick inte att ta bort samlingen"
 
@@ -3280,7 +3280,7 @@ msgstr "Det gick inte att ta bort kommentaren"
 msgid "Failed to delete content"
 msgstr "Det gick inte att ta bort innehållet"
 
-#: packages/admin/src/lib/api/schema.ts:293
+#: packages/admin/src/lib/api/schema.ts:296
 #: packages/admin/src/routes/byline-schema.tsx:138
 msgid "Failed to delete field"
 msgstr "Det gick inte att ta bort fältet"
@@ -3375,8 +3375,8 @@ msgstr "Det gick inte att hämta autentiseringsläge"
 msgid "Failed to fetch backup settings"
 msgstr "Det gick inte att hämta säkerhetskopieringsinställningar"
 
-#: packages/admin/src/lib/api/schema.ts:185
-#: packages/admin/src/lib/api/schema.ts:189
+#: packages/admin/src/lib/api/schema.ts:188
+#: packages/admin/src/lib/api/schema.ts:192
 msgid "Failed to fetch collection"
 msgstr "Det gick inte att hämta samlingen"
 
@@ -3603,11 +3603,11 @@ msgstr "Det gick inte att byta namn på passkey"
 msgid "Failed to reorder byline fields"
 msgstr "Det gick inte att ändra ordning på byline-fält"
 
-#: packages/admin/src/lib/api/schema.ts:325
+#: packages/admin/src/lib/api/schema.ts:328
 msgid "Failed to reorder content types"
 msgstr ""
 
-#: packages/admin/src/lib/api/schema.ts:308
+#: packages/admin/src/lib/api/schema.ts:311
 #: packages/admin/src/routes/byline-schema.tsx:152
 msgid "Failed to reorder fields"
 msgstr "Det gick inte att ändra ordning på fält"
@@ -3805,15 +3805,15 @@ msgstr "Fält skapat"
 msgid "Field deleted"
 msgstr "Fält borttaget"
 
-#: packages/admin/src/components/FieldEditor.tsx:567
+#: packages/admin/src/components/FieldEditor.tsx:596
 msgid "Field label"
 msgstr "Fältetikett"
 
-#: packages/admin/src/components/FieldEditor.tsx:414
+#: packages/admin/src/components/FieldEditor.tsx:440
 msgid "Field Label"
 msgstr "Fältetikett"
 
-#: packages/admin/src/components/FieldEditor.tsx:426
+#: packages/admin/src/components/FieldEditor.tsx:452
 msgid "Field slugs cannot be changed after creation"
 msgstr "Fältets slug kan inte ändras efter att den skapats"
 
@@ -3833,7 +3833,7 @@ msgstr "Fält"
 msgid "Fields created:"
 msgstr "Fält skapade:"
 
-#: packages/admin/src/components/FieldEditor.tsx:210
+#: packages/admin/src/components/FieldEditor.tsx:239
 msgid "File"
 msgstr "Fil"
 
@@ -3842,7 +3842,7 @@ msgstr "Fil"
 msgid "File {0}"
 msgstr "Fil {0}"
 
-#: packages/admin/src/components/FieldEditor.tsx:211
+#: packages/admin/src/components/FieldEditor.tsx:240
 msgid "File from media library"
 msgstr "Fil från mediebibliotek"
 
@@ -4132,8 +4132,8 @@ msgstr "ID"
 msgid "If an account exists for <0>{email}</0>, we've sent a sign-in link."
 msgstr "Om det finns ett konto för <0>{email}</0> har vi skickat en inloggningslänk."
 
-#: packages/admin/src/components/FieldEditor.tsx:204
-#: packages/admin/src/components/FieldEditor.tsx:587
+#: packages/admin/src/components/FieldEditor.tsx:233
+#: packages/admin/src/components/FieldEditor.tsx:616
 #: packages/admin/src/components/PortableTextEditor.tsx:2673
 msgid "Image"
 msgstr "Bild"
@@ -4143,7 +4143,7 @@ msgstr "Bild"
 msgid "Image {0}"
 msgstr ""
 
-#: packages/admin/src/components/FieldEditor.tsx:205
+#: packages/admin/src/components/FieldEditor.tsx:234
 msgid "Image from media library"
 msgstr "Bild från mediebibliotek"
 
@@ -4287,6 +4287,7 @@ msgstr "Inkludera exempelinnehåll (rekommenderas för nya webbplatser)"
 msgid "Incompatible"
 msgstr "Inkompatibel"
 
+#: packages/admin/src/components/FieldEditor.tsx:481
 #: packages/admin/src/components/RegistryPluginDetail.tsx:506
 msgid "Indexed"
 msgstr "Indexerad"
@@ -4408,8 +4409,8 @@ msgstr "Installerad:"
 msgid "Installing..."
 msgstr "Installerar …"
 
-#: packages/admin/src/components/FieldEditor.tsx:168
-#: packages/admin/src/components/FieldEditor.tsx:582
+#: packages/admin/src/components/FieldEditor.tsx:197
+#: packages/admin/src/components/FieldEditor.tsx:611
 msgid "Integer"
 msgstr "Heltal"
 
@@ -4499,7 +4500,7 @@ msgid "job_title"
 msgstr "job_title"
 
 #: packages/admin/src/components/editor/codeBlockLanguages.ts:41
-#: packages/admin/src/components/FieldEditor.tsx:222
+#: packages/admin/src/components/FieldEditor.tsx:251
 msgid "JSON"
 msgstr "JSON"
 
@@ -4526,8 +4527,8 @@ msgid "Kotlin"
 msgstr "Kotlin"
 
 #: packages/admin/src/components/BylineFieldEditor.tsx:232
-#: packages/admin/src/components/FieldEditor.tsx:411
-#: packages/admin/src/components/FieldEditor.tsx:553
+#: packages/admin/src/components/FieldEditor.tsx:437
+#: packages/admin/src/components/FieldEditor.tsx:582
 #: packages/admin/src/components/MenuEditor.tsx:416
 #: packages/admin/src/components/MenuEditor.tsx:593
 #: packages/admin/src/components/MenuList.tsx:169
@@ -4631,7 +4632,7 @@ msgstr "Gräns"
 msgid "Link expired"
 msgstr "Länken har gått ut"
 
-#: packages/admin/src/components/FieldEditor.tsx:217
+#: packages/admin/src/components/FieldEditor.tsx:246
 msgid "Link to another content item"
 msgstr "Länka till ett annat innehållsobjekt"
 
@@ -4814,8 +4815,8 @@ msgstr "Logotyp och favicon"
 msgid "Long text"
 msgstr "Lång text"
 
-#: packages/admin/src/components/FieldEditor.tsx:156
-#: packages/admin/src/components/FieldEditor.tsx:580
+#: packages/admin/src/components/FieldEditor.tsx:185
+#: packages/admin/src/components/FieldEditor.tsx:609
 msgid "Long Text"
 msgstr "Lång text"
 
@@ -4925,15 +4926,15 @@ msgstr "marknadsplats"
 msgid "Marketplace"
 msgstr "Marknadsplats"
 
-#: packages/admin/src/components/FieldEditor.tsx:627
+#: packages/admin/src/components/FieldEditor.tsx:656
 msgid "Max Items"
 msgstr "Max antal"
 
-#: packages/admin/src/components/FieldEditor.tsx:470
+#: packages/admin/src/components/FieldEditor.tsx:499
 msgid "Max Length"
 msgstr "Maxlängd"
 
-#: packages/admin/src/components/FieldEditor.tsx:500
+#: packages/admin/src/components/FieldEditor.tsx:529
 msgid "Max Value"
 msgstr "Maxvärde"
 
@@ -5073,15 +5074,15 @@ msgstr "Metatitlar, beskrivningar och bilder för sociala medier"
 msgid "Migration key"
 msgstr "Migreringsnyckel"
 
-#: packages/admin/src/components/FieldEditor.tsx:620
+#: packages/admin/src/components/FieldEditor.tsx:649
 msgid "Min Items"
 msgstr "Min antal"
 
-#: packages/admin/src/components/FieldEditor.tsx:463
+#: packages/admin/src/components/FieldEditor.tsx:492
 msgid "Min Length"
 msgstr "Minlängd"
 
-#: packages/admin/src/components/FieldEditor.tsx:493
+#: packages/admin/src/components/FieldEditor.tsx:522
 msgid "Min Value"
 msgstr "Minvärde"
 
@@ -5188,15 +5189,15 @@ msgstr "Flyttade {total} objekt till utkast"
 msgid "Moved {total} items to trash"
 msgstr "Flyttade {total} objekt till papperskorgen"
 
-#: packages/admin/src/components/FieldEditor.tsx:192
+#: packages/admin/src/components/FieldEditor.tsx:221
 msgid "Multi Select"
 msgstr "Flerval"
 
-#: packages/admin/src/components/FieldEditor.tsx:157
+#: packages/admin/src/components/FieldEditor.tsx:186
 msgid "Multi-line plain text"
 msgstr "Flerradig text"
 
-#: packages/admin/src/components/FieldEditor.tsx:193
+#: packages/admin/src/components/FieldEditor.tsx:222
 msgid "Multiple choices from options"
 msgstr "Flera val från alternativ"
 
@@ -5470,7 +5471,7 @@ msgstr "Ingen inbjudningstoken angiven"
 msgid "No items yet"
 msgstr "Inga objekt ännu"
 
-#: packages/admin/src/components/FieldEditor.tsx:631
+#: packages/admin/src/components/FieldEditor.tsx:660
 msgid "No limit"
 msgstr "Ingen gräns"
 
@@ -5495,8 +5496,8 @@ msgstr "Inga matchande mediefiler"
 msgid "No matching passkey found for this account."
 msgstr "Ingen matchande passkey hittades för detta konto."
 
-#: packages/admin/src/components/FieldEditor.tsx:474
-#: packages/admin/src/components/FieldEditor.tsx:504
+#: packages/admin/src/components/FieldEditor.tsx:503
+#: packages/admin/src/components/FieldEditor.tsx:533
 msgid "No maximum"
 msgstr "Inget maxvärde"
 
@@ -5521,8 +5522,8 @@ msgstr "Inga menyobjekt ännu"
 msgid "No menus yet"
 msgstr "Inga menyer ännu"
 
-#: packages/admin/src/components/FieldEditor.tsx:467
-#: packages/admin/src/components/FieldEditor.tsx:497
+#: packages/admin/src/components/FieldEditor.tsx:496
+#: packages/admin/src/components/FieldEditor.tsx:526
 msgid "No minimum"
 msgstr "Inget minimivärde"
 
@@ -5649,8 +5650,8 @@ msgstr "Inte kompatibel med denna miljö"
 msgid "Not set"
 msgstr ""
 
-#: packages/admin/src/components/FieldEditor.tsx:162
-#: packages/admin/src/components/FieldEditor.tsx:581
+#: packages/admin/src/components/FieldEditor.tsx:191
+#: packages/admin/src/components/FieldEditor.tsx:610
 msgid "Number"
 msgstr "Tal"
 
@@ -5714,7 +5715,7 @@ msgstr "Öppna i ny flik"
 msgid "Open WordPress Profile"
 msgstr "Öppna WordPress-profil"
 
-#: packages/admin/src/components/FieldEditor.tsx:515
+#: packages/admin/src/components/FieldEditor.tsx:544
 msgid ""
 "Option 1\n"
 "Option 2\n"
@@ -5747,7 +5748,7 @@ msgid "Optional tooltip on hover"
 msgstr "Valfritt verktygstips när du hovrar"
 
 #: packages/admin/src/components/BylineFieldEditor.tsx:302
-#: packages/admin/src/components/FieldEditor.tsx:512
+#: packages/admin/src/components/FieldEditor.tsx:541
 msgid "Options (one per line)"
 msgstr "Alternativ (ett per rad)"
 
@@ -5902,7 +5903,7 @@ msgstr "Klistra in din migreringsnyckel"
 msgid "Path"
 msgstr "Sökväg"
 
-#: packages/admin/src/components/FieldEditor.tsx:479
+#: packages/admin/src/components/FieldEditor.tsx:508
 msgid "Pattern (Regex)"
 msgstr "Mönster (regex)"
 
@@ -6306,7 +6307,7 @@ msgstr "Omdirigeringar"
 msgid "Redo"
 msgstr "Gör om"
 
-#: packages/admin/src/components/FieldEditor.tsx:216
+#: packages/admin/src/components/FieldEditor.tsx:245
 msgid "Reference"
 msgstr "Referens"
 
@@ -6424,7 +6425,7 @@ msgstr "Ta bort passkey"
 msgid "Remove passkey?"
 msgstr "Ta bort passkey?"
 
-#: packages/admin/src/components/FieldEditor.tsx:611
+#: packages/admin/src/components/FieldEditor.tsx:640
 msgid "Remove sub-field"
 msgstr "Ta bort underfält"
 
@@ -6460,11 +6461,11 @@ msgstr ""
 msgid "Reorder {0}"
 msgstr ""
 
-#: packages/admin/src/components/FieldEditor.tsx:240
+#: packages/admin/src/components/FieldEditor.tsx:269
 msgid "Repeater"
 msgstr "Repeater"
 
-#: packages/admin/src/components/FieldEditor.tsx:241
+#: packages/admin/src/components/FieldEditor.tsx:270
 msgid "Repeating group of fields"
 msgstr "Upprepad grupp av fält"
 
@@ -6501,8 +6502,8 @@ msgstr "Begäran misslyckades"
 
 #: packages/admin/src/components/BylineFieldEditor.tsx:280
 #: packages/admin/src/components/ContentTypeEditor.tsx:730
-#: packages/admin/src/components/FieldEditor.tsx:437
-#: packages/admin/src/components/FieldEditor.tsx:593
+#: packages/admin/src/components/FieldEditor.tsx:463
+#: packages/admin/src/components/FieldEditor.tsx:622
 #: packages/admin/src/routes/byline-schema.tsx:246
 msgid "Required"
 msgstr "Obligatorisk"
@@ -6622,7 +6623,7 @@ msgstr "Återkalla?"
 msgid "Revoking..."
 msgstr "Återkallar …"
 
-#: packages/admin/src/components/FieldEditor.tsx:198
+#: packages/admin/src/components/FieldEditor.tsx:227
 msgid "Rich Text"
 msgstr "Rik text"
 
@@ -6630,7 +6631,7 @@ msgstr "Rik text"
 msgid "Rich text content"
 msgstr "Innehåll med rik text"
 
-#: packages/admin/src/components/FieldEditor.tsx:199
+#: packages/admin/src/components/FieldEditor.tsx:228
 msgid "Rich text editor"
 msgstr "Redigerare för rik text"
 
@@ -6738,7 +6739,7 @@ msgid "Saved \"{0}\"."
 msgstr "Sparade \"{0}\"."
 
 #: packages/admin/src/components/ContentSettingsPanel.tsx:1162
-#: packages/admin/src/components/FieldEditor.tsx:660
+#: packages/admin/src/components/FieldEditor.tsx:689
 #: packages/admin/src/components/MediaDetailPanel.tsx:425
 #: packages/admin/src/components/MenuEditor.tsx:626
 #: packages/admin/src/components/PluginSettings.tsx:166
@@ -6957,7 +6958,7 @@ msgid "Search..."
 msgstr "Sök …"
 
 #: packages/admin/src/components/ContentTypeEditor.tsx:732
-#: packages/admin/src/components/FieldEditor.tsx:452
+#: packages/admin/src/components/FieldEditor.tsx:474
 msgid "Searchable"
 msgstr "Sökbar"
 
@@ -7055,8 +7056,8 @@ msgid "Security Settings"
 msgstr "Säkerhetsinställningar"
 
 #: packages/admin/src/components/BylineFieldEditor.tsx:56
-#: packages/admin/src/components/FieldEditor.tsx:186
-#: packages/admin/src/components/FieldEditor.tsx:585
+#: packages/admin/src/components/FieldEditor.tsx:215
+#: packages/admin/src/components/FieldEditor.tsx:614
 #: packages/admin/src/components/Settings.tsx:134
 msgid "Select"
 msgstr "Välj"
@@ -7305,8 +7306,8 @@ msgstr "Delas mellan alla översättningar av samma byline."
 msgid "Short text"
 msgstr "Kort text"
 
-#: packages/admin/src/components/FieldEditor.tsx:150
-#: packages/admin/src/components/FieldEditor.tsx:579
+#: packages/admin/src/components/FieldEditor.tsx:179
+#: packages/admin/src/components/FieldEditor.tsx:608
 msgid "Short Text"
 msgstr "Kort text"
 
@@ -7382,11 +7383,11 @@ msgstr "Logga in med passkey"
 msgid "Signed in as {0}"
 msgstr "Inloggad som {0}"
 
-#: packages/admin/src/components/FieldEditor.tsx:187
+#: packages/admin/src/components/FieldEditor.tsx:216
 msgid "Single choice from options"
 msgstr "Enkelval från alternativ"
 
-#: packages/admin/src/components/FieldEditor.tsx:151
+#: packages/admin/src/components/FieldEditor.tsx:180
 msgid "Single line text input"
 msgstr "Enradig textinmatning"
 
@@ -7457,8 +7458,8 @@ msgstr "Överhoppad"
 #: packages/admin/src/components/ContentTypeEditor.tsx:111
 #: packages/admin/src/components/ContentTypeEditor.tsx:402
 #: packages/admin/src/components/ContentTypeList.tsx:181
-#: packages/admin/src/components/FieldEditor.tsx:228
-#: packages/admin/src/components/FieldEditor.tsx:418
+#: packages/admin/src/components/FieldEditor.tsx:257
+#: packages/admin/src/components/FieldEditor.tsx:444
 #: packages/admin/src/components/SectionEditor.tsx:259
 #: packages/admin/src/components/Sections.tsx:184
 #: packages/admin/src/components/TaxonomyManager.tsx:576
@@ -7609,7 +7610,7 @@ msgstr "Struktur"
 msgid "Structured"
 msgstr "Strukturerad"
 
-#: packages/admin/src/components/FieldEditor.tsx:523
+#: packages/admin/src/components/FieldEditor.tsx:552
 msgid "Sub-Fields"
 msgstr "Underfält"
 
@@ -8076,7 +8077,7 @@ msgstr "Papperskorgen är tom"
 msgid "Trash is empty."
 msgstr "Papperskorgen är tom."
 
-#: packages/admin/src/components/FieldEditor.tsx:175
+#: packages/admin/src/components/FieldEditor.tsx:204
 msgid "True/false toggle"
 msgstr "Sant/falskt-brytare"
 
@@ -8140,7 +8141,7 @@ msgid "Twitter"
 msgstr "Twitter"
 
 #: packages/admin/src/components/BylineFieldEditor.tsx:260
-#: packages/admin/src/components/FieldEditor.tsx:571
+#: packages/admin/src/components/FieldEditor.tsx:600
 #: packages/admin/src/components/MediaLibrary.tsx:587
 #: packages/admin/src/routes/byline-schema.tsx:240
 msgid "Type"
@@ -8193,7 +8194,7 @@ msgid "Uninstalling..."
 msgstr "Avinstallerar …"
 
 #: packages/admin/src/components/ContentTypeEditor.tsx:731
-#: packages/admin/src/components/FieldEditor.tsx:442
+#: packages/admin/src/components/FieldEditor.tsx:468
 msgid "Unique"
 msgstr "Unik"
 
@@ -8276,7 +8277,7 @@ msgstr ""
 msgid "Update"
 msgstr "Uppdatera"
 
-#: packages/admin/src/components/FieldEditor.tsx:660
+#: packages/admin/src/components/FieldEditor.tsx:689
 msgid "Update Field"
 msgstr "Uppdatera fält"
 
@@ -8422,8 +8423,8 @@ msgid "Uploading..."
 msgstr "Laddar upp …"
 
 #: packages/admin/src/components/BylineFieldEditor.tsx:54
-#: packages/admin/src/components/FieldEditor.tsx:234
-#: packages/admin/src/components/FieldEditor.tsx:586
+#: packages/admin/src/components/FieldEditor.tsx:263
+#: packages/admin/src/components/FieldEditor.tsx:615
 #: packages/admin/src/components/MenuEditor.tsx:418
 #: packages/admin/src/components/MenuEditor.tsx:596
 #: packages/admin/src/components/PortableTextEditor.tsx:3487
@@ -8437,7 +8438,7 @@ msgid "URL Pattern"
 msgstr "URL-mönster"
 
 #: packages/admin/src/components/ContentTypeEditor.tsx:113
-#: packages/admin/src/components/FieldEditor.tsx:229
+#: packages/admin/src/components/FieldEditor.tsx:258
 msgid "URL-friendly identifier"
 msgstr "URL-vänlig identifierare"
 
@@ -8525,8 +8526,8 @@ msgstr "Användare med e-postadresser från dessa domäner kan registrera sig ut
 msgid "v{0} available"
 msgstr "v{0} tillgänglig"
 
-#: packages/admin/src/components/FieldEditor.tsx:460
-#: packages/admin/src/components/FieldEditor.tsx:490
+#: packages/admin/src/components/FieldEditor.tsx:489
+#: packages/admin/src/components/FieldEditor.tsx:519
 msgid "Validation"
 msgstr "Validering"
 
@@ -8642,7 +8643,7 @@ msgstr "Vi skickar en länk så att du kan logga in utan lösenord."
 msgid "We've sent a verification link to"
 msgstr "Vi har skickat en bekräftelselänk till"
 
-#: packages/admin/src/components/FieldEditor.tsx:235
+#: packages/admin/src/components/FieldEditor.tsx:264
 msgid "Web address"
 msgstr "Webbadress"
 
@@ -8692,7 +8693,7 @@ msgstr "När posten publicerades"
 msgid "Which content types can use this taxonomy"
 msgstr "Vilka innehållstyper som kan använda denna taxonomi"
 
-#: packages/admin/src/components/FieldEditor.tsx:169
+#: packages/admin/src/components/FieldEditor.tsx:198
 msgid "Whole number"
 msgstr "Heltal"
 

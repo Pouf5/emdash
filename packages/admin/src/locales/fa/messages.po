@@ -661,7 +661,7 @@ msgstr "افزودن {label}"
 msgid "Add a new passkey"
 msgstr "افزودن شاه‌کلید جدید"
 
-#: packages/admin/src/components/FieldEditor.tsx:544
+#: packages/admin/src/components/FieldEditor.tsx:573
 msgid "Add at least one sub-field to define the repeater structure."
 msgstr "حداقل یک زیرفیلد برای تعریف ساختار تکرارشونده بیفزایید."
 
@@ -690,8 +690,8 @@ msgid "Add Domain"
 msgstr "افزودن دامنه"
 
 #: packages/admin/src/components/ContentTypeEditor.tsx:591
-#: packages/admin/src/components/FieldEditor.tsx:342
-#: packages/admin/src/components/FieldEditor.tsx:660
+#: packages/admin/src/components/FieldEditor.tsx:368
+#: packages/admin/src/components/FieldEditor.tsx:689
 msgid "Add Field"
 msgstr "افزودن فیلد"
 
@@ -776,7 +776,7 @@ msgstr ""
 msgid "Add SEO metadata fields (title, description, image) and include in sitemap"
 msgstr ""
 
-#: packages/admin/src/components/FieldEditor.tsx:538
+#: packages/admin/src/components/FieldEditor.tsx:567
 msgid "Add Sub-Field"
 msgstr "افزودن زیرفیلد"
 
@@ -1078,7 +1078,7 @@ msgstr "تأییدشده"
 msgid "Approved"
 msgstr "تأییدشده"
 
-#: packages/admin/src/components/FieldEditor.tsx:223
+#: packages/admin/src/components/FieldEditor.tsx:252
 msgid "Arbitrary JSON data"
 msgstr "داده JSON دلخواه"
 
@@ -1334,8 +1334,8 @@ msgid "Bold"
 msgstr ""
 
 #: packages/admin/src/components/BylineFieldEditor.tsx:55
-#: packages/admin/src/components/FieldEditor.tsx:174
-#: packages/admin/src/components/FieldEditor.tsx:583
+#: packages/admin/src/components/FieldEditor.tsx:203
+#: packages/admin/src/components/FieldEditor.tsx:612
 msgid "Boolean"
 msgstr "منطقی"
 
@@ -1433,7 +1433,7 @@ msgstr "می‌تواند محتوا را مشاهده کند"
 #: packages/admin/src/components/editor/ImageNode.tsx:252
 #: packages/admin/src/components/editor/ImageNode.tsx:253
 #: packages/admin/src/components/editor/PluginBlockNode.tsx:406
-#: packages/admin/src/components/FieldEditor.tsx:649
+#: packages/admin/src/components/FieldEditor.tsx:678
 #: packages/admin/src/components/MediaDetailPanel.tsx:416
 #: packages/admin/src/components/MediaPickerModal.tsx:805
 #: packages/admin/src/components/MenuEditor.tsx:438
@@ -1517,7 +1517,7 @@ msgstr ""
 #: packages/admin/src/components/BlockKitMediaPickerField.tsx:76
 #: packages/admin/src/components/BlockKitMediaPickerField.tsx:107
 #: packages/admin/src/components/ContentEditor.tsx:1692
-#: packages/admin/src/components/FieldEditor.tsx:402
+#: packages/admin/src/components/FieldEditor.tsx:428
 #: packages/admin/src/components/ImageFieldRenderer.tsx:208
 #: packages/admin/src/components/ImageFieldRenderer.tsx:237
 #: packages/admin/src/components/SeoImageField.tsx:53
@@ -1632,9 +1632,9 @@ msgstr "روی لینک ایمیل کلیک کنید تا وارد شوید."
 #: packages/admin/src/components/editor/ImageDetailPanel.tsx:229
 #: packages/admin/src/components/editor/ImageDetailPanel.tsx:412
 #: packages/admin/src/components/editor/ImageDetailPanel.tsx:414
-#: packages/admin/src/components/FieldEditor.tsx:345
-#: packages/admin/src/components/FieldEditor.tsx:351
-#: packages/admin/src/components/FieldEditor.tsx:355
+#: packages/admin/src/components/FieldEditor.tsx:371
+#: packages/admin/src/components/FieldEditor.tsx:377
+#: packages/admin/src/components/FieldEditor.tsx:381
 #: packages/admin/src/components/MarketplacePluginDetail.tsx:449
 #: packages/admin/src/components/MediaDetailPanel.tsx:229
 #: packages/admin/src/components/MediaDetailPanel.tsx:416
@@ -1773,7 +1773,7 @@ msgstr "تکمیل ثبت‌نام"
 msgid "Component"
 msgstr ""
 
-#: packages/admin/src/components/FieldEditor.tsx:342
+#: packages/admin/src/components/FieldEditor.tsx:368
 msgid "Configure Field"
 msgstr "پیکربندی فیلد"
 
@@ -2239,12 +2239,12 @@ msgstr "داشبورد"
 msgid "Date"
 msgstr "تاریخ"
 
-#: packages/admin/src/components/FieldEditor.tsx:180
-#: packages/admin/src/components/FieldEditor.tsx:584
+#: packages/admin/src/components/FieldEditor.tsx:209
+#: packages/admin/src/components/FieldEditor.tsx:613
 msgid "Date & Time"
 msgstr "تاریخ و زمان"
 
-#: packages/admin/src/components/FieldEditor.tsx:181
+#: packages/admin/src/components/FieldEditor.tsx:210
 msgid "Date and time picker"
 msgstr "انتخابگر تاریخ و زمان"
 
@@ -2256,7 +2256,7 @@ msgstr ""
 msgid "Date Format"
 msgstr "قالب تاریخ"
 
-#: packages/admin/src/components/FieldEditor.tsx:163
+#: packages/admin/src/components/FieldEditor.tsx:192
 msgid "Decimal number"
 msgstr "عدد اعشاری"
 
@@ -2892,7 +2892,7 @@ msgstr ""
 msgid "Edit Domain"
 msgstr "ویرایش دامنه"
 
-#: packages/admin/src/components/FieldEditor.tsx:342
+#: packages/admin/src/components/FieldEditor.tsx:368
 msgid "Edit Field"
 msgstr "ویرایش فیلد"
 
@@ -3266,7 +3266,7 @@ msgstr ""
 msgid "Failed to delete byline field"
 msgstr ""
 
-#: packages/admin/src/lib/api/schema.ts:237
+#: packages/admin/src/lib/api/schema.ts:240
 msgid "Failed to delete collection"
 msgstr ""
 
@@ -3279,7 +3279,7 @@ msgstr ""
 msgid "Failed to delete content"
 msgstr ""
 
-#: packages/admin/src/lib/api/schema.ts:293
+#: packages/admin/src/lib/api/schema.ts:296
 #: packages/admin/src/routes/byline-schema.tsx:138
 msgid "Failed to delete field"
 msgstr ""
@@ -3374,8 +3374,8 @@ msgstr ""
 msgid "Failed to fetch backup settings"
 msgstr ""
 
-#: packages/admin/src/lib/api/schema.ts:185
-#: packages/admin/src/lib/api/schema.ts:189
+#: packages/admin/src/lib/api/schema.ts:188
+#: packages/admin/src/lib/api/schema.ts:192
 msgid "Failed to fetch collection"
 msgstr ""
 
@@ -3602,11 +3602,11 @@ msgstr "تغییر نام شاه‌کلید ناموفق بود"
 msgid "Failed to reorder byline fields"
 msgstr ""
 
-#: packages/admin/src/lib/api/schema.ts:325
+#: packages/admin/src/lib/api/schema.ts:328
 msgid "Failed to reorder content types"
 msgstr ""
 
-#: packages/admin/src/lib/api/schema.ts:308
+#: packages/admin/src/lib/api/schema.ts:311
 #: packages/admin/src/routes/byline-schema.tsx:152
 msgid "Failed to reorder fields"
 msgstr ""
@@ -3804,15 +3804,15 @@ msgstr ""
 msgid "Field deleted"
 msgstr ""
 
-#: packages/admin/src/components/FieldEditor.tsx:567
+#: packages/admin/src/components/FieldEditor.tsx:596
 msgid "Field label"
 msgstr "برچسب فیلد"
 
-#: packages/admin/src/components/FieldEditor.tsx:414
+#: packages/admin/src/components/FieldEditor.tsx:440
 msgid "Field Label"
 msgstr "برچسب فیلد"
 
-#: packages/admin/src/components/FieldEditor.tsx:426
+#: packages/admin/src/components/FieldEditor.tsx:452
 msgid "Field slugs cannot be changed after creation"
 msgstr "نامک‌های فیلد پس از ساخت قابل تغییر نیستند"
 
@@ -3832,7 +3832,7 @@ msgstr ""
 msgid "Fields created:"
 msgstr "فیلدهای ساخته‌شده:"
 
-#: packages/admin/src/components/FieldEditor.tsx:210
+#: packages/admin/src/components/FieldEditor.tsx:239
 msgid "File"
 msgstr "فایل"
 
@@ -3841,7 +3841,7 @@ msgstr "فایل"
 msgid "File {0}"
 msgstr "فایل {0}"
 
-#: packages/admin/src/components/FieldEditor.tsx:211
+#: packages/admin/src/components/FieldEditor.tsx:240
 msgid "File from media library"
 msgstr "فایل از کتابخانه رسانه"
 
@@ -4131,8 +4131,8 @@ msgstr "ID"
 msgid "If an account exists for <0>{email}</0>, we've sent a sign-in link."
 msgstr "اگر حساب کاربری برای <0>{email}</0> وجود داشته باشد، لینک ورود ارسال شده است."
 
-#: packages/admin/src/components/FieldEditor.tsx:204
-#: packages/admin/src/components/FieldEditor.tsx:587
+#: packages/admin/src/components/FieldEditor.tsx:233
+#: packages/admin/src/components/FieldEditor.tsx:616
 #: packages/admin/src/components/PortableTextEditor.tsx:2673
 msgid "Image"
 msgstr "تصویر"
@@ -4142,7 +4142,7 @@ msgstr "تصویر"
 msgid "Image {0}"
 msgstr ""
 
-#: packages/admin/src/components/FieldEditor.tsx:205
+#: packages/admin/src/components/FieldEditor.tsx:234
 msgid "Image from media library"
 msgstr "تصویر از کتابخانه رسانه"
 
@@ -4286,6 +4286,7 @@ msgstr "شامل محتوای نمونه (توصیه‌شده برای وبسا�
 msgid "Incompatible"
 msgstr "ناسازگار"
 
+#: packages/admin/src/components/FieldEditor.tsx:481
 #: packages/admin/src/components/RegistryPluginDetail.tsx:506
 msgid "Indexed"
 msgstr ""
@@ -4407,8 +4408,8 @@ msgstr "نصب شد:"
 msgid "Installing..."
 msgstr "در حال نصب..."
 
-#: packages/admin/src/components/FieldEditor.tsx:168
-#: packages/admin/src/components/FieldEditor.tsx:582
+#: packages/admin/src/components/FieldEditor.tsx:197
+#: packages/admin/src/components/FieldEditor.tsx:611
 msgid "Integer"
 msgstr "عدد صحیح"
 
@@ -4498,7 +4499,7 @@ msgid "job_title"
 msgstr ""
 
 #: packages/admin/src/components/editor/codeBlockLanguages.ts:41
-#: packages/admin/src/components/FieldEditor.tsx:222
+#: packages/admin/src/components/FieldEditor.tsx:251
 msgid "JSON"
 msgstr "JSON"
 
@@ -4525,8 +4526,8 @@ msgid "Kotlin"
 msgstr ""
 
 #: packages/admin/src/components/BylineFieldEditor.tsx:232
-#: packages/admin/src/components/FieldEditor.tsx:411
-#: packages/admin/src/components/FieldEditor.tsx:553
+#: packages/admin/src/components/FieldEditor.tsx:437
+#: packages/admin/src/components/FieldEditor.tsx:582
 #: packages/admin/src/components/MenuEditor.tsx:416
 #: packages/admin/src/components/MenuEditor.tsx:593
 #: packages/admin/src/components/MenuList.tsx:169
@@ -4630,7 +4631,7 @@ msgstr ""
 msgid "Link expired"
 msgstr "لینک منقضی شده"
 
-#: packages/admin/src/components/FieldEditor.tsx:217
+#: packages/admin/src/components/FieldEditor.tsx:246
 msgid "Link to another content item"
 msgstr "لینک به محتوای دیگر"
 
@@ -4813,8 +4814,8 @@ msgstr "لوگو و فاوآیکون"
 msgid "Long text"
 msgstr ""
 
-#: packages/admin/src/components/FieldEditor.tsx:156
-#: packages/admin/src/components/FieldEditor.tsx:580
+#: packages/admin/src/components/FieldEditor.tsx:185
+#: packages/admin/src/components/FieldEditor.tsx:609
 msgid "Long Text"
 msgstr "متن بلند"
 
@@ -4924,15 +4925,15 @@ msgstr "فروشگاه"
 msgid "Marketplace"
 msgstr "فروشگاه"
 
-#: packages/admin/src/components/FieldEditor.tsx:627
+#: packages/admin/src/components/FieldEditor.tsx:656
 msgid "Max Items"
 msgstr "حداکثر موارد"
 
-#: packages/admin/src/components/FieldEditor.tsx:470
+#: packages/admin/src/components/FieldEditor.tsx:499
 msgid "Max Length"
 msgstr "حداکثر طول"
 
-#: packages/admin/src/components/FieldEditor.tsx:500
+#: packages/admin/src/components/FieldEditor.tsx:529
 msgid "Max Value"
 msgstr "حداکثر مقدار"
 
@@ -5072,15 +5073,15 @@ msgstr "عناوین متا، توضیحات و تصاویر اجتماعی"
 msgid "Migration key"
 msgstr ""
 
-#: packages/admin/src/components/FieldEditor.tsx:620
+#: packages/admin/src/components/FieldEditor.tsx:649
 msgid "Min Items"
 msgstr "حداقل موارد"
 
-#: packages/admin/src/components/FieldEditor.tsx:463
+#: packages/admin/src/components/FieldEditor.tsx:492
 msgid "Min Length"
 msgstr "حداقل طول"
 
-#: packages/admin/src/components/FieldEditor.tsx:493
+#: packages/admin/src/components/FieldEditor.tsx:522
 msgid "Min Value"
 msgstr "حداقل مقدار"
 
@@ -5187,15 +5188,15 @@ msgstr ""
 msgid "Moved {total} items to trash"
 msgstr ""
 
-#: packages/admin/src/components/FieldEditor.tsx:192
+#: packages/admin/src/components/FieldEditor.tsx:221
 msgid "Multi Select"
 msgstr "چند‌انتخابی"
 
-#: packages/admin/src/components/FieldEditor.tsx:157
+#: packages/admin/src/components/FieldEditor.tsx:186
 msgid "Multi-line plain text"
 msgstr "متن ساده چندخطی"
 
-#: packages/admin/src/components/FieldEditor.tsx:193
+#: packages/admin/src/components/FieldEditor.tsx:222
 msgid "Multiple choices from options"
 msgstr "انتخاب چندگانه از گزینه‌ها"
 
@@ -5469,7 +5470,7 @@ msgstr ""
 msgid "No items yet"
 msgstr "هنوز موردی نیست"
 
-#: packages/admin/src/components/FieldEditor.tsx:631
+#: packages/admin/src/components/FieldEditor.tsx:660
 msgid "No limit"
 msgstr "بدون حد"
 
@@ -5494,8 +5495,8 @@ msgstr ""
 msgid "No matching passkey found for this account."
 msgstr "شاه‌کلید مطابقی برای این حساب کاربری یافت نشد."
 
-#: packages/admin/src/components/FieldEditor.tsx:474
-#: packages/admin/src/components/FieldEditor.tsx:504
+#: packages/admin/src/components/FieldEditor.tsx:503
+#: packages/admin/src/components/FieldEditor.tsx:533
 msgid "No maximum"
 msgstr "بدون حداکثر"
 
@@ -5520,8 +5521,8 @@ msgstr "هنوز آیتم فهرستیی نیست"
 msgid "No menus yet"
 msgstr "هنوز فهرستیی نیست"
 
-#: packages/admin/src/components/FieldEditor.tsx:467
-#: packages/admin/src/components/FieldEditor.tsx:497
+#: packages/admin/src/components/FieldEditor.tsx:496
+#: packages/admin/src/components/FieldEditor.tsx:526
 msgid "No minimum"
 msgstr "بدون حداقل"
 
@@ -5648,8 +5649,8 @@ msgstr ""
 msgid "Not set"
 msgstr ""
 
-#: packages/admin/src/components/FieldEditor.tsx:162
-#: packages/admin/src/components/FieldEditor.tsx:581
+#: packages/admin/src/components/FieldEditor.tsx:191
+#: packages/admin/src/components/FieldEditor.tsx:610
 msgid "Number"
 msgstr "عدد"
 
@@ -5713,7 +5714,7 @@ msgstr "باز کردن در زبانه جدید"
 msgid "Open WordPress Profile"
 msgstr "باز کردن نمایه وردپرس"
 
-#: packages/admin/src/components/FieldEditor.tsx:515
+#: packages/admin/src/components/FieldEditor.tsx:544
 msgid ""
 "Option 1\n"
 "Option 2\n"
@@ -5743,7 +5744,7 @@ msgid "Optional tooltip on hover"
 msgstr "راهنمای اختیاری هنگام قرارگیری ماوس"
 
 #: packages/admin/src/components/BylineFieldEditor.tsx:302
-#: packages/admin/src/components/FieldEditor.tsx:512
+#: packages/admin/src/components/FieldEditor.tsx:541
 msgid "Options (one per line)"
 msgstr "گزینه‌ها (هر خط یکی)"
 
@@ -5898,7 +5899,7 @@ msgstr ""
 msgid "Path"
 msgstr "مسیر"
 
-#: packages/admin/src/components/FieldEditor.tsx:479
+#: packages/admin/src/components/FieldEditor.tsx:508
 msgid "Pattern (Regex)"
 msgstr "الگو (عبارت منظم)"
 
@@ -6302,7 +6303,7 @@ msgstr "تغییر مسیر‌ها"
 msgid "Redo"
 msgstr ""
 
-#: packages/admin/src/components/FieldEditor.tsx:216
+#: packages/admin/src/components/FieldEditor.tsx:245
 msgid "Reference"
 msgstr "ارجاع"
 
@@ -6420,7 +6421,7 @@ msgstr "حذف شاه‌کلید"
 msgid "Remove passkey?"
 msgstr "حذف شاه‌کلید؟"
 
-#: packages/admin/src/components/FieldEditor.tsx:611
+#: packages/admin/src/components/FieldEditor.tsx:640
 msgid "Remove sub-field"
 msgstr "حذف زیرفیلد"
 
@@ -6456,11 +6457,11 @@ msgstr ""
 msgid "Reorder {0}"
 msgstr ""
 
-#: packages/admin/src/components/FieldEditor.tsx:240
+#: packages/admin/src/components/FieldEditor.tsx:269
 msgid "Repeater"
 msgstr "تکرارشونده"
 
-#: packages/admin/src/components/FieldEditor.tsx:241
+#: packages/admin/src/components/FieldEditor.tsx:270
 msgid "Repeating group of fields"
 msgstr "گروه تکرارشونده فیلدها"
 
@@ -6497,8 +6498,8 @@ msgstr ""
 
 #: packages/admin/src/components/BylineFieldEditor.tsx:280
 #: packages/admin/src/components/ContentTypeEditor.tsx:730
-#: packages/admin/src/components/FieldEditor.tsx:437
-#: packages/admin/src/components/FieldEditor.tsx:593
+#: packages/admin/src/components/FieldEditor.tsx:463
+#: packages/admin/src/components/FieldEditor.tsx:622
 #: packages/admin/src/routes/byline-schema.tsx:246
 msgid "Required"
 msgstr "الزامی"
@@ -6618,7 +6619,7 @@ msgstr "لغو؟"
 msgid "Revoking..."
 msgstr "در حال لغو..."
 
-#: packages/admin/src/components/FieldEditor.tsx:198
+#: packages/admin/src/components/FieldEditor.tsx:227
 msgid "Rich Text"
 msgstr "متن غنی"
 
@@ -6626,7 +6627,7 @@ msgstr "متن غنی"
 msgid "Rich text content"
 msgstr "محتوای متن غنی"
 
-#: packages/admin/src/components/FieldEditor.tsx:199
+#: packages/admin/src/components/FieldEditor.tsx:228
 msgid "Rich text editor"
 msgstr "ویرایشگر متن غنی"
 
@@ -6734,7 +6735,7 @@ msgid "Saved \"{0}\"."
 msgstr ""
 
 #: packages/admin/src/components/ContentSettingsPanel.tsx:1162
-#: packages/admin/src/components/FieldEditor.tsx:660
+#: packages/admin/src/components/FieldEditor.tsx:689
 #: packages/admin/src/components/MediaDetailPanel.tsx:425
 #: packages/admin/src/components/MenuEditor.tsx:626
 #: packages/admin/src/components/PluginSettings.tsx:166
@@ -6953,7 +6954,7 @@ msgid "Search..."
 msgstr "جستجو…"
 
 #: packages/admin/src/components/ContentTypeEditor.tsx:732
-#: packages/admin/src/components/FieldEditor.tsx:452
+#: packages/admin/src/components/FieldEditor.tsx:474
 msgid "Searchable"
 msgstr "قابل جستجو"
 
@@ -7051,8 +7052,8 @@ msgid "Security Settings"
 msgstr "تنظیمات امنیتی"
 
 #: packages/admin/src/components/BylineFieldEditor.tsx:56
-#: packages/admin/src/components/FieldEditor.tsx:186
-#: packages/admin/src/components/FieldEditor.tsx:585
+#: packages/admin/src/components/FieldEditor.tsx:215
+#: packages/admin/src/components/FieldEditor.tsx:614
 #: packages/admin/src/components/Settings.tsx:134
 msgid "Select"
 msgstr "انتخاب"
@@ -7301,8 +7302,8 @@ msgstr ""
 msgid "Short text"
 msgstr ""
 
-#: packages/admin/src/components/FieldEditor.tsx:150
-#: packages/admin/src/components/FieldEditor.tsx:579
+#: packages/admin/src/components/FieldEditor.tsx:179
+#: packages/admin/src/components/FieldEditor.tsx:608
 msgid "Short Text"
 msgstr "متن کوتاه"
 
@@ -7378,11 +7379,11 @@ msgstr "ورود با شاه‌کلید"
 msgid "Signed in as {0}"
 msgstr "وارد شده به‌عنوان {0}"
 
-#: packages/admin/src/components/FieldEditor.tsx:187
+#: packages/admin/src/components/FieldEditor.tsx:216
 msgid "Single choice from options"
 msgstr "انتخاب تکی از گزینه‌ها"
 
-#: packages/admin/src/components/FieldEditor.tsx:151
+#: packages/admin/src/components/FieldEditor.tsx:180
 msgid "Single line text input"
 msgstr "ورودی متن تک‌خطی"
 
@@ -7453,8 +7454,8 @@ msgstr "رد شده"
 #: packages/admin/src/components/ContentTypeEditor.tsx:111
 #: packages/admin/src/components/ContentTypeEditor.tsx:402
 #: packages/admin/src/components/ContentTypeList.tsx:181
-#: packages/admin/src/components/FieldEditor.tsx:228
-#: packages/admin/src/components/FieldEditor.tsx:418
+#: packages/admin/src/components/FieldEditor.tsx:257
+#: packages/admin/src/components/FieldEditor.tsx:444
 #: packages/admin/src/components/SectionEditor.tsx:259
 #: packages/admin/src/components/Sections.tsx:184
 #: packages/admin/src/components/TaxonomyManager.tsx:576
@@ -7605,7 +7606,7 @@ msgstr "ساختار"
 msgid "Structured"
 msgstr ""
 
-#: packages/admin/src/components/FieldEditor.tsx:523
+#: packages/admin/src/components/FieldEditor.tsx:552
 msgid "Sub-Fields"
 msgstr "زیرفیلدها"
 
@@ -8072,7 +8073,7 @@ msgstr "سطل زباله خالی است"
 msgid "Trash is empty."
 msgstr "سطل زباله خالی است."
 
-#: packages/admin/src/components/FieldEditor.tsx:175
+#: packages/admin/src/components/FieldEditor.tsx:204
 msgid "True/false toggle"
 msgstr "تغییر صحیح/غلط"
 
@@ -8136,7 +8137,7 @@ msgid "Twitter"
 msgstr "X"
 
 #: packages/admin/src/components/BylineFieldEditor.tsx:260
-#: packages/admin/src/components/FieldEditor.tsx:571
+#: packages/admin/src/components/FieldEditor.tsx:600
 #: packages/admin/src/components/MediaLibrary.tsx:587
 #: packages/admin/src/routes/byline-schema.tsx:240
 msgid "Type"
@@ -8189,7 +8190,7 @@ msgid "Uninstalling..."
 msgstr "در حال حذف نصب..."
 
 #: packages/admin/src/components/ContentTypeEditor.tsx:731
-#: packages/admin/src/components/FieldEditor.tsx:442
+#: packages/admin/src/components/FieldEditor.tsx:468
 msgid "Unique"
 msgstr "یکتا"
 
@@ -8272,7 +8273,7 @@ msgstr ""
 msgid "Update"
 msgstr "به‌روزرسانی"
 
-#: packages/admin/src/components/FieldEditor.tsx:660
+#: packages/admin/src/components/FieldEditor.tsx:689
 msgid "Update Field"
 msgstr "به‌روزرسانی فیلد"
 
@@ -8418,8 +8419,8 @@ msgid "Uploading..."
 msgstr "در حال بارگذاری..."
 
 #: packages/admin/src/components/BylineFieldEditor.tsx:54
-#: packages/admin/src/components/FieldEditor.tsx:234
-#: packages/admin/src/components/FieldEditor.tsx:586
+#: packages/admin/src/components/FieldEditor.tsx:263
+#: packages/admin/src/components/FieldEditor.tsx:615
 #: packages/admin/src/components/MenuEditor.tsx:418
 #: packages/admin/src/components/MenuEditor.tsx:596
 #: packages/admin/src/components/PortableTextEditor.tsx:3487
@@ -8433,7 +8434,7 @@ msgid "URL Pattern"
 msgstr ""
 
 #: packages/admin/src/components/ContentTypeEditor.tsx:113
-#: packages/admin/src/components/FieldEditor.tsx:229
+#: packages/admin/src/components/FieldEditor.tsx:258
 msgid "URL-friendly identifier"
 msgstr "شناسه سازگار با آدرس"
 
@@ -8521,8 +8522,8 @@ msgstr "کاربران با آدرس ایمیل از این دامنه‌ها م
 msgid "v{0} available"
 msgstr "v{0} در دسترس"
 
-#: packages/admin/src/components/FieldEditor.tsx:460
-#: packages/admin/src/components/FieldEditor.tsx:490
+#: packages/admin/src/components/FieldEditor.tsx:489
+#: packages/admin/src/components/FieldEditor.tsx:519
 msgid "Validation"
 msgstr "اعتبارسنجی"
 
@@ -8638,7 +8639,7 @@ msgstr "لینکی برای ورود بدون گذرواژه برای شما ا�
 msgid "We've sent a verification link to"
 msgstr "لینک تأیید برای شما ارسال شد به"
 
-#: packages/admin/src/components/FieldEditor.tsx:235
+#: packages/admin/src/components/FieldEditor.tsx:264
 msgid "Web address"
 msgstr "آدرس وب"
 
@@ -8688,7 +8689,7 @@ msgstr "زمان انتشار ورودی"
 msgid "Which content types can use this taxonomy"
 msgstr "کدام انواع محتوا می‌توانند از این دسته‌بندی استفاده کنند"
 
-#: packages/admin/src/components/FieldEditor.tsx:169
+#: packages/admin/src/components/FieldEditor.tsx:198
 msgid "Whole number"
 msgstr "عدد صحیح"
 
