@@ -30,6 +30,7 @@ import {
 	CURSOR_RAW_VALUES,
 	FOLDED_BYLINES,
 	FOLDED_BYLINES_EXIST,
+	FOLDED_REFERENCES_EXIST,
 	FOLDED_TERMS,
 	type WhereRange,
 	type WhereValue,
@@ -41,6 +42,7 @@ import {
 } from "./object-cache/index.js";
 import { requestCached } from "./request-cache.js";
 import { getRequestContext } from "./request-context.js";
+import { getReferenceFields } from "./schema/reference-fields.js";
 import { compileUrlPattern } from "./schema/url-pattern.js";
 import type { TaxonomyTerm } from "./taxonomies/types.js";
 import { isMissingTableError } from "./utils/db-errors.js";
@@ -199,6 +201,37 @@ export interface ContentEntry<T = Record<string, unknown>> {
 	data: T;
 	/** Visual editing annotations. Spread onto elements: {...entry.edit.title} */
 	edit: EditProxy;
+	/**
+	 * Entries selected in this entry's reference fields, keyed by field slug and
+	 * in the order they were arranged in the editor.
+	 *
+	 * Reference fields hold no value in `data` — their selections are edges — so
+	 * this is where they surface. Always present: a collection with no reference
+	 * fields gets an empty object, so `entry.references.related ?? []` never has
+	 * to guard for the key itself.
+	 */
+	references: Record<string, ReferencedEntry[]>;
+}
+
+/**
+ * An entry reached through a reference field.
+ *
+ * Carries the referenced entry's own `data`, so a template can render whatever
+ * it needs — title, slug, image — without a second query per reference.
+ */
+export interface ReferencedEntry<T = Record<string, unknown>> {
+	/** The referenced entry's ULID. */
+	id: string;
+	slug: string | null;
+	/** The collection the reference points into. */
+	collection: string;
+	/**
+	 * The locale of the variant this resolved to. A reference is keyed by
+	 * translation group, so an entry that exists only in another language is
+	 * still a real reference — this says which one came back.
+	 */
+	locale: string | null;
+	data: T;
 }
 
 /** Cache hint returned by the content loader for route caching */
@@ -758,6 +791,7 @@ async function getEmDashCollectionUncached<T extends string, D = InferCollection
 		// Hydrate terms in the same locale the content rows were resolved to,
 		// otherwise localized entries get default-locale taxonomy terms (#1441).
 		hydrateEntryTerms(type, entriesWithEdit, resolvedLocale),
+		hydrateEntryReferences(type, entriesWithEdit, resolvedLocale),
 	]);
 
 	return {
@@ -845,6 +879,7 @@ export async function getEmDashEntry<T extends string, D = InferCollectionData<T
 		await Promise.all([
 			hydrateEntryBylines(type, [wrapped]),
 			hydrateEntryTerms(type, [wrapped], termLocale),
+			hydrateEntryReferences(type, [wrapped], termLocale),
 		]);
 		return {
 			entry: wrapped,
@@ -1148,6 +1183,125 @@ async function hydrateEntryBylines<D>(type: string, entries: ContentEntry<D>[]):
  *
  * Fails silently if the taxonomy tables don't exist yet (pre-migration).
  */
+/**
+ * Attach `references` to each entry: the entries selected in its reference
+ * fields, keyed by field slug.
+ *
+ * Costs a constant number of queries for the whole page rather than one per
+ * (entry, field) pair — the collection's reference fields come from the schema
+ * cache, one batched read covers every edge on the page, and children are
+ * resolved with one query per target collection.
+ *
+ * Published children only. An edge pointing at a draft resolves to nothing and
+ * is skipped, exactly like an edge whose target was deleted — a public read
+ * must not leak an unpublished entry's slug through a reference.
+ *
+ * `locale` must be the locale the entries were resolved to, so a reference
+ * picks the matching variant of its target. Falls back across locales when
+ * there is no variant in `locale`, since the edge is keyed by translation group.
+ *
+ * Fails silently if the reference tables don't exist yet (pre-migration).
+ */
+async function hydrateEntryReferences<D>(
+	type: string,
+	entries: ContentEntry<D>[],
+	locale?: string,
+): Promise<void> {
+	if (entries.length === 0) return;
+
+	try {
+		for (const entry of entries) entry.references = {};
+
+		// Fast path: the content query's existence probe says the edge table is
+		// empty, so no field on any collection can have a selection. Stop before
+		// the schema lookup — a site that doesn't use references pays nothing for
+		// hydration being unconditional.
+		if (entries.every((e) => Reflect.get(entryData(e), FOLDED_REFERENCES_EXIST) === false)) {
+			return;
+		}
+
+		const fields = await getReferenceFields(type);
+		if (fields.length === 0) return;
+
+		const groupOf = (entry: ContentEntry<D>) =>
+			dataStr(entryData(entry), "translationGroup") || entryDatabaseId(entry);
+		const parentGroups = [...new Set(entries.map(groupOf))].filter(Boolean);
+		if (parentGroups.length === 0) return;
+
+		const { RelationRepository } = await import("./database/repositories/relation.js");
+		const { ContentRepository } = await import("./database/repositories/content.js");
+		const { getDb } = await import("./loader.js");
+		const db = await getDb();
+
+		const edges = await new RelationRepository(db).getChildrenForParents(
+			fields.map((f) => f.relation),
+			parentGroups,
+		);
+		if (edges.length === 0) return;
+
+		// One resolve per target collection, not per field: two fields pointing at
+		// the same collection share the query.
+		const groupsByCollection = new Map<string, Set<string>>();
+		const fieldsByRelation = new Map(fields.map((f) => [f.relation, f]));
+		for (const edge of edges) {
+			const field = fieldsByRelation.get(edge.relationGroup);
+			if (!field) continue;
+			const groups = groupsByCollection.get(field.targetCollection) ?? new Set<string>();
+			groups.add(edge.childGroup);
+			groupsByCollection.set(field.targetCollection, groups);
+		}
+
+		const content = new ContentRepository(db);
+		/** collection -> translation group -> the variant to show. */
+		const resolved = new Map<string, Map<string, ReferencedEntry>>();
+		for (const [collection, groups] of groupsByCollection) {
+			const variants = await content.findTranslationsForGroups(collection, [...groups], {
+				publishedOnly: true,
+			});
+			const byGroup = new Map<string, ReferencedEntry>();
+			for (const variant of variants) {
+				if (!variant.translationGroup) continue;
+				const current = byGroup.get(variant.translationGroup);
+				// Prefer the requested locale; otherwise keep the first variant seen,
+				// which `findTranslationsForGroups` orders by locale.
+				if (current && current.locale !== locale) {
+					if (variant.locale !== locale) continue;
+				} else if (current) {
+					continue;
+				}
+				byGroup.set(variant.translationGroup, {
+					id: variant.id,
+					slug: variant.slug,
+					collection,
+					locale: variant.locale,
+					data: variant.data,
+				});
+			}
+			resolved.set(collection, byGroup);
+		}
+
+		const byParent = new Map<string, Record<string, ReferencedEntry[]>>();
+		for (const edge of edges) {
+			const field = fieldsByRelation.get(edge.relationGroup);
+			if (!field) continue;
+			const child = resolved.get(field.targetCollection)?.get(edge.childGroup);
+			if (!child) continue; // draft, deleted, or dangling
+			const forParent = byParent.get(edge.parentGroup) ?? {};
+			(forParent[field.slug] ??= []).push(child);
+			byParent.set(edge.parentGroup, forParent);
+		}
+
+		for (const entry of entries) {
+			entry.references = byParent.get(groupOf(entry)) ?? {};
+		}
+	} catch (err) {
+		if (!isMissingTableError(err)) {
+			const msg = err instanceof Error ? err.message : String(err);
+			console.warn("[emdash] Failed to hydrate references:", msg);
+		}
+	}
+}
+
 async function hydrateEntryTerms<D>(
 	type: string,
 	entries: ContentEntry<D>[],

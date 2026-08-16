@@ -336,6 +336,9 @@ export function generateTypeScript(
 	lines.push(`  status: string;`);
 
 	for (const field of collection.fields) {
+		// Storage-less fields hold no value in `data` — a reference field's
+		// selections surface on `entry.references`, keyed by field slug.
+		if (STORAGELESS_FIELD_TYPES.has(field.type)) continue;
 		const tsType = fieldTypeToTypeScript(field);
 		const optional = field.required ? "" : "?";
 		lines.push(`  ${field.slug}${optional}: ${tsType};`);
@@ -466,8 +469,10 @@ function fieldTypeToTypeScript(field: Field): string {
 			return "{ id: string; src?: string; filename?: string; mimeType?: string; size?: number; provider?: string; meta?: Record<string, unknown> }";
 
 		case "reference":
-			// Could be enhanced to include the referenced collection type
-			return "string";
+			// Unreachable from the interface generator, which skips storage-less
+			// fields. Kept so a caller reaching for a reference field's `data` type
+			// gets `never` rather than a plausible-looking string.
+			return "never";
 
 		case "json":
 			return "unknown";

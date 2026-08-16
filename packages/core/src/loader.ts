@@ -89,6 +89,7 @@ const SYSTEM_COLUMNS = new Set([
 	"_emdash_terms",
 	"_emdash_bylines",
 	"_emdash_bylines_exist",
+	"_emdash_references_exist",
 	SEO_FOLDED_COLUMN,
 ]);
 
@@ -101,6 +102,13 @@ export const FOLDED_BYLINES = Symbol.for("emdash:foldedBylines");
  * via the byline query path on sites that never use bylines.
  */
 export const FOLDED_BYLINES_EXIST = Symbol.for("emdash:foldedBylinesExist");
+/**
+ * Marker for whether `_emdash_content_references` has any rows at all (`false`
+ * = table empty). Public reads hydrate references unconditionally, so this lets
+ * a site that uses no references skip the schema lookup that would otherwise
+ * run on every render just to discover there is nothing to hydrate.
+ */
+export const FOLDED_REFERENCES_EXIST = Symbol.for("emdash:foldedReferencesExist");
 
 /**
  * Correlated JSON-array subqueries that fold taxonomy-term and byline hydration
@@ -156,7 +164,12 @@ function foldedHydrationSelects(db: Kysely<any>, type: string, outer: string) {
 	// means an empty fold is authoritative — no credit in any locale, no
 	// author-fallback byline — so hydration can skip the byline query path.
 	const bylinesExist = sql`(SELECT 1 FROM ${sql.ref("_emdash_bylines")} LIMIT 1) AS ${sql.ref("_emdash_bylines_exist")}`;
-	return { terms, bylines, bylinesExist };
+	// Same shape, for reference edges: 1 when `_emdash_content_references` has
+	// any row at all, NULL when empty. Reference hydration is unconditional on
+	// public reads, and a site with no references must not pay a schema lookup
+	// per render to establish that it has none.
+	const referencesExist = sql`(SELECT 1 FROM ${sql.ref("_emdash_content_references")} LIMIT 1) AS ${sql.ref("_emdash_references_exist")}`;
+	return { terms, bylines, bylinesExist, referencesExist };
 }
 
 /**
@@ -242,6 +255,13 @@ function stashFolded(data: Record<string, unknown>, row: Record<string, unknown>
 	// Existence probe: 1 = table has rows, NULL = empty (both dialects). A row
 	// without the column (e.g. a cached snapshot) leaves the marker unset,
 	// which hydration treats as "unknown" and falls back conservatively.
+	if ("_emdash_references_exist" in row) {
+		Object.defineProperty(data, FOLDED_REFERENCES_EXIST, {
+			value: row["_emdash_references_exist"] != null,
+			enumerable: false,
+			configurable: true,
+		});
+	}
 	if ("_emdash_bylines_exist" in row) {
 		Object.defineProperty(data, FOLDED_BYLINES_EXIST, {
 			value: row["_emdash_bylines_exist"] != null,
@@ -877,6 +897,7 @@ export function buildTaxonomyPivotQuery(
 		terms: termsSelect,
 		bylines: bylinesSelect,
 		bylinesExist: bylinesExistSelect,
+		referencesExist: referencesExistSelect,
 	} = foldedHydrationSelects(db, collection, "r");
 
 	// Authoritative re-check on the joined `ec_*` row.
@@ -919,7 +940,7 @@ export function buildTaxonomyPivotQuery(
 				ORDER BY sortval ${dir}, r.id ${dir}
 				${limitClause}
 			)
-			SELECT r.*, ${termsSelect}, ${bylinesSelect}, ${bylinesExistSelect}
+			SELECT r.*, ${termsSelect}, ${bylinesSelect}, ${bylinesExistSelect}, ${referencesExistSelect}
 			FROM picked JOIN ${sql.ref(tableName)} AS r ON r.id = picked.entry_id
 			WHERE ${deletedR} ${statusR} ${localeR}
 			ORDER BY picked.sortval ${dir}, picked.entry_id ${dir}
@@ -943,7 +964,7 @@ export function buildTaxonomyPivotQuery(
 				${residual}
 				${bylineCt}
 		)
-		SELECT r.*, ${termsSelect}, ${bylinesSelect}, ${bylinesExistSelect}
+		SELECT r.*, ${termsSelect}, ${bylinesSelect}, ${bylinesExistSelect}, ${referencesExistSelect}
 		FROM picked JOIN ${sql.ref(tableName)} AS r ON r.id = picked.entry_id
 		WHERE ${deletedR} ${statusR} ${localeR}
 			${cursorCond}
@@ -1310,6 +1331,7 @@ export function emdashLoader(): LiveLoader<EntryData, EntryFilter, CollectionFil
 						terms: termsSelect,
 						bylines: bylinesSelect,
 						bylinesExist: bylinesExistSelect,
+						referencesExist: referencesExistSelect,
 					} = foldedHydrationSelects(db, type, tableName);
 
 					// LIMIT/OFFSET clause. SQLite only accepts OFFSET when a
@@ -1326,7 +1348,7 @@ export function emdashLoader(): LiveLoader<EntryData, EntryFilter, CollectionFil
 							: sql`LIMIT -1 OFFSET ${offset}`;
 					}
 					result = await sql<Record<string, unknown>>`
-						SELECT *, ${termsSelect}, ${bylinesSelect}, ${bylinesExistSelect} FROM ${sql.ref(tableName)}
+						SELECT *, ${termsSelect}, ${bylinesSelect}, ${bylinesExistSelect}, ${referencesExistSelect} FROM ${sql.ref(tableName)}
 						WHERE deleted_at IS NULL
 						AND ${statusCondition}
 						${localeFilter}
@@ -1466,18 +1488,19 @@ export function emdashLoader(): LiveLoader<EntryData, EntryFilter, CollectionFil
 					terms: termsSelect,
 					bylines: bylinesSelect,
 					bylinesExist: bylinesExistSelect,
+					referencesExist: referencesExistSelect,
 				} = foldedHydrationSelects(db, type, "c");
 				const seoSelect = foldedSeoSelect(db, type, "c");
 				const result = locale
 					? await sql<Record<string, unknown>>`
-							SELECT c.*, ${seoSelect}, ${termsSelect}, ${bylinesSelect}, ${bylinesExistSelect}
+							SELECT c.*, ${seoSelect}, ${termsSelect}, ${bylinesSelect}, ${bylinesExistSelect}, ${referencesExistSelect}
 							FROM ${sql.ref(tableName)} AS c
 							WHERE c.deleted_at IS NULL
 							AND ((c.slug = ${id} AND c.locale = ${locale}) OR c.id = ${id})
 							LIMIT 1
 						`.execute(db)
 					: await sql<Record<string, unknown>>`
-							SELECT c.*, ${seoSelect}, ${termsSelect}, ${bylinesSelect}, ${bylinesExistSelect}
+							SELECT c.*, ${seoSelect}, ${termsSelect}, ${bylinesSelect}, ${bylinesExistSelect}, ${referencesExistSelect}
 							FROM ${sql.ref(tableName)} AS c
 							WHERE c.deleted_at IS NULL
 							AND (c.slug = ${id} OR c.id = ${id})

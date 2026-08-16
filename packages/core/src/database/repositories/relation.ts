@@ -581,6 +581,42 @@ export class RelationRepository {
 	}
 
 	/**
+	 * Batch forward traversal: every edge for any of `relationGroups` whose
+	 * parent is any of `parentGroups`, ordered by `(sort_order, id)`.
+	 *
+	 * Backs public read hydration, where a page of entries needs its references
+	 * in a constant number of queries rather than one per (entry, field) pair.
+	 * Both lists are chunked at SQL_BATCH_SIZE for D1's bind-parameter limit; the
+	 * chunk loop is over parents, so the query count is bounded by the page size,
+	 * not by the number of edges.
+	 *
+	 * Unlike `getChildrenPage` this is unbounded per parent — callers hydrating a
+	 * list are expected to cap what they render.
+	 */
+	async getChildrenForParents(
+		relationGroups: string[],
+		parentGroups: string[],
+	): Promise<ContentReference[]> {
+		if (relationGroups.length === 0 || parentGroups.length === 0) return [];
+
+		const rows: Selectable<ContentReferenceTable>[] = [];
+		for (const relationChunk of chunks(relationGroups, SQL_BATCH_SIZE)) {
+			for (const parentChunk of chunks(parentGroups, SQL_BATCH_SIZE)) {
+				const page = await this.db
+					.selectFrom("_emdash_content_references")
+					.selectAll()
+					.where("relation_group", "in", relationChunk)
+					.where("parent_group", "in", parentChunk)
+					.orderBy("sort_order", "asc")
+					.orderBy("id", "asc")
+					.execute();
+				rows.push(...page);
+			}
+		}
+		return rows.map((row) => this.rowToReference(row));
+	}
+
+	/**
 	 * Batch child-counts for many parents under a relation. Chunks at
 	 * SQL_BATCH_SIZE for D1's bind-parameter limit. Returns parent_group → count
 	 * (parents with no children are absent from the map). Mirrors

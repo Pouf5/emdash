@@ -37,6 +37,7 @@ import type { Database } from "../../database/types.js";
 import { validateIdentifier } from "../../database/validate.js";
 import { getI18nConfig, isI18nEnabled, resolveConfiguredLocale } from "../../i18n/config.js";
 import { invalidateRedirectCache } from "../../redirects/cache.js";
+import { referenceFields, storagelessFields } from "../../schema/reference-fields.js";
 import { FTSManager } from "../../search/fts-manager.js";
 import { invalidateTermCache } from "../../taxonomies/index.js";
 import { isMissingColumnError, isMissingTableError } from "../../utils/db-errors.js";
@@ -44,7 +45,7 @@ import { encodeRev, validateRev } from "../rev.js";
 import type { ApiResult, ContentListResponse, ContentResponse } from "../types.js";
 import { getReferenceTitleField, resolveEntries, setReferenceChildren } from "./relations.js";
 import { validateMediaFields } from "./validate-media-fields.js";
-import { storagelessFields, validateRequiredReferencesPresent } from "./validate-references.js";
+import { validateRequiredReferencesPresent } from "./validate-references.js";
 
 /**
  * Narrow a caught error to one carrying a structured `apiError` discriminant.
@@ -110,10 +111,6 @@ async function stripStoragelessFromItem(
 	for (const field of fields) delete item.data[field.slug];
 }
 
-function isRecord(value: unknown): value is Record<string, unknown> {
-	return typeof value === "object" && value !== null;
-}
-
 /**
  * Hydrate the first page of each reference field's children onto a single
  * content item, keyed by the field's relation group.
@@ -123,9 +120,6 @@ function isRecord(value: unknown): value is Record<string, unknown> {
  * child can carry a draft/scheduled entry's id and slug. See
  * `handleContentGet`'s `referenceOptions` param — the REST GET route is the
  * only caller that currently opts in.
- *
- * A reference field missing `validation.relation` or `validation.targetCollection`
- * is a legacy field and contributes nothing.
  */
 async function hydrateReferences(
 	db: Kysely<Database>,
@@ -135,7 +129,7 @@ async function hydrateReferences(
 ): Promise<void> {
 	if (!item.translationGroup) return;
 
-	const fields = (await storagelessFields(db, collection)).filter((f) => f.type === "reference");
+	const fields = await referenceFields(db, collection);
 	const references: NonNullable<ContentItem["references"]> = {};
 	if (fields.length === 0) {
 		item.references = references;
@@ -146,20 +140,8 @@ async function hydrateReferences(
 	const content = new ContentRepository(db);
 
 	for (const field of fields) {
-		let validation: Record<string, unknown> = {};
-		if (field.validation) {
-			let parsed: unknown;
-			try {
-				parsed = JSON.parse(field.validation);
-			} catch {
-				continue;
-			}
-			if (isRecord(parsed)) validation = parsed;
-		}
-		const relationGroup = typeof validation.relation === "string" ? validation.relation : undefined;
-		const childCollection =
-			typeof validation.targetCollection === "string" ? validation.targetCollection : undefined;
-		if (!relationGroup || !childCollection) continue; // legacy field: no edges to hydrate
+		const relationGroup = field.relation;
+		const childCollection = field.targetCollection;
 
 		const edges = await repo.getChildrenPage(relationGroup, item.translationGroup);
 		const children = await resolveEntries(
