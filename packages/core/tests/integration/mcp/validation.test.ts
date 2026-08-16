@@ -19,7 +19,6 @@ import { Role } from "@emdash-cms/auth";
 import type { Kysely } from "kysely";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
-import { ContentRepository } from "../../../src/database/repositories/content.js";
 import type { Database } from "../../../src/database/types.js";
 import { SchemaRegistry } from "../../../src/schema/registry.js";
 import { connectMcpHarness, extractText, type McpHarness } from "../../utils/mcp-runtime.js";
@@ -293,27 +292,7 @@ describe("MCP validation — reference field targets (bug #6)", () => {
 		await teardownTestDatabase(db);
 	});
 
-	it("rejects reference to non-existent target id", async () => {
-		const result = await harness.client.callTool({
-			name: "content_create",
-			arguments: {
-				collection: "post",
-				data: { title: "T", parent_page: "01NOTAREALPAGE" },
-			},
-		});
-		expect(result.isError).toBe(true);
-		const text = extractText(result);
-		expect(text).toMatch(VALIDATION_ERROR);
-		// Tight match: the error must specifically mention the offending field,
-		// echo the bad target id, AND say "not found" (one assertion per
-		// concern so a regression where any signal disappears is caught).
-		expect(text).toContain("parent_page");
-		expect(text).toContain("01NOTAREALPAGE");
-		expect(text).toMatch(/\bnot found\b/i);
-	});
-
-	it("accepts reference to a real target id (regression guard)", async () => {
-		// Create a page first
+	it("rejects a reference sent in `data`, whatever the target", async () => {
 		const page = await harness.client.callTool({
 			name: "content_create",
 			arguments: { collection: "page", data: { title: "Real page" } },
@@ -328,52 +307,52 @@ describe("MCP validation — reference field targets (bug #6)", () => {
 				data: { title: "T", parent_page: pageId },
 			},
 		});
-		expect(post.isError, extractText(post)).toBeFalsy();
+
+		expect(post.isError).toBe(true);
+		const text = extractText(post);
+		expect(text).toMatch(VALIDATION_ERROR);
+		// The error has to name the offending field and the key that replaces
+		// it, or a caller has no way to work out what to send instead.
+		expect(text).toContain("parent_page");
+		expect(text).toContain("references");
 	});
 
-	it("rejects reference to id that exists in a different collection", async () => {
-		// Create a post (which is NOT the page collection the reference is scoped to)
-		const repo = new ContentRepository(db);
-		const otherPost = await repo.create({
-			type: "post",
-			data: { title: "Other" },
-			slug: "other",
-			status: "draft",
-			authorId: ADMIN_ID,
-		});
-
+	it("rejects a reference to a non-existent target the same way", async () => {
 		const result = await harness.client.callTool({
 			name: "content_create",
 			arguments: {
 				collection: "post",
-				data: { title: "T", parent_page: otherPost.id },
+				data: { title: "T", parent_page: "01NOTAREALPAGE" },
 			},
 		});
-		// Reference points to a post id but field expects a page reference.
-		// After fix this should fail.
+
 		expect(result.isError).toBe(true);
-		expect(extractText(result)).toMatch(VALIDATION_ERROR);
+		expect(extractText(result)).toContain("parent_page");
 	});
 
-	it("rejects reference to a soft-deleted (trashed) target", async () => {
-		const page = await harness.client.callTool({
-			name: "content_create",
-			arguments: { collection: "page", data: { title: "Will be trashed" } },
-		});
-		const pageId = JSON.parse(extractText(page)).item.id as string;
-		// Trash via repo
-		const repo = new ContentRepository(db);
-		await repo.delete("page", pageId);
-
+	it("creates an entry that omits the reference field", async () => {
 		const result = await harness.client.callTool({
 			name: "content_create",
-			arguments: {
-				collection: "post",
-				data: { title: "T", parent_page: pageId },
-			},
+			arguments: { collection: "post", data: { title: "T" } },
 		});
-		expect(result.isError).toBe(true);
-		expect(extractText(result)).toMatch(VALIDATION_ERROR);
+
+		expect(result.isError, extractText(result)).toBeFalsy();
+	});
+
+	it("does not return the reference field in `data` on read", async () => {
+		const created = await harness.client.callTool({
+			name: "content_create",
+			arguments: { collection: "post", data: { title: "T" } },
+		});
+		const postId = JSON.parse(extractText(created)).item.id as string;
+
+		const read = await harness.client.callTool({
+			name: "content_get",
+			arguments: { collection: "post", id: postId },
+		});
+
+		expect(read.isError, extractText(read)).toBeFalsy();
+		expect(JSON.parse(extractText(read)).item.data).not.toHaveProperty("parent_page");
 	});
 });
 

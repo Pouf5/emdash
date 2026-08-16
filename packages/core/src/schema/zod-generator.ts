@@ -2,6 +2,7 @@ import { z, type ZodTypeAny } from "zod";
 
 import { hashString } from "../utils/hash.js";
 import type { CollectionWithFields, Field, FieldType, RepeaterSubField } from "./types.js";
+import { STORAGELESS_FIELD_TYPES } from "./types.js";
 
 /** Pattern to split on underscores, hyphens, and spaces for PascalCase conversion */
 const PASCAL_CASE_SPLIT_PATTERN = /[_\-\s]+/;
@@ -11,6 +12,11 @@ const PASCAL_CASE_SPLIT_PATTERN = /[_\-\s]+/;
  *
  * This allows runtime validation of content based on dynamically
  * defined schemas stored in D1.
+ *
+ * Storage-less fields are omitted: they hold no value in `data` (a reference
+ * field's selections are edges), so a shape entry for one would demand a value
+ * that has nowhere to come from — a `required` reference field could never be
+ * satisfied.
  */
 export function generateZodSchema(
 	collection: CollectionWithFields,
@@ -18,6 +24,7 @@ export function generateZodSchema(
 	const shape: Record<string, ZodTypeAny> = {};
 
 	for (const field of collection.fields) {
+		if (STORAGELESS_FIELD_TYPES.has(field.type)) continue;
 		shape[field.slug] = generateFieldSchema(field);
 	}
 

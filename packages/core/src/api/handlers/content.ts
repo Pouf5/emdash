@@ -36,6 +36,8 @@ import type { Database } from "../../database/types.js";
 import { validateIdentifier } from "../../database/validate.js";
 import { getI18nConfig, isI18nEnabled, resolveConfiguredLocale } from "../../i18n/config.js";
 import { invalidateRedirectCache } from "../../redirects/cache.js";
+import { requestCached } from "../../request-cache.js";
+import { STORAGELESS_FIELD_TYPES } from "../../schema/types.js";
 import { FTSManager } from "../../search/fts-manager.js";
 import { invalidateTermCache } from "../../taxonomies/index.js";
 import { isMissingColumnError, isMissingTableError } from "../../utils/db-errors.js";
@@ -88,6 +90,43 @@ async function collectionHasSeo(db: Kysely<Database>, collection: string): Promi
 		.where("slug", "=", collection)
 		.executeTakeFirst();
 	return row?.has_seo === 1;
+}
+
+/**
+ * Field slugs on `collection` that persist no column, so no value of theirs
+ * belongs in an entry's `data` (see `STORAGELESS_FIELD_TYPES`). Memoized for the
+ * request: a single read hits this once per collection however many entries it
+ * covers.
+ */
+function storagelessFieldSlugs(db: Kysely<Database>, collection: string): Promise<Set<string>> {
+	return requestCached(`storageless-fields:${collection}`, async () => {
+		const rows = await db
+			.selectFrom("_emdash_fields")
+			.innerJoin("_emdash_collections", "_emdash_collections.id", "_emdash_fields.collection_id")
+			.select("_emdash_fields.slug")
+			.where("_emdash_collections.slug", "=", collection)
+			.where("_emdash_fields.type", "in", [...STORAGELESS_FIELD_TYPES])
+			.execute();
+		return new Set(rows.map((row) => row.slug));
+	});
+}
+
+/**
+ * Drop storage-less keys from an entry's `data`.
+ *
+ * A reference field created before the type became storage-less still has its
+ * column, and the row mapper turns every column into a `data` key. Returning one
+ * would hand the caller a value the write path rejects, which the admin's
+ * re-send-what-it-loaded autosave would then bounce straight back.
+ */
+async function stripStoragelessFromItem(
+	db: Kysely<Database>,
+	collection: string,
+	item: ContentItem,
+): Promise<void> {
+	const slugs = await storagelessFieldSlugs(db, collection);
+	if (slugs.size === 0) return;
+	for (const slug of slugs) delete item.data[slug];
 }
 
 async function collectionSupportsRevisions(
@@ -704,6 +743,8 @@ export async function handleContentGet(
 			};
 		}
 
+		await stripStoragelessFromItem(db, collection, item);
+
 		// Hydrate SEO data if the collection has SEO enabled
 		const hasSeo = await collectionHasSeo(db, collection);
 		await hydrateSeo(db, collection, item, hasSeo);
@@ -752,6 +793,8 @@ export async function handleContentGetIncludingTrashed(
 				},
 			};
 		}
+
+		await stripStoragelessFromItem(db, collection, item);
 
 		// Hydrate SEO data if the collection has SEO enabled
 		const hasSeo = await collectionHasSeo(db, collection);
