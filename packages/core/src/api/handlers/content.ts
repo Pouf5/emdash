@@ -12,6 +12,7 @@ import type { ContentBylineInput } from "../../database/repositories/byline.js";
 import { CommentRepository } from "../../database/repositories/comment.js";
 import { ContentRepository, isSystemOrderField } from "../../database/repositories/content.js";
 import { RedirectRepository } from "../../database/repositories/redirect.js";
+import { RelationRepository } from "../../database/repositories/relation.js";
 import { RevisionRepository } from "../../database/repositories/revision.js";
 import { SeoRepository } from "../../database/repositories/seo.js";
 import { TaxonomyRepository } from "../../database/repositories/taxonomy.js";
@@ -43,6 +44,7 @@ import { invalidateTermCache } from "../../taxonomies/index.js";
 import { isMissingColumnError, isMissingTableError } from "../../utils/db-errors.js";
 import { encodeRev, validateRev } from "../rev.js";
 import type { ApiResult, ContentListResponse, ContentResponse } from "../types.js";
+import { getReferenceTitleField, resolveEntries, setReferenceChildren } from "./relations.js";
 import { validateMediaFields } from "./validate-media-fields.js";
 
 /**
@@ -92,22 +94,23 @@ async function collectionHasSeo(db: Kysely<Database>, collection: string): Promi
 	return row?.has_seo === 1;
 }
 
+/** A storage-less field's row: no column, so no value of its own in `data`. */
+type StoragelessField = { slug: string; type: string; validation: string | null };
+
 /**
- * Field slugs on `collection` that persist no column, so no value of theirs
- * belongs in an entry's `data` (see `STORAGELESS_FIELD_TYPES`). Memoized for the
- * request: a single read hits this once per collection however many entries it
- * covers.
+ * The storage-less fields on `collection` (see `STORAGELESS_FIELD_TYPES`).
+ * Memoized for the request: a single read hits this once per collection however
+ * many entries and reference fields it covers.
  */
-function storagelessFieldSlugs(db: Kysely<Database>, collection: string): Promise<Set<string>> {
+function storagelessFields(db: Kysely<Database>, collection: string): Promise<StoragelessField[]> {
 	return requestCached(`storageless-fields:${collection}`, async () => {
-		const rows = await db
+		return db
 			.selectFrom("_emdash_fields")
 			.innerJoin("_emdash_collections", "_emdash_collections.id", "_emdash_fields.collection_id")
-			.select("_emdash_fields.slug")
+			.select(["_emdash_fields.slug", "_emdash_fields.type", "_emdash_fields.validation"])
 			.where("_emdash_collections.slug", "=", collection)
 			.where("_emdash_fields.type", "in", [...STORAGELESS_FIELD_TYPES])
 			.execute();
-		return new Set(rows.map((row) => row.slug));
 	});
 }
 
@@ -124,9 +127,78 @@ async function stripStoragelessFromItem(
 	collection: string,
 	item: ContentItem,
 ): Promise<void> {
-	const slugs = await storagelessFieldSlugs(db, collection);
-	if (slugs.size === 0) return;
-	for (const slug of slugs) delete item.data[slug];
+	const fields = await storagelessFields(db, collection);
+	for (const field of fields) delete item.data[field.slug];
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+	return typeof value === "object" && value !== null;
+}
+
+/**
+ * Hydrate the first page of each reference field's children onto a single
+ * content item, keyed by the field's relation group.
+ *
+ * Opt-in only: callers must have already decided `includeDrafts` (draft
+ * visibility is enforced by the caller, not this helper) because a resolved
+ * child can carry a draft/scheduled entry's id and slug. See
+ * `handleContentGet`'s `referenceOptions` param — the REST GET route is the
+ * only caller that currently opts in.
+ *
+ * A reference field missing `validation.relation` or `validation.targetCollection`
+ * is a legacy field and contributes nothing.
+ */
+async function hydrateReferences(
+	db: Kysely<Database>,
+	collection: string,
+	item: ContentItem,
+	includeDrafts: boolean,
+): Promise<void> {
+	if (!item.translationGroup) return;
+
+	const fields = (await storagelessFields(db, collection)).filter((f) => f.type === "reference");
+	const references: NonNullable<ContentItem["references"]> = {};
+	if (fields.length === 0) {
+		item.references = references;
+		return;
+	}
+
+	const repo = new RelationRepository(db);
+	const content = new ContentRepository(db);
+
+	for (const field of fields) {
+		let validation: Record<string, unknown> = {};
+		if (field.validation) {
+			let parsed: unknown;
+			try {
+				parsed = JSON.parse(field.validation);
+			} catch {
+				continue;
+			}
+			if (isRecord(parsed)) validation = parsed;
+		}
+		const relationGroup = typeof validation.relation === "string" ? validation.relation : undefined;
+		const childCollection =
+			typeof validation.targetCollection === "string" ? validation.targetCollection : undefined;
+		if (!relationGroup || !childCollection) continue; // legacy field: no edges to hydrate
+
+		const edges = await repo.getChildrenPage(relationGroup, item.translationGroup);
+		const children = await resolveEntries(
+			content,
+			childCollection,
+			edges.items,
+			(e) => e.childGroup,
+			item.locale,
+			includeDrafts,
+			await getReferenceTitleField(db, childCollection),
+		);
+		references[relationGroup] = {
+			children,
+			...(edges.nextCursor ? { nextCursor: edges.nextCursor } : {}),
+		};
+	}
+
+	item.references = references;
 }
 
 async function collectionSupportsRevisions(
@@ -724,6 +796,7 @@ export async function handleContentGet(
 	collection: string,
 	id: string,
 	locale?: string,
+	referenceOptions?: { includeDrafts: boolean },
 ): Promise<ApiResult<ContentResponse>> {
 	try {
 		const repo = new ContentRepository(db);
@@ -749,6 +822,12 @@ export async function handleContentGet(
 		const hasSeo = await collectionHasSeo(db, collection);
 		await hydrateSeo(db, collection, item, hasSeo);
 		await hydrateBylines(db, collection, item);
+		// Opt-in: hydration is skipped entirely unless the caller passes
+		// `referenceOptions`, since it can leak draft child ids/slugs — see
+		// `hydrateReferences`'s doc comment.
+		if (referenceOptions) {
+			await hydrateReferences(db, collection, item, referenceOptions.includeDrafts);
+		}
 
 		return {
 			success: true,
@@ -837,6 +916,8 @@ export async function handleContentCreate(
 		translationOf?: string;
 		seo?: ContentSeoInput;
 		taxonomies?: Record<string, string[]>;
+		/** Reference fields: relation translation_group → ordered child entry ids. */
+		references?: Record<string, string[]>;
 		createdAt?: string | null;
 		publishedAt?: string | null;
 	},
@@ -939,6 +1020,27 @@ export async function handleContentCreate(
 				await assignTaxonomies(trx, collection, created.id, effectiveLocale, body.taxonomies);
 			}
 
+			// Attach reference edges in the same transaction: a relation or
+			// child id that fails to resolve throws with a structured
+			// `apiError`, aborting the whole save so no half-written entry
+			// (with taxonomies/bylines/SEO already committed) is left behind.
+			if (body.references) {
+				for (const [relationGroup, childIds] of Object.entries(body.references)) {
+					const set = await setReferenceChildren(
+						trx,
+						collection,
+						created.id,
+						relationGroup,
+						childIds,
+					);
+					if (!set.success) {
+						throw Object.assign(new Error(set.error.message), {
+							apiError: { code: set.error.code },
+						});
+					}
+				}
+			}
+
 			return created;
 		});
 
@@ -947,6 +1049,14 @@ export async function handleContentCreate(
 			data: { item, _rev: encodeRev(item) },
 		};
 	} catch (error) {
+		// Structured errors thrown from inside the transaction (e.g. a
+		// reference resolution failure from `setReferenceChildren`).
+		if (hasApiError(error)) {
+			return {
+				success: false,
+				error: { code: error.apiError.code, message: error.message },
+			};
+		}
 		if (isMissingTableError(error)) {
 			return {
 				success: false,
@@ -1019,6 +1129,8 @@ export async function handleContentUpdate(
 		_rev?: string;
 		seo?: ContentSeoInput;
 		taxonomies?: Record<string, string[]>;
+		/** Reference fields: relation translation_group → ordered child entry ids. */
+		references?: Record<string, string[]>;
 		publishedAt?: string | null;
 	},
 ): Promise<ApiResult<ContentResponse>> {
@@ -1139,6 +1251,26 @@ export async function handleContentUpdate(
 				);
 			}
 
+			// Replace reference edges in the same transaction. See the matching
+			// block in handleContentCreate: a resolution failure throws with a
+			// structured `apiError`, aborting the whole update.
+			if (body.references) {
+				for (const [relationGroup, childIds] of Object.entries(body.references)) {
+					const set = await setReferenceChildren(
+						trx,
+						collection,
+						resolvedId,
+						relationGroup,
+						childIds,
+					);
+					if (!set.success) {
+						throw Object.assign(new Error(set.error.message), {
+							apiError: { code: set.error.code },
+						});
+					}
+				}
+			}
+
 			return updated;
 		});
 
@@ -1220,7 +1352,18 @@ export async function handleContentDuplicate(
 			const repo = new ContentRepository(trx);
 			const bylineRepo = new BylineRepository(trx);
 			const resolvedId = (await resolveId(repo, collection, id)) ?? id;
+			const original = await repo.findById(collection, resolvedId);
 			const dup = await repo.duplicate(collection, resolvedId, authorId);
+
+			// Reference edges are storage-less (keyed by translation_group, not in
+			// `data`), so they don't ride along in the row copy — carry the original's
+			// outgoing references onto the duplicate explicitly.
+			if (original?.translationGroup && dup.translationGroup) {
+				await new RelationRepository(trx).copyParentEdges(
+					original.translationGroup,
+					dup.translationGroup,
+				);
+			}
 
 			const existingBylines = await bylineRepo.getContentBylines(collection, resolvedId);
 			if (existingBylines.length > 0) {
@@ -1373,6 +1516,7 @@ export async function handleContentPermanentDelete(
 		// Wrap content delete + SEO/comment cleanup in a transaction
 		const deleted = await withTransaction(db, async (trx) => {
 			const trxRepo = new ContentRepository(trx);
+			const item = await trxRepo.findByIdIncludingTrashed(collection, resolvedId);
 			const wasDeleted = await trxRepo.permanentDelete(collection, resolvedId);
 
 			if (wasDeleted) {
@@ -1385,6 +1529,18 @@ export async function handleContentPermanentDelete(
 				// Clean up revisions for permanently deleted content
 				const revisionRepo = new RevisionRepository(trx);
 				await revisionRepo.deleteByEntry(collection, resolvedId);
+				// Reference edges are keyed by translation_group, so they belong to the
+				// group rather than to this row — drop them only once no sibling
+				// (trashed ones included, they can still be restored) is left to own them.
+				if (item?.translationGroup) {
+					const groupSurvives = await trxRepo.hasTranslationsIncludingTrashed(
+						collection,
+						item.translationGroup,
+					);
+					if (!groupSurvives) {
+						await new RelationRepository(trx).clearReferencesForGroup(item.translationGroup);
+					}
+				}
 			}
 
 			return wasDeleted;
