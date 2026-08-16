@@ -14,6 +14,7 @@ import { resolveConfiguredLocale } from "../../i18n/config.js";
 import { requestCached } from "../../request-cache.js";
 import { SchemaRegistry } from "../../schema/registry.js";
 import type { ApiResult } from "../types.js";
+import { referenceFieldsByRelation, validateReferenceSelection } from "./validate-references.js";
 
 /** Map an edge-read failure: a bad pagination cursor is a 400 client error,
  * everything else is the generic 500-shaped reference-read error. */
@@ -439,6 +440,15 @@ export async function setReferenceChildren(
 				message: "Entry is not the parent side of this relation",
 			},
 		};
+	}
+
+	// Enforce the backing field's own constraints before touching any edges.
+	// Every writer of these edges comes through here, so `multiple` and
+	// `required` can't be bypassed by picking a different entry point.
+	const fieldConfig = (await referenceFieldsByRelation(db, collection)).get(rel.translationGroup);
+	if (fieldConfig) {
+		const allowed = validateReferenceSelection(fieldConfig, childIds);
+		if (!allowed.success) return allowed;
 	}
 
 	const entry = await content.findByIdOrSlug(collection, entryId);

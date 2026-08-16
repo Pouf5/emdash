@@ -37,8 +37,6 @@ import type { Database } from "../../database/types.js";
 import { validateIdentifier } from "../../database/validate.js";
 import { getI18nConfig, isI18nEnabled, resolveConfiguredLocale } from "../../i18n/config.js";
 import { invalidateRedirectCache } from "../../redirects/cache.js";
-import { requestCached } from "../../request-cache.js";
-import { STORAGELESS_FIELD_TYPES } from "../../schema/types.js";
 import { FTSManager } from "../../search/fts-manager.js";
 import { invalidateTermCache } from "../../taxonomies/index.js";
 import { isMissingColumnError, isMissingTableError } from "../../utils/db-errors.js";
@@ -46,6 +44,7 @@ import { encodeRev, validateRev } from "../rev.js";
 import type { ApiResult, ContentListResponse, ContentResponse } from "../types.js";
 import { getReferenceTitleField, resolveEntries, setReferenceChildren } from "./relations.js";
 import { validateMediaFields } from "./validate-media-fields.js";
+import { storagelessFields, validateRequiredReferencesPresent } from "./validate-references.js";
 
 /**
  * Narrow a caught error to one carrying a structured `apiError` discriminant.
@@ -92,26 +91,6 @@ async function collectionHasSeo(db: Kysely<Database>, collection: string): Promi
 		.where("slug", "=", collection)
 		.executeTakeFirst();
 	return row?.has_seo === 1;
-}
-
-/** A storage-less field's row: no column, so no value of its own in `data`. */
-type StoragelessField = { slug: string; type: string; validation: string | null };
-
-/**
- * The storage-less fields on `collection` (see `STORAGELESS_FIELD_TYPES`).
- * Memoized for the request: a single read hits this once per collection however
- * many entries and reference fields it covers.
- */
-function storagelessFields(db: Kysely<Database>, collection: string): Promise<StoragelessField[]> {
-	return requestCached(`storageless-fields:${collection}`, async () => {
-		return db
-			.selectFrom("_emdash_fields")
-			.innerJoin("_emdash_collections", "_emdash_collections.id", "_emdash_fields.collection_id")
-			.select(["_emdash_fields.slug", "_emdash_fields.type", "_emdash_fields.validation"])
-			.where("_emdash_collections.slug", "=", collection)
-			.where("_emdash_fields.type", "in", [...STORAGELESS_FIELD_TYPES])
-			.execute();
-	});
 }
 
 /**
@@ -938,6 +917,11 @@ export async function handleContentCreate(
 
 		const mimeCheck = await validateMediaFields(db, collection, body.data);
 		if (!mimeCheck.success) return mimeCheck;
+
+		// Selections that are present get checked as they're written; this is the
+		// required field the payload leaves out altogether.
+		const requiredRefs = await validateRequiredReferencesPresent(db, collection, body.references);
+		if (!requiredRefs.success) return requiredRefs;
 
 		// Wrap content + SEO writes in a transaction for atomicity
 		const item = await withTransaction(db, async (trx) => {
