@@ -23,8 +23,9 @@ import { MagnifyingGlass, FolderOpen, X } from "@phosphor-icons/react";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import * as React from "react";
 
-import { fetchCollections, fetchContentList, getDraftStatus } from "../lib/api";
+import { fetchCollections, fetchContentList, fetchManifest, getDraftStatus } from "../lib/api";
 import type { ContentItem } from "../lib/api";
+import { getEntryTitle } from "../lib/entryTitle.js";
 import { useDebouncedValue } from "../lib/hooks";
 import { cn } from "../lib/utils";
 import { ContentStatusLabel, type ContentStatusState } from "./ContentStatusBadge.js";
@@ -72,17 +73,6 @@ interface ContentPickerModalProps {
 	locale?: string;
 }
 
-function getItemTitle(item: { data: Record<string, unknown>; slug: string | null; id: string }) {
-	const rawTitle = item.data.title;
-	const rawName = item.data.name;
-	return (
-		(typeof rawTitle === "string" ? rawTitle : "") ||
-		(typeof rawName === "string" ? rawName : "") ||
-		item.slug ||
-		item.id
-	);
-}
-
 const EMPTY_SELECTED: ReadonlySet<string> = new Set<string>();
 
 export function ContentPickerModal({
@@ -117,6 +107,15 @@ export function ContentPickerModal({
 	}, [locked, collections, dropdownCollection]);
 
 	const activeCollection = collection ?? dropdownCollection;
+
+	// Reuse the cached manifest (same query key as the rest of the admin) to
+	// resolve the active collection's titleField for entry titles.
+	const { data: manifest } = useQuery({
+		queryKey: ["manifest"],
+		queryFn: fetchManifest,
+		enabled: open,
+	});
+	const titleField = manifest?.collections[activeCollection]?.titleField;
 
 	// Reset transient UI state when the modal opens. Result pages come from the
 	// query cache (below), so there is nothing to re-fetch or re-sync here.
@@ -183,7 +182,7 @@ export function ContentPickerModal({
 					collection: activeCollection,
 					id: item.id,
 					slug: item.slug,
-					title: getItemTitle(item),
+					title: getEntryTitle(item, titleField),
 					locale: item.locale,
 					translationGroup: item.translationGroup,
 				};
@@ -198,7 +197,7 @@ export function ContentPickerModal({
 				collection: activeCollection,
 				id: item.id,
 				slug: item.slug,
-				title: getItemTitle(item),
+				title: getEntryTitle(item, titleField),
 				locale: item.locale,
 				translationGroup: item.translationGroup,
 			},
@@ -321,10 +320,10 @@ export function ContentPickerModal({
 												checked={isPicked}
 												disabled={alreadyLinked}
 												onCheckedChange={() => togglePicked(item)}
-												aria-label={getItemTitle(item)}
+												aria-label={getEntryTitle(item, titleField)}
 											/>
 											<div className="min-w-0">
-												<div className="font-medium">{getItemTitle(item)}</div>
+												<div className="font-medium">{getEntryTitle(item, titleField)}</div>
 												{meta}
 											</div>
 										</label>
@@ -344,7 +343,7 @@ export function ContentPickerModal({
 												: "hover:bg-kumo-tint/50 focus:outline-none focus:ring-2 focus:ring-kumo-ring focus:ring-offset-2",
 										)}
 									>
-										<div className="font-medium">{getItemTitle(item)}</div>
+										<div className="font-medium">{getEntryTitle(item, titleField)}</div>
 										{meta}
 									</button>
 								);

@@ -13,6 +13,7 @@ import {
 } from "../../../src/astro/routes/api/content/[collection]/[id]/references/[relation]/children.js";
 import { ContentRepository } from "../../../src/database/repositories/content.js";
 import { RelationRepository } from "../../../src/database/repositories/relation.js";
+import { SchemaRegistry } from "../../../src/schema/registry.js";
 import {
 	describeEachDialect,
 	setupForDialectWithCollections,
@@ -77,6 +78,44 @@ describeEachDialect("reference children handlers", (dialect) => {
 		const get = await handleReferenceChildrenGet(ctx.db, "post", parent.id, rel.id, {}, true);
 		if (!get.success) return;
 		expect(get.data.children.map((c) => c.slug)).toEqual(["a", "b"]);
+	});
+
+	it("resolved children take their title from the collection's titleField", async () => {
+		const registry = new SchemaRegistry(ctx.db);
+		await registry.createField("page", { slug: "headline", label: "Headline", type: "string" });
+		await registry.updateCollection("page", { titleField: "headline" });
+
+		const rel = await makeRelation();
+		const content = new ContentRepository(ctx.db);
+		const parent = await content.create({ type: "post", slug: "p", data: { title: "P" } });
+		const a = await content.create({
+			type: "page",
+			slug: "a",
+			data: { title: "A", headline: "Headline A" },
+		});
+
+		const set = await handleReferenceChildrenSet(ctx.db, "post", parent.id, rel.id, [a.id]);
+		if (!set.success) return;
+		expect(set.data.children[0]?.title).toBe("Headline A");
+
+		const get = await handleReferenceChildrenGet(ctx.db, "post", parent.id, rel.id, {}, true);
+		if (!get.success) return;
+		expect(get.data.children[0]?.title).toBe("Headline A");
+	});
+
+	it("falls back to title when the titleField is empty on the entry", async () => {
+		const registry = new SchemaRegistry(ctx.db);
+		await registry.createField("page", { slug: "headline", label: "Headline", type: "string" });
+		await registry.updateCollection("page", { titleField: "headline" });
+
+		const rel = await makeRelation();
+		const content = new ContentRepository(ctx.db);
+		const parent = await content.create({ type: "post", slug: "p", data: { title: "P" } });
+		const a = await content.create({ type: "page", slug: "a", data: { title: "A" } });
+
+		const set = await handleReferenceChildrenSet(ctx.db, "post", parent.id, rel.id, [a.id]);
+		if (!set.success) return;
+		expect(set.data.children[0]?.title).toBe("A");
 	});
 
 	it("resolved children carry their actual locale", async () => {

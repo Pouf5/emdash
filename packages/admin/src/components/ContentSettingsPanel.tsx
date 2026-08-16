@@ -33,7 +33,7 @@ import {
 import { fromDatetimeLocalInputValue, toDatetimeLocalInputValue } from "../lib/datetime-local.js";
 import { useDebouncedValue } from "../lib/hooks.js";
 import { usePluginAdmins } from "../lib/plugin-context";
-import { cn, slugify } from "../lib/utils";
+import { cn, parseTimestamp, slugify } from "../lib/utils";
 import type { CurrentUserInfo } from "./ContentEditor.js";
 import { ContentStatusBadge, isContentStatusState } from "./ContentStatusBadge.js";
 import { DocumentOutline } from "./editor/DocumentOutline";
@@ -60,7 +60,7 @@ const ROLE_EDITOR = 40;
 /** Format scheduled date for display */
 function formatScheduledDate(dateStr: string | null) {
 	if (!dateStr) return null;
-	const date = new Date(dateStr);
+	const date = parseTimestamp(dateStr);
 	return date.toLocaleString();
 }
 
@@ -605,11 +605,11 @@ export const ContentSettingsPanel = React.memo(function ContentSettingsPanel({
 							>
 								<div className="flex items-center justify-between gap-2">
 									<dt>{t`Created`}</dt>
-									<dd>{new Date(item.createdAt).toLocaleString()}</dd>
+									<dd>{parseTimestamp(item.createdAt).toLocaleString()}</dd>
 								</div>
 								<div className="flex items-center justify-between gap-2">
 									<dt>{t`Updated`}</dt>
-									<dd>{new Date(item.updatedAt).toLocaleString()}</dd>
+									<dd>{parseTimestamp(item.updatedAt).toLocaleString()}</dd>
 								</div>
 							</dl>
 						)}

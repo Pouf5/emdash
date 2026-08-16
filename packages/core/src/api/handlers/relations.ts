@@ -11,6 +11,7 @@ import { InvalidCursorError } from "../../database/repositories/types.js";
 import type { ContentItem } from "../../database/repositories/types.js";
 import type { Database } from "../../database/types.js";
 import { resolveConfiguredLocale } from "../../i18n/config.js";
+import { requestCached } from "../../request-cache.js";
 import { SchemaRegistry } from "../../schema/registry.js";
 import type { ApiResult } from "../types.js";
 
@@ -229,10 +230,9 @@ export type EntryRef = {
 	slug: string | null;
 	collection: string;
 	/**
-	 * Display label sourced from the entry's `title`, then `name`, field —
-	 * `null` when neither is set, leaving the client to fall back to slug/id.
-	 * A stopgap until declarative display fields land; mirrors the admin's own
-	 * title/name resolution.
+	 * Display label sourced from the collection's configured `titleField`, then
+	 * `title`, then `name` — `null` when none is set, leaving the client to fall
+	 * back to slug/id. Mirrors the admin's `getEntryTitle`.
 	 */
 	title: string | null;
 	/** The actual locale of the resolved variant — see `pickVariant`. */
@@ -246,11 +246,37 @@ export type EntryRef = {
 	sortOrder?: number;
 };
 
-/** Display title for a resolved entry: `title`, then `name`, else null. */
-function entryTitle(data: Record<string, unknown>): string | null {
+/**
+ * Display title for a resolved entry: the collection's configured `titleField`,
+ * then `title`, then `name`, else null.
+ */
+function entryTitle(data: Record<string, unknown>, titleField?: string): string | null {
+	if (titleField) {
+		const configured = data[titleField];
+		if (typeof configured === "string" && configured.length > 0) return configured;
+	}
 	if (typeof data.title === "string" && data.title.length > 0) return data.title;
 	if (typeof data.name === "string" && data.name.length > 0) return data.name;
 	return null;
+}
+
+/**
+ * The collection's configured `titleField`, memoized for the request: a single
+ * content read hydrates every reference field, and several of them commonly
+ * target the same collection.
+ */
+export async function getReferenceTitleField(
+	db: Kysely<Database>,
+	collection: string,
+): Promise<string | undefined> {
+	return requestCached(`reference-title-field:${collection}`, async () => {
+		const row = await db
+			.selectFrom("_emdash_collections")
+			.select("title_field")
+			.where("slug", "=", collection)
+			.executeTakeFirst();
+		return row?.title_field ?? undefined;
+	});
 }
 
 /** Resolve a relation from an id OR its translation_group. */
@@ -295,6 +321,7 @@ export async function resolveEntries(
 	pick: (e: ContentReference) => string,
 	locale: string | null,
 	includeDrafts: boolean,
+	titleField?: string,
 ): Promise<EntryRef[]> {
 	const groups = edges.map(pick);
 	const all = await content.findTranslationsForGroups(collection, groups, {
@@ -321,7 +348,7 @@ export async function resolveEntries(
 			id: entry.id,
 			slug: entry.slug,
 			collection,
-			title: entryTitle(entry.data),
+			title: entryTitle(entry.data, titleField),
 			locale: entry.locale,
 			translationGroup: entry.translationGroup,
 			sortOrder: edge.sortOrder,
@@ -374,6 +401,7 @@ export async function handleReferenceChildrenGet(
 			(e) => e.childGroup,
 			entry.locale,
 			includeDrafts,
+			await getReferenceTitleField(db, rel.childCollection),
 		);
 		return { success: true, data: { children, nextCursor: edges.nextCursor } };
 	} catch (error) {
@@ -480,6 +508,7 @@ export async function handleReferenceChildrenSet(
 			(e) => e.childGroup,
 			entry.locale,
 			true,
+			await getReferenceTitleField(db, rel.childCollection),
 		);
 		return { success: true, data: { children, nextCursor: edges.nextCursor } };
 	} catch {
@@ -530,6 +559,7 @@ export async function handleReferenceParentsGet(
 			(e) => e.parentGroup,
 			entry.locale,
 			includeDrafts,
+			await getReferenceTitleField(db, rel.parentCollection),
 		);
 		return { success: true, data: { parents, nextCursor: edges.nextCursor } };
 	} catch (error) {

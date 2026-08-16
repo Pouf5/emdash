@@ -11,6 +11,7 @@ import { invalidateCollectionCache } from "../../object-cache/index.js";
 import {
 	SchemaRegistry,
 	SchemaError,
+	invalidateSchemaCache,
 	type Collection,
 	type Field,
 	type CreateCollectionInput,
@@ -78,6 +79,11 @@ export async function createFieldRelation(
 		}
 	}
 	throw new SchemaError("Could not allocate a unique relation name", "RELATION_NAME_CONFLICT");
+}
+
+function invalidateFieldCaches(collectionSlug: string): void {
+	invalidateCollectionCache(collectionSlug);
+	invalidateSchemaCache(collectionSlug);
 }
 
 export interface CollectionListResponse {
@@ -421,7 +427,7 @@ export async function handleSchemaFieldCreate(
 		const item = await registry.createField(collectionSlug, input);
 
 		// Content snapshots embed field values; a column change invalidates them.
-		invalidateCollectionCache(collectionSlug);
+		invalidateFieldCaches(collectionSlug);
 
 		return {
 			success: true,
@@ -525,7 +531,7 @@ export async function handleSchemaFieldUpdate(
 		const registry = new SchemaRegistry(db);
 		const item = await registry.updateField(collectionSlug, fieldSlug, input);
 
-		invalidateCollectionCache(collectionSlug);
+		invalidateFieldCaches(collectionSlug);
 
 		return {
 			success: true,
@@ -582,7 +588,7 @@ export async function handleSchemaFieldDelete(
 			await registry.deleteField(collectionSlug, fieldSlug);
 		}
 
-		invalidateCollectionCache(collectionSlug);
+		invalidateFieldCaches(collectionSlug);
 
 		return {
 			success: true,

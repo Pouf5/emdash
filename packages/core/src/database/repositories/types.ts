@@ -1,3 +1,4 @@
+import type { ContentFieldFilters } from "../../content-list-query.js";
 import type { CustomFieldValue } from "../../schema/types.js";
 import { encodeBase64, decodeBase64 } from "../../utils/base64.js";
 
@@ -199,11 +200,19 @@ export interface FindManyOptions {
 		dateFilter?: ContentDateFilter;
 		/** Restrict to entries by their byline credits. */
 		bylineFilter?: ContentBylineFilter;
+		/** AND-combined filters over custom fields explicitly marked as indexed. */
+		fieldFilters?: ContentFieldFilters;
 	};
 	orderBy?: {
 		field: string;
 		direction: "asc" | "desc";
 	};
+	/**
+	 * Extra field slugs allowed as `orderBy` beyond the system columns — the
+	 * collection's configured titleField/dateField. Resolved by the
+	 * handler server-side so `orderBy` stays a closed set per request.
+	 */
+	sortableExtras?: string[];
 	limit?: number;
 	cursor?: string; // Base64-encoded JSON: {orderValue: string, id: string}
 }

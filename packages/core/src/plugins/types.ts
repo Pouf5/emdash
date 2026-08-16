@@ -42,7 +42,16 @@ import type { z } from "astro/zod";
 // Core Types
 // =============================================================================
 
+import type { ContentFieldFilters } from "../content-list-query.js";
 import type { FieldType } from "../schema/types.js";
+
+export type {
+	ContentFieldFilterScalar,
+	ContentFieldFilterValue,
+	ContentFieldFilters,
+	ContentFieldInFilter,
+	ContentFieldRangeFilter,
+} from "../content-list-query.js";
 
 export {
 	CAPABILITY_RENAMES,
@@ -227,6 +236,8 @@ export interface ContentListWhere {
 	status?: string;
 	/** Exact match on `locale` (e.g. `"en"`, `"fr-CA"`). */
 	locale?: string;
+	/** AND-combined filters over custom fields explicitly marked as indexed. */
+	fieldFilters?: ContentFieldFilters;
 }
 
 /**
@@ -1175,6 +1186,18 @@ export interface RouteContext<TInput = unknown> extends PluginContext {
 	request: Request;
 	/** Normalized request metadata (IP, user agent, geo) */
 	requestMeta: RequestMeta;
+	/**
+	 * Authenticated caller, if the route is private. The host has already
+	 * authenticated and authorized this user before dispatch, so the value
+	 * is trustworthy — unlike a user id read from the request body.
+	 *
+	 * `undefined` for public routes (which skip auth entirely) and for
+	 * token-authed requests where no user is bound to the token.
+	 *
+	 * Not gated by the `users:read` capability: this is the caller's own
+	 * identity for the current request, not a user directory lookup.
+	 */
+	user?: UserInfo;
 }
 
 /**

@@ -8,7 +8,8 @@
 import type { Element } from "@emdash-cms/blocks";
 import type { Kysely } from "kysely";
 
-import type { RouteMeta } from "../plugins/routes.js";
+import type { ContentFieldFilters } from "../content-list-query.js";
+import type { RouteCallerInput, RouteMeta } from "../plugins/routes.js";
 
 // Re-export core types
 export type {
@@ -31,6 +32,8 @@ export interface ManifestCollection {
 	supports: string[];
 	hasSeo: boolean;
 	urlPattern?: string;
+	titleField?: string;
+	dateField?: string;
 	/**
 	 * Omit the auto-generated sidebar entry in the admin. The collection is
 	 * still listed in the manifest so its routes, editor, and API keep working
@@ -252,6 +255,7 @@ export interface EmDashHandlers {
 			bylines?: string[];
 			bylinesNone?: boolean;
 			includeInferredBylines?: boolean;
+			fieldFilters?: ContentFieldFilters;
 		},
 	) => Promise<HandlerResponse>;
 
@@ -411,12 +415,14 @@ export interface EmDashHandlers {
 
 	handleRevisionRestore: (revisionId: string, callerUserId: string) => Promise<HandlerResponse>;
 
-	// Plugin API route handler
+	// Plugin API route handler. `user` is the authenticated caller for
+	// private routes, exposed to plugin handlers as `ctx.user`.
 	handlePluginApiRoute: (
 		pluginId: string,
 		method: string,
 		path: string,
 		request: Request,
+		user?: RouteCallerInput | null,
 	) => Promise<HandlerResponse>;
 
 	// Public-only plugin API route handler for SSR page components.
@@ -464,6 +470,7 @@ export interface EmDashHandlers {
 		input: unknown,
 		actorId: string,
 		request: Request,
+		caller?: RouteCallerInput | null,
 	) => Promise<HandlerResponse>;
 	handlePluginMcpDenied: (
 		pluginId: string,

@@ -35,12 +35,28 @@ import type {
 	SeedField,
 	SeedApplyOptions,
 	SeedApplyResult,
+	SeedCollection,
 	SeedTaxonomyTerm,
 	SeedMenuItem,
 	SeedWidget,
 	SeedMediaReference,
 	SeedBylineAvatar,
 } from "./types.js";
+
+/**
+ * Set a collection's `titleField`/`dateField`: a separate write run after the
+ * fields exist, so `updateCollection` can validate them. No-op when neither is set.
+ */
+async function applyDisplayDateFields(
+	registry: SchemaRegistry,
+	collection: SeedCollection,
+): Promise<void> {
+	if (collection.titleField === undefined && collection.dateField === undefined) return;
+	await registry.updateCollection(collection.slug, {
+		titleField: collection.titleField,
+		dateField: collection.dateField,
+	});
+}
 
 const FILE_EXTENSION_PATTERN = /\.([a-z0-9]+)(?:\?|$)/i;
 const SEED_RELATION_NAME_MAX_ATTEMPTS = 5;
@@ -214,6 +230,9 @@ export async function applySeed(
 						if (existingField) result.fields.updated++;
 						else result.fields.created++;
 					}
+
+					// Second write: display/date fields, now that fields exist.
+					await applyDisplayDateFields(registry, collection);
 					continue;
 				}
 
@@ -292,6 +311,9 @@ export async function applySeed(
 				},
 				fields,
 			);
+			// titleField/dateField reference existing fields, so set them after
+			// the schema exists.
+			await applyDisplayDateFields(registry, collection);
 			result.collections.created++;
 			result.fields.created += collection.fields.length;
 		}
@@ -1238,13 +1260,10 @@ async function applyContentTaxonomies(
 	entry: { taxonomies?: Record<string, string[]> },
 	isUpdate: boolean,
 ): Promise<void> {
+	const termRepo = new TaxonomyRepository(db);
 	// In update mode, clear existing taxonomy assignments first
 	if (isUpdate) {
-		await db
-			.deleteFrom("content_taxonomies")
-			.where("collection", "=", collectionSlug)
-			.where("entry_id", "=", contentId)
-			.execute();
+		await termRepo.clearEntryTerms(collectionSlug, contentId);
 	}
 
 	if (!entry.taxonomies) {
@@ -1258,8 +1277,6 @@ async function applyContentTaxonomies(
 	}
 
 	for (const [taxonomyName, termSlugs] of Object.entries(entry.taxonomies)) {
-		const termRepo = new TaxonomyRepository(db);
-
 		for (const termSlug of termSlugs) {
 			const term = await termRepo.findBySlug(taxonomyName, termSlug);
 			if (term) {
