@@ -19,6 +19,7 @@ import { Role } from "@emdash-cms/auth";
 import type { Kysely } from "kysely";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
+import { handleSchemaFieldCreate } from "../../../src/api/handlers/schema.js";
 import type { Database } from "../../../src/database/types.js";
 import { SchemaRegistry } from "../../../src/schema/registry.js";
 import { connectMcpHarness, extractText, type McpHarness } from "../../utils/mcp-runtime.js";
@@ -277,12 +278,15 @@ describe("MCP validation — reference field targets (bug #6)", () => {
 			type: "string",
 			required: true,
 		});
-		await registry.createField("post", {
+		// Through the handler, not the registry: a reference field is only
+		// usable once the relation behind it exists.
+		const field = await handleSchemaFieldCreate(db, "post", {
 			slug: "parent_page",
 			label: "Parent Page",
 			type: "reference",
-			validation: { collection: "page" },
+			validation: { targetCollection: "page" },
 		});
+		if (!field.success) throw new Error(field.error.message);
 
 		harness = await connectMcpHarness({ db, userId: ADMIN_ID, userRole: Role.ADMIN });
 	});
@@ -337,6 +341,36 @@ describe("MCP validation — reference field targets (bug #6)", () => {
 		});
 
 		expect(result.isError, extractText(result)).toBeFalsy();
+	});
+
+	it("persists a reference passed in `references` and returns it on read", async () => {
+		const page = await harness.client.callTool({
+			name: "content_create",
+			arguments: { collection: "page", data: { title: "Real page" } },
+		});
+		const pageId = JSON.parse(extractText(page)).item.id as string;
+
+		const post = await harness.client.callTool({
+			name: "content_create",
+			arguments: {
+				collection: "post",
+				data: { title: "T" },
+				references: { parent_page: [pageId] },
+			},
+		});
+		expect(post.isError, extractText(post)).toBeFalsy();
+		const postId = JSON.parse(extractText(post)).item.id as string;
+
+		const read = await harness.client.callTool({
+			name: "content_get",
+			arguments: { collection: "post", id: postId },
+		});
+
+		expect(read.isError, extractText(read)).toBeFalsy();
+		const item = JSON.parse(extractText(read)).item;
+		expect(item.data).not.toHaveProperty("parent_page");
+		expect(item.references.parent_page.children).toHaveLength(1);
+		expect(item.references.parent_page.children[0].id).toBe(pageId);
 	});
 
 	it("does not return the reference field in `data` on read", async () => {

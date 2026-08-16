@@ -26,12 +26,14 @@ import {
 } from "#api/schemas.js";
 
 import type { MediaUsageRepairRequest } from "../api/schemas/media-usage.js";
+import type { ApiResult } from "../api/types.js";
 import type { EmDashHandlers } from "../astro/types.js";
 import { hasScope } from "../auth/api-tokens.js";
 import { convertDataForRead, convertDataForWrite } from "../client/portable-text.js";
 import type { FieldSchema } from "../client/portable-text.js";
 import { decodeCursor, InvalidCursorError } from "../database/repositories/types.js";
 import type { RouteCallerInput } from "../plugins/routes.js";
+import type { FieldValidation } from "../schema/types.js";
 import { decodeBase64, encodeBase64 } from "../utils/base64.js";
 
 const COLLECTION_SLUG_PATTERN = /^[a-z][a-z0-9_]*$/;
@@ -496,6 +498,69 @@ async function applyReadMarkdown(
 	}
 }
 
+/**
+ * Translate a `references` argument to the relation keying the content handlers
+ * write with.
+ *
+ * Reference selections are addressed by field slug here: MCP exposes no relation
+ * tools, so a relation's translation group is reachable from nothing an agent
+ * can call, while `schema_get_collection` names every field.
+ */
+async function resolveReferenceArg(
+	ec: EmDashHandlers,
+	collection: string,
+	references: Record<string, string[]>,
+): Promise<ApiResult<Record<string, string[]>>> {
+	const { resolveReferencesByFieldSlug } = await import("../api/handlers/validate-references.js");
+	return resolveReferencesByFieldSlug(ec.db, collection, references);
+}
+
+/**
+ * Re-key a read item's hydrated `references` from relation translation group to
+ * field slug, matching the keying the write tools accept.
+ *
+ * A relation with no reference field behind it never appears — hydration walks
+ * the collection's fields — so no key is lost in translation.
+ */
+async function rekeyReferencesByFieldSlug(
+	ec: EmDashHandlers,
+	collection: string,
+	item: Record<string, unknown>,
+): Promise<void> {
+	const references = item.references;
+	if (!references || typeof references !== "object") return;
+
+	const { referenceFieldsByRelation } = await import("../api/handlers/validate-references.js");
+	const byRelation = await referenceFieldsByRelation(ec.db, collection);
+
+	const keyed: Record<string, unknown> = {};
+	for (const [relationGroup, value] of Object.entries(references)) {
+		const slug = byRelation.get(relationGroup)?.slug;
+		if (slug) keyed[slug] = value;
+	}
+	item.references = keyed;
+}
+
+/**
+ * Fill in a reference field's target collection from the widget option this
+ * tool has always documented for it.
+ *
+ * `options.collection` predates relation-backed reference fields and is what
+ * callers were told to send; the field handler reads
+ * `validation.targetCollection` and rejects a reference field without one.
+ */
+function referenceFieldValidation(
+	type: string,
+	validation: FieldValidation | undefined,
+	options: { collection?: unknown } | undefined,
+): FieldValidation | undefined {
+	if (type !== "reference") return validation;
+	const fromOptions = typeof options?.collection === "string" ? options.collection : undefined;
+	const targetCollection = validation?.targetCollection ?? fromOptions;
+	if (!targetCollection) return validation;
+	return { ...validation, targetCollection };
+}
+
 async function invalidateBylines(): Promise<void> {
 	const { invalidateBylineCache } = await import("../bylines/index.js");
 	invalidateBylineCache();
@@ -825,7 +890,10 @@ export function createMcpServer(
 			description:
 				"Get a single content item by its ID or slug. Returns the full content data " +
 				"including all field values, metadata, and a _rev token for optimistic " +
-				"concurrency (pass _rev back when updating to detect conflicts).",
+				"concurrency (pass _rev back when updating to detect conflicts). Reference " +
+				"fields are not stored on the item's data — they come back under " +
+				"'references', keyed by field slug, with each selected entry resolved to " +
+				"its id, slug and title.",
 			inputSchema: z.object({
 				collection: z.string().describe("Collection slug (e.g. 'posts', 'pages')"),
 				id: z.string().describe("Content item ID (ULID) or slug"),
@@ -847,10 +915,13 @@ export function createMcpServer(
 		async (args, extra) => {
 			requireScope(extra, "content:read");
 			const ec = getEmDash(extra);
-			const result = await ec.handleContentGet(args.collection, args.id, args.locale);
+			const includeDrafts = canReadDrafts(extra);
+			const result = await ec.handleContentGet(args.collection, args.id, args.locale, {
+				includeDrafts,
+			});
 			// Hide non-published items from users without draft access. Return a
 			// not-found error so subscribers can't enumerate draft IDs by status.
-			if (result.success && !canReadDrafts(extra)) {
+			if (result.success && !includeDrafts) {
 				const data =
 					result.data && typeof result.data === "object"
 						? // eslint-disable-next-line typescript/no-unsafe-type-assertion -- handler returns unknown data; narrowed by typeof check
@@ -872,6 +943,9 @@ export function createMcpServer(
 			if (result.success && args.markdown && result.data?.item) {
 				await applyReadMarkdown(ec, args.collection, [result.data.item]);
 			}
+			if (result.success && result.data?.item) {
+				await rekeyReferencesByFieldSlug(ec, args.collection, result.data.item);
+			}
 			return unwrap(result);
 		},
 	);
@@ -886,9 +960,10 @@ export function createMcpServer(
 				"schema_get_collection to check). For rich text (portableText) fields, " +
 				"pass a Markdown string — converted to Portable Text automatically; prefer " +
 				"this. Pass a Portable Text JSON array only for complex content Markdown " +
-				"can't express (custom blocks, embeds). A slug is auto-generated if not " +
-				"provided. Items are created as 'draft' by default — use content_publish " +
-				"to make them live.",
+				"can't express (custom blocks, embeds). Reference fields are the one " +
+				"exception to 'data': they are stored as edges, so pass them in " +
+				"'references' instead. A slug is auto-generated if not provided. Items " +
+				"are created as 'draft' by default — use content_publish to make them live.",
 			inputSchema: z.object({
 				collection: z.string().describe("Collection slug (e.g. 'posts', 'pages')"),
 				data: z
@@ -921,6 +996,12 @@ export function createMcpServer(
 					.describe(
 						"Taxonomy term assignments as { taxonomyName: [termSlug, ...] }. Term slugs are resolved in the entry's locale. Call taxonomy_list to see available taxonomies and taxonomy_list_terms to look up slugs. Missing keys leave that taxonomy unchanged.",
 					),
+				references: z
+					.record(z.string(), z.array(z.string()))
+					.optional()
+					.describe(
+						"Reference field selections as { fieldSlug: [entryIdOrSlug, ...] }, in display order. Reference fields are never sent in 'data' — sending one there is rejected. Use schema_get_collection to find a collection's reference fields and their target collection.",
+					),
 			}),
 			annotations: { destructiveHint: false },
 		},
@@ -943,6 +1024,13 @@ export function createMcpServer(
 
 			const data = await convertWriteData(emdash, args.collection, args.data);
 
+			let references: Record<string, string[]> | undefined;
+			if (args.references) {
+				const resolved = await resolveReferenceArg(emdash, args.collection, args.references);
+				if (!resolved.success) return unwrap(resolved);
+				references = resolved.data;
+			}
+
 			// Publishing requires publish permission — create as draft then publish
 			if (args.status === "published") {
 				const user = { id: userId, role: getExtra(extra).userRole };
@@ -960,6 +1048,7 @@ export function createMcpServer(
 					translationOf: args.translationOf,
 					bylines: args.bylines,
 					taxonomies: args.taxonomies,
+					references,
 				});
 				if (!result.success) return unwrap(result);
 				const itemId = extractContentId(result.data);
@@ -978,6 +1067,7 @@ export function createMcpServer(
 					translationOf: args.translationOf,
 					bylines: args.bylines,
 					taxonomies: args.taxonomies,
+					references,
 				}),
 			);
 		},
@@ -995,8 +1085,8 @@ export function createMcpServer(
 				"Markdown can't express (custom blocks, embeds). Pass the " +
 				"_rev token from content_get to enable optimistic concurrency checking " +
 				"(the update fails if the item was modified since you read it). " +
-				"`seo` and `bylines` are persisted alongside the field updates in a " +
-				"single transaction. `publishedAt` requires the content:publish_any " +
+				"`seo`, `bylines` and `references` are persisted alongside the field " +
+				"updates in a single transaction. `publishedAt` requires the content:publish_any " +
 				"permission and is useful for migrations or correcting historical dates.",
 			inputSchema: z.object({
 				collection: z.string().describe("Collection slug"),
@@ -1040,6 +1130,12 @@ export function createMcpServer(
 					.describe(
 						"Replace taxonomy term assignments as { taxonomyName: [termSlug, ...] }. Term slugs are resolved in the entry's locale. Only named taxonomies are touched; other taxonomies are left unchanged. Pass an empty array to clear a taxonomy.",
 					),
+				references: z
+					.record(z.string(), z.array(z.string()))
+					.optional()
+					.describe(
+						"Replace reference field selections as { fieldSlug: [entryIdOrSlug, ...] }, in display order. Only named fields are touched; pass an empty array to clear one. Reference fields are never sent in 'data' — sending one there is rejected.",
+					),
 				publishedAt: z.iso
 					.datetime({ offset: true, message: "must be an ISO 8601 datetime" })
 					.nullish()
@@ -1069,6 +1165,13 @@ export function createMcpServer(
 				? await convertWriteData(emdash, args.collection, args.data)
 				: args.data;
 
+			let references: Record<string, string[]> | undefined;
+			if (args.references) {
+				const resolved = await resolveReferenceArg(emdash, args.collection, args.references);
+				if (!resolved.success) return unwrap(resolved);
+				references = resolved.data;
+			}
+
 			// Writing publishedAt directly (incl. clearing to null) overwrites
 			// historical record — gate behind publish_any, mirroring the REST PUT
 			// route. Status-driven publishes are gated separately below.
@@ -1093,6 +1196,7 @@ export function createMcpServer(
 					args.seo !== undefined ||
 					args.bylines !== undefined ||
 					args.taxonomies !== undefined ||
+					args.references !== undefined ||
 					args.publishedAt !== undefined
 				) {
 					const updateResult = await emdash.handleContentUpdate(args.collection, resolvedId, {
@@ -1103,6 +1207,7 @@ export function createMcpServer(
 						seo: args.seo,
 						bylines: args.bylines,
 						taxonomies: args.taxonomies,
+						references,
 						publishedAt: args.publishedAt,
 						_rev: args._rev,
 					});
@@ -1119,6 +1224,7 @@ export function createMcpServer(
 					args.seo !== undefined ||
 					args.bylines !== undefined ||
 					args.taxonomies !== undefined ||
+					args.references !== undefined ||
 					args.publishedAt !== undefined
 				) {
 					const updateResult = await emdash.handleContentUpdate(args.collection, resolvedId, {
@@ -1129,6 +1235,7 @@ export function createMcpServer(
 						seo: args.seo,
 						bylines: args.bylines,
 						taxonomies: args.taxonomies,
+						references,
 						publishedAt: args.publishedAt,
 						_rev: args._rev,
 					});
@@ -1146,6 +1253,7 @@ export function createMcpServer(
 					seo: args.seo,
 					bylines: args.bylines,
 					taxonomies: args.taxonomies,
+					references,
 					publishedAt: args.publishedAt,
 					_rev: args._rev,
 				}),
@@ -1911,7 +2019,10 @@ export function createMcpServer(
 				"number (decimal), integer, boolean, datetime, select (single choice), " +
 				"multiSelect (multiple), portableText (rich text), image, file, " +
 				"reference (link to another collection), json, slug (URL-safe id). " +
-				"For select/multiSelect, provide choices in validation.options array.",
+				"For select/multiSelect, provide choices in validation.options array. " +
+				"A reference field needs validation.targetCollection, and stores its " +
+				"selections as edges rather than a column — content_create and " +
+				"content_update take them in 'references', not 'data'.",
 			inputSchema: z.object({
 				collection: z.string().describe("Collection slug to add the field to"),
 				slug: z
@@ -1951,6 +2062,14 @@ export function createMcpServer(
 							.array(z.string())
 							.optional()
 							.describe("Allowed values for select/multiSelect"),
+						targetCollection: z
+							.string()
+							.optional()
+							.describe("Collection a reference field points at (required for type 'reference')"),
+						multiple: z
+							.boolean()
+							.optional()
+							.describe("Whether a reference field accepts more than one entry (default false)"),
 					})
 					.optional()
 					.describe("Validation constraints"),
@@ -1984,22 +2103,26 @@ export function createMcpServer(
 			requireRole(extra, Role.ADMIN);
 			const ec = getEmDash(extra);
 			try {
-				const { SchemaRegistry } = await import("../schema/index.js");
-				const registry = new SchemaRegistry(ec.db);
-				const field = await registry.createField(args.collection, {
+				// A reference field is only half a field without the relation
+				// behind it, and that lifecycle lives in the handler — going
+				// straight to the registry mints a field no reference can be
+				// written through.
+				const { handleSchemaFieldCreate } = await import("../api/handlers/schema.js");
+				const result = await handleSchemaFieldCreate(ec.db, args.collection, {
 					slug: args.slug,
 					label: args.label,
 					type: args.type,
 					required: args.required,
 					unique: args.unique,
 					defaultValue: args.defaultValue,
-					validation: args.validation,
+					validation: referenceFieldValidation(args.type, args.validation, args.options),
 					options: args.options,
 					searchable: args.searchable,
 					indexed: args.indexed,
 					translatable: args.translatable,
 				});
-				return jsonResult(field);
+				if (!result.success) return unwrap(result);
+				return jsonResult(result.data.item);
 			} catch (error) {
 				return respondHandlerError(error, "FIELD_CREATE_ERROR");
 			}
@@ -2024,9 +2147,11 @@ export function createMcpServer(
 			requireRole(extra, Role.ADMIN);
 			const ec = getEmDash(extra);
 			try {
-				const { SchemaRegistry } = await import("../schema/index.js");
-				const registry = new SchemaRegistry(ec.db);
-				await registry.deleteField(args.collection, args.fieldSlug);
+				// Deleting a reference field has to take its relation and edges
+				// with it; that's the handler's job, not the registry's.
+				const { handleSchemaFieldDelete } = await import("../api/handlers/schema.js");
+				const result = await handleSchemaFieldDelete(ec.db, args.collection, args.fieldSlug);
+				if (!result.success) return unwrap(result);
 				return jsonResult({ deleted: args.fieldSlug, collection: args.collection });
 			} catch (error) {
 				return respondHandlerError(error, "FIELD_DELETE_ERROR");

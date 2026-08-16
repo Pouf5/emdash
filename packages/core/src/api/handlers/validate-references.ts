@@ -24,6 +24,41 @@ export async function referenceFieldsByRelation(
 }
 
 /**
+ * Translate a field-slug-keyed reference payload into the relation keying the
+ * content handlers write with.
+ *
+ * Authoring surfaces address a reference by the field it shows up as — the seed
+ * engine and the public read both do — while the edge table is keyed by the
+ * relation behind that field. Callers that speak field slugs come through here
+ * so the relation stays an implementation detail on their side.
+ */
+export async function resolveReferencesByFieldSlug(
+	db: Kysely<Database>,
+	collection: string,
+	references: Record<string, string[]>,
+): Promise<ApiResult<Record<string, string[]>>> {
+	const configs = await referenceFields(db, collection);
+	const bySlug = new Map(configs.map((config) => [config.slug, config]));
+
+	const resolved: Record<string, string[]> = {};
+	for (const [slug, childIds] of Object.entries(references)) {
+		const config = bySlug.get(slug);
+		if (!config) {
+			const known = configs.map((c) => c.slug).toSorted();
+			return fail(
+				`'${slug}' is not a reference field on '${collection}'. ` +
+					(known.length > 0
+						? `Reference fields: ${known.join(", ")}.`
+						: "This collection has no reference fields."),
+			);
+		}
+		resolved[config.relation] = childIds;
+	}
+
+	return { success: true, data: resolved };
+}
+
+/**
  * Check one reference field's selection against its own definition.
  *
  * Called from `setReferenceChildren`, the single choke point every edge write
