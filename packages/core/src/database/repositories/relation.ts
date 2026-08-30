@@ -5,6 +5,14 @@ import { chunks, SQL_BATCH_SIZE } from "../../utils/chunks.js";
 import type { Database, RelationTable, ContentReferenceTable } from "../types.js";
 import { decodeCursor, encodeCursor, InvalidCursorError, type FindManyResult } from "./types.js";
 
+// Each reference-edge row binds six values. Derive the row count so every
+// INSERT stays within D1's 100-parameter statement ceiling.
+const REFERENCE_INSERT_BIND_COLUMNS = 6;
+const D1_MAX_BOUND_PARAMETERS = 100;
+const REFERENCE_INSERT_BATCH_SIZE = Math.floor(
+	D1_MAX_BOUND_PARAMETERS / REFERENCE_INSERT_BIND_COLUMNS,
+);
+
 export interface Relation {
 	id: string;
 	name: string;
@@ -409,15 +417,14 @@ export class RelationRepository {
 	/**
 	 * Replace all children of `parentGroup` under a relation with `childGroups`,
 	 * assigning positional sort_order (index in the deduped array). Deletes the
-	 * old set for this (relation, parent) and re-inserts — simple and correct;
-	 * the set is small (one parent's children). Mirrors the intent of
-	 * `TaxonomyRepository.setTermsForEntry`.
+	 * old set for this (relation, parent) and re-inserts in D1-safe batches.
+	 * Mirrors the intent of `TaxonomyRepository.setTermsForEntry`.
 	 *
 	 * A parent references a given child at most once (the unique edge), so
 	 * duplicate `childGroups` are collapsed first-occurrence-wins rather than
 	 * relying on the insert's onConflict to silently drop them. Not wrapped in a
-	 * transaction: a crash between the delete and insert leaves the parent with
-	 * no children — acceptable for a replace-all, since a retry restores state.
+	 * transaction: an interruption after the delete can leave the parent with an
+	 * empty or partial replacement. A retry restores the complete requested set.
 	 *
 	 * Concurrency: two simultaneous replace-all calls for the same (relation,
 	 * parent) can interleave their deletes and inserts and merge into the union of
@@ -443,23 +450,24 @@ export class RelationRepository {
 		if (uniqueChildGroups.length === 0) return;
 
 		const now = new Date().toISOString();
-		await this.db
-			.insertInto("_emdash_content_references")
-			.values(
-				uniqueChildGroups.map((childGroup, index) => ({
-					id: ulid(),
-					relation_group: relationGroup,
-					parent_group: parentGroup,
-					child_group: childGroup,
-					sort_order: index,
-					created_at: now,
-				})),
-			)
-			// Belt-and-suspenders: the DELETE above already cleared this
-			// (relation, parent), so no conflict is possible within one call.
-			// This is NOT a concurrency guarantee — delete-then-insert is not atomic.
-			.onConflict((oc) => oc.doNothing())
-			.execute();
+		const rows = uniqueChildGroups.map((childGroup, index) => ({
+			id: ulid(),
+			relation_group: relationGroup,
+			parent_group: parentGroup,
+			child_group: childGroup,
+			sort_order: index,
+			created_at: now,
+		}));
+		for (const rowBatch of chunks(rows, REFERENCE_INSERT_BATCH_SIZE)) {
+			await this.db
+				.insertInto("_emdash_content_references")
+				.values(rowBatch)
+				// Belt-and-suspenders: the DELETE above already cleared this
+				// (relation, parent), so no conflict is possible within one call.
+				// This is NOT a concurrency guarantee — delete-then-insert is not atomic.
+				.onConflict((oc) => oc.doNothing())
+				.execute();
+		}
 	}
 
 	/**

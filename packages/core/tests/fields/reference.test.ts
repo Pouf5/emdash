@@ -3,7 +3,11 @@ import { describe, it, expect, beforeEach, afterEach } from "vitest";
 
 import { reference } from "../../src/fields/reference.js";
 import { SchemaRegistry } from "../../src/schema/registry.js";
-import { STORAGELESS_FIELD_TYPES, FIELD_TYPE_TO_COLUMN } from "../../src/schema/types.js";
+import {
+	STORAGELESS_FIELD_TYPES,
+	FIELD_TYPE_TO_COLUMN,
+	isIndexableFieldType,
+} from "../../src/schema/types.js";
 import {
 	describeEachDialect,
 	setupForDialect,
@@ -54,6 +58,10 @@ describe("storage-less field types", () => {
 		expect(STORAGELESS_FIELD_TYPES.has("string")).toBe(false);
 		// The map still contains reference so isFieldType() keeps recognizing it.
 		expect(FIELD_TYPE_TO_COLUMN.reference).toBe("TEXT");
+	});
+
+	it("does not expose storage-less references as indexable scalar fields", () => {
+		expect(isIndexableFieldType("reference")).toBe(false);
 	});
 });
 
@@ -117,6 +125,47 @@ describeEachDialect("reference field is storage-less in the registry", (dialect)
 		);
 		expect(table?.columns.map((column) => column.name)).toContain("title");
 		expect(table?.columns.map((column) => column.name)).not.toContain("related");
+	});
+
+	it("rejects index metadata for storage-less reference fields", async () => {
+		const registry = new SchemaRegistry(ctx.db);
+		const input = {
+			slug: "related",
+			label: "Related",
+			type: "reference" as const,
+			validation: { relation: "grp_x", targetCollection: "posts", multiple: true },
+		};
+
+		await expect(registry.createField("posts", { ...input, indexed: true })).rejects.toMatchObject({
+			code: "FIELD_NOT_INDEXABLE",
+		});
+		expect(await registry.getField("posts", "related")).toBeNull();
+
+		await registry.createField("posts", input);
+		await expect(registry.updateField("posts", "related", { indexed: true })).rejects.toMatchObject(
+			{ code: "FIELD_NOT_INDEXABLE" },
+		);
+		expect(await registry.getField("posts", "related")).toMatchObject({ indexed: false });
+	});
+
+	it("rejects indexed references before a seed collection mutates the schema", async () => {
+		const registry = new SchemaRegistry(ctx.db);
+
+		await expect(
+			registry.createSeedCollection(
+				{ slug: "seeded_indexed", label: "Seeded indexed", labelSingular: "Seeded indexed" },
+				[
+					{
+						slug: "related",
+						label: "Related",
+						type: "reference",
+						indexed: true,
+						validation: { relation: "grp_x", targetCollection: "posts", multiple: true },
+					},
+				],
+			),
+		).rejects.toMatchObject({ code: "FIELD_NOT_INDEXABLE" });
+		expect(await registry.getCollection("seeded_indexed")).toBeNull();
 	});
 
 	it("rejects changing a field to or from reference", async () => {

@@ -49,7 +49,6 @@ const INDEXABLE_FIELD_TYPES = new Set<FieldType>([
 	"boolean",
 	"datetime",
 	"select",
-	"reference",
 	"slug",
 ]);
 

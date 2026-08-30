@@ -57,7 +57,6 @@ export const INDEXABLE_FIELD_TYPES: ReadonlySet<FieldType> = new Set([
 	"boolean",
 	"datetime",
 	"select",
-	"reference",
 	"slug",
 ]);
 
