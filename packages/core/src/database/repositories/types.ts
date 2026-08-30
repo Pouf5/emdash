@@ -328,6 +328,7 @@ export interface ContentItem {
 				collection: string;
 				title: string | null;
 				locale: string | null;
+				translationGroup: string | null;
 				sortOrder?: number;
 			}>;
 			nextCursor?: string;

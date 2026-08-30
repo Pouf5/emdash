@@ -45,6 +45,7 @@ import { encodeRev, validateRev } from "../rev.js";
 import type { ApiResult, ContentListResponse, ContentResponse } from "../types.js";
 import { getReferenceTitleField, resolveEntries, setReferenceChildren } from "./relations.js";
 import { validateMediaFields } from "./validate-media-fields.js";
+import { validateRequiredReferencesPresent } from "./validate-references.js";
 
 /**
  * Narrow a caught error to one carrying a structured `apiError` discriminant.
@@ -954,6 +955,14 @@ export async function handleContentCreate(
 
 		const mimeCheck = await validateMediaFields(db, collection, body.data);
 		if (!mimeCheck.success) return mimeCheck;
+
+		const requiredReferences = await validateRequiredReferencesPresent(
+			db,
+			collection,
+			body.references,
+			body.translationOf,
+		);
+		if (!requiredReferences.success) return requiredReferences;
 
 		// Wrap content + SEO writes in a transaction for atomicity
 		const item = await withTransaction(db, async (trx) => {
