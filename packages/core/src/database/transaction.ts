@@ -41,7 +41,6 @@ export async function withTransaction<DB, T>(
 	if (db.isTransaction) {
 		return fn(db);
 	}
-
 	// Fast path: we already know transactions work
 	if (transactionsSupported === true) {
 		return db.transaction().execute(fn);

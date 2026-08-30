@@ -43,7 +43,7 @@ import type { Element } from "@emdash-cms/blocks";
 import type { MessageDescriptor } from "@lingui/core";
 import { msg, plural } from "@lingui/core/macro";
 import { useLingui as useLinguiContext } from "@lingui/react";
-import { useLingui } from "@lingui/react/macro";
+import { Trans, useLingui } from "@lingui/react/macro";
 import {
 	TextB,
 	TextItalic,
@@ -113,6 +113,12 @@ import * as React from "react";
 
 import type { MediaItem } from "../lib/api";
 import type { Section } from "../lib/api";
+import {
+	UnsupportedPortableTextMarksError,
+	assertPortableTextMarksSupported,
+	assertProseMirrorMarksSupported,
+	findUnsupportedPortableTextMarks,
+} from "../lib/portable-text-marks.js";
 import { cn } from "../lib/utils";
 import { CaretNext } from "./ArrowIcons.js";
 import { BlockKitMediaPickerField } from "./BlockKitMediaPickerField";
@@ -242,6 +248,8 @@ function sanitizeGalleryImages(value: unknown, withKeys = false): GalleryImage[]
 		if (attrStr(record.caption)) image.caption = attrStr(record.caption);
 		if (typeof record.width === "number") image.width = record.width;
 		if (typeof record.height === "number") image.height = record.height;
+		if (typeof record.focalX === "number") image.focalX = record.focalX;
+		if (typeof record.focalY === "number") image.focalY = record.focalY;
 		if (attrStr(record.blurhash)) image.blurhash = attrStr(record.blurhash);
 		if (attrStr(record.dominantColor)) image.dominantColor = attrStr(record.dominantColor);
 		images.push(image);
@@ -421,6 +429,7 @@ function prosemirrorToPortableText(doc: {
 	if (!doc || doc.type !== "doc" || !doc.content) {
 		return [];
 	}
+	assertProseMirrorMarksSupported(doc);
 
 	const blocks: PortableTextBlock[] = [];
 
@@ -607,11 +616,20 @@ function convertPMNode(
 
 						const contentSpans: PortableTextSpan[] = [];
 						const cellMarkDefs: PortableTextMarkDef[] = [];
+						let paragraphCount = 0;
 						for (const paragraph of cellContent) {
 							if (paragraph.type === "paragraph") {
-								const { children, markDefs } = convertInlineContent(paragraph.content || []);
+								if (paragraphCount > 0) {
+									contentSpans.push({
+										_type: "span",
+										_key: generateKey(),
+										text: "\n",
+									});
+								}
+								const { children, markDefs } = convertInlineContent(paragraph.content || [], true);
 								contentSpans.push(...children);
 								cellMarkDefs.push(...markDefs);
+								paragraphCount++;
 							}
 						}
 
@@ -725,7 +743,10 @@ function convertList(
 	return blocks;
 }
 
-function convertInlineContent(nodes: unknown[]): {
+function convertInlineContent(
+	nodes: unknown[],
+	preserveHardBreakBoundary = false,
+): {
 	children: PortableTextSpan[];
 	markDefs: PortableTextMarkDef[];
 } {
@@ -756,7 +777,7 @@ function convertInlineContent(nodes: unknown[]): {
 				marks: marks.length > 0 ? marks : undefined,
 			});
 		} else if (node.type === "hardBreak") {
-			if (children.length > 0) {
+			if (children.length > 0 && !preserveHardBreakBoundary) {
 				const last = children.at(-1);
 				if (last) last.text += "\n";
 			} else {
@@ -797,6 +818,10 @@ function convertMark(
 		case "strike":
 		case "strikethrough":
 			return "strike-through";
+		case "subscript":
+			return "subscript";
+		case "superscript":
+			return "superscript";
 		case "code":
 			return "code";
 		case "link": {
@@ -816,7 +841,7 @@ function convertMark(
 			return key;
 		}
 		default:
-			return mark.type;
+			throw new UnsupportedPortableTextMarksError([mark.type]);
 	}
 }
 
@@ -844,6 +869,7 @@ function portableTextToProsemirror(blocks: PortableTextBlock[]): {
 			content: [{ type: "paragraph" }],
 		};
 	}
+	assertPortableTextMarksSupported(blocks);
 
 	const content: unknown[] = [];
 	let i = 0;
@@ -1002,9 +1028,13 @@ function convertPTBlock(block: PortableTextBlock): unknown {
 		case "code": {
 			if (!isCodeBlock(block)) return null;
 			const codeBlock = block;
+			const language =
+				typeof codeBlock.language === "string" && codeBlock.language.length > 0
+					? codeBlock.language
+					: null;
 			return {
 				type: "codeBlock",
-				attrs: { language: codeBlock.language || null },
+				attrs: { language },
 				content: codeBlock.code ? [{ type: "text", text: codeBlock.code }] : undefined,
 			};
 		}
@@ -1315,6 +1345,10 @@ function convertPTMarks(marks: string[], markDefs: Map<string, PortableTextMarkD
 							target: markDef.blank ? "_blank" : null,
 						},
 					});
+				} else {
+					throw new UnsupportedPortableTextMarksError([
+						typeof markDef?._type === "string" ? markDef._type : mark,
+					]);
 				}
 				break;
 			}
@@ -1347,6 +1381,12 @@ interface SlashCommandItem {
 	 * and are passed through verbatim when rendered.
 	 */
 	category?: MessageDescriptor | string;
+}
+
+function insertHtmlBlock(editor: Editor, range?: Range) {
+	const chain = editor.chain().focus();
+	if (range) chain.deleteRange(range);
+	chain.insertContent({ type: "htmlBlock", attrs: { html: "" } }).run();
 }
 
 /**
@@ -1459,14 +1499,7 @@ const defaultSlashCommands: SlashCommandItem[] = [
 		description: msg`Insert raw HTML`,
 		icon: BracketsAngle,
 		aliases: ["html", "raw", "markup"],
-		command: ({ editor, range }) => {
-			editor
-				.chain()
-				.focus()
-				.deleteRange(range)
-				.insertContent({ type: "htmlBlock", attrs: { html: "" } })
-				.run();
-		},
+		command: ({ editor, range }) => insertHtmlBlock(editor, range),
 	},
 	{
 		id: "divider",
@@ -2608,6 +2641,8 @@ export function PortableTextEditor({
 
 	// Multi-select media picker state (for gallery insertion)
 	const [galleryPickerOpen, setGalleryPickerOpen] = React.useState(false);
+	const [conversionErrorMarks, setConversionErrorMarks] = React.useState<string[]>([]);
+	const [sectionInsertErrorMarks, setSectionInsertErrorMarks] = React.useState<string[]>([]);
 
 	// Plugin block insertion/editing state
 	const [pluginBlockModal, setPluginBlockModal] = React.useState<PluginBlockDef | null>(null);
@@ -2620,6 +2655,10 @@ export function PortableTextEditor({
 	// Section picker state (for inserting sections)
 	const [sectionPickerOpen, setSectionPickerOpen] = React.useState(false);
 	const pendingBlockInsertPosRef = React.useRef<number | null>(null);
+	const openToolbarImagePicker = React.useCallback(() => {
+		pendingBlockInsertPosRef.current = null;
+		setMediaPickerOpen(true);
+	}, []);
 
 	// Slash commands state
 	const [slashMenuState, setSlashMenuStateRaw] = React.useState<SlashMenuState>({
@@ -2758,8 +2797,19 @@ export function PortableTextEditor({
 	};
 
 	// Convert initial value to ProseMirror format
+	const initialUnsupportedMarks = React.useMemo(
+		() => findUnsupportedPortableTextMarks(value || []),
+		[],
+	);
+	const unsupportedMarks = React.useMemo(
+		() => [...new Set([...initialUnsupportedMarks, ...conversionErrorMarks])].toSorted(),
+		[conversionErrorMarks, initialUnsupportedMarks],
+	);
 	const initialContent = React.useMemo(
-		() => portableTextToProsemirror(value || []),
+		() =>
+			initialUnsupportedMarks.length > 0
+				? { type: "doc" as const, content: [{ type: "paragraph" }] }
+				: portableTextToProsemirror(value || []),
 		[], // Only compute once on mount
 	);
 
@@ -2849,7 +2899,7 @@ export function PortableTextEditor({
 	const editor = useEditor({
 		extensions,
 		content: initialContent as Parameters<typeof useEditor>[0]["content"],
-		editable,
+		editable: editable && unsupportedMarks.length === 0,
 		immediatelyRender: true,
 		editorProps,
 		onUpdate: ({ editor: updatedEditor }) => {
@@ -2858,8 +2908,16 @@ export function PortableTextEditor({
 				const doc = updatedEditor.getJSON();
 				// TipTap's getJSON() returns JSONContent which is structurally compatible
 				const pmDoc = doc as Parameters<typeof prosemirrorToPortableText>[0];
-				const portableText = prosemirrorToPortableText(pmDoc);
-				cb(portableText);
+				try {
+					const portableText = prosemirrorToPortableText(pmDoc);
+					cb(portableText);
+				} catch (error) {
+					if (error instanceof UnsupportedPortableTextMarksError) {
+						setConversionErrorMarks(error.marks);
+						return;
+					}
+					throw error;
+				}
 			}
 		},
 	});
@@ -3038,14 +3096,14 @@ export function PortableTextEditor({
 	// reference before TipTap destroys the instance (e.g. when keying by item.id
 	// to switch translations).
 	React.useEffect(() => {
-		if (editor && onEditorReady) {
+		if (editor && onEditorReady && unsupportedMarks.length === 0) {
 			onEditorReady(editor);
 			return () => {
 				onEditorReady(null);
 			};
 		}
 		return undefined;
-	}, [editor, onEditorReady]);
+	}, [editor, onEditorReady, unsupportedMarks.length]);
 
 	React.useEffect(() => {
 		const viewport = window.visualViewport;
@@ -3252,7 +3310,17 @@ export function PortableTextEditor({
 			const ptContent = Array.isArray(section.content)
 				? (section.content as PortableTextBlock[])
 				: [];
-			const { content: prosemirrorContent } = portableTextToProsemirror(ptContent);
+			let prosemirrorContent: unknown[];
+			try {
+				({ content: prosemirrorContent } = portableTextToProsemirror(ptContent));
+			} catch (error) {
+				if (error instanceof UnsupportedPortableTextMarksError) {
+					setSectionInsertErrorMarks(error.marks);
+					return;
+				}
+				throw error;
+			}
+			setSectionInsertErrorMarks([]);
 
 			const insertPos = pendingBlockInsertPosRef.current;
 			const chain = editor.chain().focus();
@@ -3266,6 +3334,28 @@ export function PortableTextEditor({
 		[editor],
 	);
 
+	if (unsupportedMarks.length > 0) {
+		const markList = unsupportedMarks.join(", ");
+		return (
+			<div
+				role="alert"
+				className={cn(
+					className,
+					"rounded-lg border border-kumo-error bg-kumo-error/10 p-4 text-start",
+				)}
+				aria-labelledby={ariaLabelledby}
+			>
+				<p className="font-medium text-kumo-error">{t`This content cannot be edited safely`}</p>
+				<p className="mt-1 text-sm text-kumo-subtle">
+					<Trans>
+						This field contains unsupported Portable Text marks: <code dir="auto">{markList}</code>.
+						Remove them through the API before editing or saving this content.
+					</Trans>
+				</p>
+			</div>
+		);
+	}
+
 	if (!editor) {
 		return (
 			<div className={cn("border rounded-lg", className)}>
@@ -3276,6 +3366,32 @@ export function PortableTextEditor({
 
 	return (
 		<div ref={floatingRootRef} className="relative min-w-0" data-emdash-editor-floating-root>
+			{sectionInsertErrorMarks.length > 0 && (
+				<div
+					role="alert"
+					className="mb-3 flex items-start justify-between gap-4 rounded-lg border border-kumo-error bg-kumo-error/10 p-4 text-start"
+				>
+					<div className="min-w-0">
+						<p className="font-medium text-kumo-error">{t`Could not insert section`}</p>
+						<p className="mt-1 text-sm text-kumo-subtle">
+							<Trans>
+								This section contains unsupported Portable Text marks:{" "}
+								<code dir="auto">{sectionInsertErrorMarks.join(", ")}</code>. Update the section
+								before inserting it.
+							</Trans>
+						</p>
+					</div>
+					<Button
+						type="button"
+						variant="ghost"
+						shape="square"
+						onClick={() => setSectionInsertErrorMarks([])}
+						aria-label={t`Dismiss section error`}
+					>
+						<X className="h-4 w-4" aria-hidden="true" />
+					</Button>
+				</div>
+			)}
 			<EditorBubbleMenu
 				editor={editor}
 				appendTo={appendBubbleMenu}
@@ -3304,6 +3420,7 @@ export function PortableTextEditor({
 						focusMode={focusMode}
 						onFocusModeChange={setFocusMode}
 						onInsertBlock={handleTouchInsertBlock}
+						onInsertImage={openToolbarImagePicker}
 					/>
 				)}
 				<div className="relative overflow-visible">
@@ -3766,12 +3883,14 @@ function EditorToolbar({
 	focusMode,
 	onFocusModeChange,
 	onInsertBlock,
+	onInsertImage,
 }: {
 	toolbarRef: React.RefObject<HTMLDivElement | null>;
 	editor: Editor;
 	focusMode: FocusMode;
 	onFocusModeChange: (mode: FocusMode) => void;
 	onInsertBlock: () => void;
+	onInsertImage: () => void;
 }) {
 	const { t } = useLingui();
 	const [showLinkPopover, setShowLinkPopover] = React.useState(false);
@@ -3789,8 +3908,6 @@ function EditorToolbar({
 				isItalic: ctx.editor.isActive("italic"),
 				isUnderline: ctx.editor.isActive("underline"),
 				isStrike: ctx.editor.isActive("strike"),
-				isSubscript: ctx.editor.isActive("subscript"),
-				isSuperscript: ctx.editor.isActive("superscript"),
 				isCode: ctx.editor.isActive("code"),
 				isBulletList: ctx.editor.isActive("bulletList"),
 				isOrderedList,
@@ -3947,20 +4064,6 @@ function EditorToolbar({
 					<TextStrikethrough className="h-4 w-4" aria-hidden="true" />
 				</ToolbarButton>
 				<ToolbarButton
-					onClick={() => editor.chain().focus().toggleSubscript().run()}
-					active={editorState.isSubscript}
-					title={t`Subscript`}
-				>
-					<TextSubscript className="h-4 w-4" aria-hidden="true" />
-				</ToolbarButton>
-				<ToolbarButton
-					onClick={() => editor.chain().focus().toggleSuperscript().run()}
-					active={editorState.isSuperscript}
-					title={t`Superscript`}
-				>
-					<TextSuperscript className="h-4 w-4" aria-hidden="true" />
-				</ToolbarButton>
-				<ToolbarButton
 					onClick={() => editor.chain().focus().toggleCode().run()}
 					active={editorState.isCode}
 					title={t`Inline Code`}
@@ -4025,6 +4128,12 @@ function EditorToolbar({
 					title={t`Code Block`}
 				>
 					<CodeBlock className="h-4 w-4" aria-hidden="true" />
+				</ToolbarButton>
+				<ToolbarButton onClick={onInsertImage} title={t`Insert Image`}>
+					<ImageIcon className="h-4 w-4" aria-hidden="true" />
+				</ToolbarButton>
+				<ToolbarButton onClick={() => insertHtmlBlock(editor)} title={t`Insert HTML`}>
+					<BracketsAngle className="h-4 w-4" aria-hidden="true" />
 				</ToolbarButton>
 			</ToolbarGroup>
 

@@ -51,6 +51,7 @@ export interface ContentItem {
 		byline: BylineSummary;
 		sortOrder: number;
 		roleLabel: string | null;
+		source?: "explicit" | "inferred";
 	}>;
 	createdAt: string;
 	updatedAt: string;
@@ -70,7 +71,7 @@ export interface ContentItem {
 
 export interface CreateContentInput {
 	type: string;
-	slug?: string;
+	slug?: string | null;
 	data: Record<string, unknown>;
 	status?: string;
 	bylines?: BylineCreditInput[];
@@ -115,7 +116,7 @@ export interface ContentSeoInput {
 
 export interface UpdateContentInput {
 	data?: Record<string, unknown>;
-	slug?: string;
+	slug?: string | null;
 	status?: string;
 	publishedAt?: string | null;
 	authorId?: string | null;
