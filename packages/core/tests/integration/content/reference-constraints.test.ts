@@ -10,6 +10,7 @@ import { ContentRepository } from "../../../src/database/repositories/content.js
 import { RelationRepository } from "../../../src/database/repositories/relation.js";
 import type { ContentItem } from "../../../src/database/repositories/types.js";
 import { SchemaRegistry } from "../../../src/schema/registry.js";
+import { createTestRuntime } from "../../utils/mcp-runtime.js";
 import {
 	describeEachDialect,
 	setupForDialect,
@@ -39,7 +40,12 @@ describeEachDialect("reference field constraints", (dialect) => {
 		await registry.createCollection({ slug: "pages", label: "Pages", labelSingular: "Page" });
 		await registry.createField("pages", { slug: "title", label: "Title", type: "string" });
 		await registry.createCollection({ slug: "posts", label: "Posts", labelSingular: "Post" });
-		await registry.createField("posts", { slug: "title", label: "Title", type: "string" });
+		await registry.createField("posts", {
+			slug: "title",
+			label: "Title",
+			type: "string",
+			required: true,
+		});
 
 		const relationRepo = new RelationRepository(ctx.db);
 		const requiredSingle = await relationRepo.create({
@@ -112,6 +118,31 @@ describeEachDialect("reference field constraints", (dialect) => {
 		});
 
 		expect(result.success).toBe(true);
+	});
+
+	it("accepts required reference selections through runtime validation", async () => {
+		const { requiredSingle } = await setupConstrainedFields();
+		const child = await createPage("Child");
+		const runtime = createTestRuntime(ctx.db);
+
+		const missingStoredField = await runtime.handleContentCreate("posts", {
+			data: {},
+			references: { [requiredSingle.translationGroup]: [child.id] },
+		});
+		expect(missingStoredField.success).toBe(false);
+		if (!missingStoredField.success) {
+			expect(missingStoredField.error.message).toContain("title");
+			expect(missingStoredField.error.message).not.toContain("featured_page");
+		}
+
+		const result = await runtime.handleContentCreate("posts", {
+			data: { title: "Parent" },
+			references: { [requiredSingle.translationGroup]: [child.id] },
+		});
+
+		expect(result.success).toBe(true);
+		if (!result.success) return;
+		expect(result.data.item.data).toEqual({ title: "Parent" });
 	});
 
 	it("rejects multiple children on a single-reference field through content create", async () => {
