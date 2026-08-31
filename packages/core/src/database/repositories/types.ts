@@ -13,6 +13,8 @@ import { encodeBase64, decodeBase64 } from "../../utils/base64.js";
 const MAX_CURSOR_LENGTH = 4096;
 
 export interface CreateContentInput {
+	/** Explicit content ID for stable seed imports. Omit to generate a ULID. */
+	id?: string;
 	type: string;
 	slug?: string | null;
 	data: Record<string, unknown>;
@@ -326,6 +328,7 @@ export interface ContentItem {
 				collection: string;
 				title: string | null;
 				locale: string | null;
+				translationGroup: string | null;
 				sortOrder?: number;
 			}>;
 			nextCursor?: string;

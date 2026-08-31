@@ -36,6 +36,8 @@ export interface SchemaCollection {
 	supports: string[];
 	source?: string;
 	urlPattern?: string;
+	/** Published entries require a slug unless this is false. */
+	routable?: boolean;
 	hasSeo: boolean;
 	/** Sidebar entry omitted in the admin; the collection stays reachable by URL */
 	hidden: boolean;
@@ -96,6 +98,7 @@ export interface CreateCollectionInput {
 	admin?: CollectionAdminConfig;
 	supports?: string[];
 	urlPattern?: string;
+	routable?: boolean;
 	hasSeo?: boolean;
 	hidden?: boolean;
 	sortOrder?: number | null;
@@ -109,6 +112,7 @@ export interface UpdateCollectionInput {
 	admin?: CollectionAdminConfig;
 	supports?: string[];
 	urlPattern?: string;
+	routable?: boolean;
 	hasSeo?: boolean;
 	hidden?: boolean;
 	sortOrder?: number | null;

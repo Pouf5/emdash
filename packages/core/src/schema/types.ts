@@ -57,7 +57,6 @@ export const INDEXABLE_FIELD_TYPES: ReadonlySet<FieldType> = new Set([
 	"boolean",
 	"datetime",
 	"select",
-	"reference",
 	"slug",
 ]);
 
@@ -215,6 +214,8 @@ export interface Collection {
 	dateField?: string;
 	/** URL pattern with {slug} placeholder (e.g. "/{slug}", "/blog/{slug}") */
 	urlPattern?: string;
+	/** Whether published entries require a public slug. Defaults to true. */
+	routable?: boolean;
 	/**
 	 * Omit this collection's auto-generated entry from the admin sidebar.
 	 * The collection stays fully functional everywhere else (API, MCP, hooks,
@@ -278,6 +279,7 @@ export interface CreateCollectionInput {
 	supports?: CollectionSupport[];
 	source?: CollectionSource;
 	urlPattern?: string;
+	routable?: boolean;
 	hasSeo?: boolean;
 	/** Omit the auto-generated admin sidebar entry (defaults to false) */
 	hidden?: boolean;
@@ -297,6 +299,7 @@ export interface UpdateCollectionInput {
 	admin?: CollectionAdminConfig;
 	supports?: CollectionSupport[];
 	urlPattern?: string | null;
+	routable?: boolean;
 	hasSeo?: boolean;
 	/** Omit the auto-generated admin sidebar entry */
 	hidden?: boolean;
