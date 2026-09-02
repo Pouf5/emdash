@@ -44,6 +44,22 @@ class ReadTableRecorder implements KyselyPlugin {
 	}
 }
 
+/** Spends the whole statement budget while the cleanup lease row is being read. */
+class SuspendOnCleanupLeaseRead implements KyselyPlugin {
+	transformQuery(args: PluginTransformQueryArgs): RootOperationNode {
+		const tables = new Set<string>();
+		collectTableNames(args.node, tables);
+		if (tables.has("_emdash_media_usage_cleanup")) {
+			vi.advanceTimersByTime(MAX_CLEANUP_ADMISSION_TIME_MS);
+		}
+		return args.node;
+	}
+
+	async transformResult(args: PluginTransformResultArgs): Promise<QueryResult<UnknownRow>> {
+		return args.result;
+	}
+}
+
 function collectTableNames(node: unknown, into: Set<string>): void {
 	if (Array.isArray(node)) {
 		for (const item of node) collectTableNames(item, into);
@@ -1007,7 +1023,7 @@ describeEachDialect("scheduled media usage cleanup", (dialect) => {
 
 		expect(
 			await fenced.findMediaUsageCleanupCandidates({ ...scanArgs, cleanupLease: lostLease }),
-		).toEqual([]);
+		).toBeNull();
 		expect(
 			await fenced.deleteOrphanOccurrencesOlderThan(cutoff, MEDIA_USAGE_CLEANUP_DELETE_LIMIT, {
 				cleanupLease: lostLease,
@@ -1030,6 +1046,45 @@ describeEachDialect("scheduled media usage cleanup", (dialect) => {
 			),
 		).toBe(0);
 
+		expect([...readTables.tables]).toEqual(["_emdash_media_usage_cleanup"]);
+	});
+
+	it("does not issue its scan when the budget expires during the lease read", async () => {
+		const stale = await repo.replaceSource(contentSource("entry-lease-read-budget"), [
+			occurrence("media-stale"),
+		]);
+		await repo.replaceSource(contentSource("entry-lease-read-budget"), [
+			occurrence("media-current"),
+		]);
+		await db
+			.updateTable("_emdash_media_usage")
+			.set({ created_at: "2026-02-01T19:00:00.000Z" })
+			.where("generation", "=", stale.currentGeneration)
+			.execute();
+		expect(
+			await repo.claimMediaUsageCleanup({
+				leaseToken: "lease-read-budget-owner",
+				leaseDurationSeconds: 5 * 60,
+				nextEligibleDelaySeconds: 60,
+				sweepSafetyWindowSeconds: 60 * 60,
+			}),
+		).not.toBeNull();
+
+		const readTables = new ReadTableRecorder();
+		const startedMs = Date.now();
+		const suspended = new MediaUsageRepository(
+			db.withPlugin(readTables).withPlugin(new SuspendOnCleanupLeaseRead()),
+		);
+
+		expect(
+			await suspended.findMediaUsageCleanupCandidates({
+				cutoff: "2100-01-01T00:00:00.000Z",
+				cursor: null,
+				limit: MEDIA_USAGE_CLEANUP_CANDIDATE_LIMIT,
+				cleanupLease: { leaseToken: "lease-read-budget-owner" },
+				canIssueStatement: () => Date.now() - startedMs < MAX_CLEANUP_ADMISSION_TIME_MS,
+			}),
+		).toBeNull();
 		expect([...readTables.tables]).toEqual(["_emdash_media_usage_cleanup"]);
 	});
 

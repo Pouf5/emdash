@@ -1801,13 +1801,20 @@ export class MediaUsageRepository {
 		};
 	}
 
+	/**
+	 * Scans for reclaimable occurrences, or resolves to `null` when the sweep was
+	 * never issued because the lease is gone or the tick is out of budget. An
+	 * empty array means the scan ran and found nothing, which lets the caller
+	 * retire the sweep window; `null` must leave the cursor where it was.
+	 */
 	async findMediaUsageCleanupCandidates(input: {
 		cutoff: string;
 		cursor: MediaUsageCleanupCursor | null;
 		limit: number;
 		cleanupLease?: MediaUsageCleanupLease;
-	}): Promise<MediaUsageCleanupCandidate[]> {
-		if (input.cleanupLease && !(await this.holdsCleanupLease(input.cleanupLease))) return [];
+		canIssueStatement?: () => boolean;
+	}): Promise<MediaUsageCleanupCandidate[] | null> {
+		if (!(await this.admitCleanupScan(input.cleanupLease, input.canIssueStatement))) return null;
 
 		let query = this.db
 			.selectFrom("_emdash_media_usage as u")
@@ -1927,8 +1934,7 @@ export class MediaUsageRepository {
 				options.canIssueStatement,
 			);
 		}
-		if (!canIssueCleanupStatement(options.canIssueStatement)) return 0;
-		if (options.cleanupLease && !(await this.holdsCleanupLease(options.cleanupLease))) return 0;
+		if (!(await this.admitCleanupScan(options.cleanupLease, options.canIssueStatement))) return 0;
 
 		const rows = await this.db
 			.selectFrom("_emdash_media_usage as u")
@@ -1972,8 +1978,7 @@ export class MediaUsageRepository {
 				options.canIssueStatement,
 			);
 		}
-		if (!canIssueCleanupStatement(options.canIssueStatement)) return 0;
-		if (options.cleanupLease && !(await this.holdsCleanupLease(options.cleanupLease))) return 0;
+		if (!(await this.admitCleanupScan(options.cleanupLease, options.canIssueStatement))) return 0;
 
 		const rows = await this.db
 			.selectFrom("_emdash_media_usage as u")
@@ -2018,8 +2023,7 @@ export class MediaUsageRepository {
 				options.canIssueStatement,
 			);
 		}
-		if (!canIssueCleanupStatement(options.canIssueStatement)) return 0;
-		if (options.cleanupLease && !(await this.holdsCleanupLease(options.cleanupLease))) return 0;
+		if (!(await this.admitCleanupScan(options.cleanupLease, options.canIssueStatement))) return 0;
 
 		const rows = await this.db
 			.selectFrom("_emdash_media_usage as u")
@@ -2055,8 +2059,8 @@ export class MediaUsageRepository {
 		canIssueStatement?: () => boolean,
 	): Promise<number> {
 		const batchLimit = Math.floor(limit);
-		if (batchLimit <= 0 || !canIssueCleanupStatement(canIssueStatement)) return 0;
-		if (cleanupLease && !(await this.holdsCleanupLease(cleanupLease))) return 0;
+		if (batchLimit <= 0) return 0;
+		if (!(await this.admitCleanupScan(cleanupLease, canIssueStatement))) return 0;
 		const rows = await this.db
 			.selectFrom("_emdash_media_usage_generation_writes")
 			.select("lease_token")
@@ -2897,6 +2901,23 @@ export class MediaUsageRepository {
 					AND writer.generation = ${generation}
 					AND ${this.generationWriteLeaseExpiryIsInFuture("writer.expires_at")}
 			)`;
+	}
+
+	/**
+	 * Gates a bounded cleanup scan on the lease and the tick's statement budget.
+	 *
+	 * The budget is re-read after the lease row because that read is itself a
+	 * statement: an isolate suspended across it can resume with the budget spent.
+	 */
+	private async admitCleanupScan(
+		cleanupLease: MediaUsageCleanupLease | undefined,
+		canIssueStatement: (() => boolean) | undefined,
+	): Promise<boolean> {
+		if (!canIssueCleanupStatement(canIssueStatement)) return false;
+		if (!cleanupLease) return true;
+		return (
+			(await this.holdsCleanupLease(cleanupLease)) && canIssueCleanupStatement(canIssueStatement)
+		);
 	}
 
 	/**
