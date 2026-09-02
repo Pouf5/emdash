@@ -1807,6 +1807,8 @@ export class MediaUsageRepository {
 		limit: number;
 		cleanupLease?: MediaUsageCleanupLease;
 	}): Promise<MediaUsageCleanupCandidate[]> {
+		if (input.cleanupLease && !(await this.holdsCleanupLease(input.cleanupLease))) return [];
+
 		let query = this.db
 			.selectFrom("_emdash_media_usage as u")
 			.leftJoin("_emdash_media_usage_sources as s", "s.source_key", "u.source_key")
@@ -1828,9 +1830,6 @@ export class MediaUsageRepository {
 			.orderBy("u.created_at", "asc")
 			.orderBy("u.id", "asc")
 			.limit(Math.max(0, Math.floor(input.limit)));
-		if (input.cleanupLease) {
-			query = query.where(this.activeCleanupLeaseExpression(input.cleanupLease));
-		}
 
 		if (input.cursor) {
 			query = query.where((eb) =>
@@ -1929,8 +1928,9 @@ export class MediaUsageRepository {
 			);
 		}
 		if (!canIssueCleanupStatement(options.canIssueStatement)) return 0;
+		if (options.cleanupLease && !(await this.holdsCleanupLease(options.cleanupLease))) return 0;
 
-		let query = this.db
+		const rows = await this.db
 			.selectFrom("_emdash_media_usage as u")
 			.leftJoin("_emdash_media_usage_sources as s", (join) =>
 				join.onRef("s.source_key", "=", "u.source_key"),
@@ -1946,11 +1946,8 @@ export class MediaUsageRepository {
 			.where(this.noActiveGenerationWriteExpression("u"))
 			.orderBy("u.created_at", "asc")
 			.orderBy("u.id", "asc")
-			.limit(batchLimit);
-		if (options.cleanupLease) {
-			query = query.where(this.activeCleanupLeaseExpression(options.cleanupLease));
-		}
-		const rows = await query.execute();
+			.limit(batchLimit)
+			.execute();
 
 		return this.deleteOrphanCandidateIds(
 			rows.map((row) => row.id),
@@ -1976,8 +1973,9 @@ export class MediaUsageRepository {
 			);
 		}
 		if (!canIssueCleanupStatement(options.canIssueStatement)) return 0;
+		if (options.cleanupLease && !(await this.holdsCleanupLease(options.cleanupLease))) return 0;
 
-		let query = this.db
+		const rows = await this.db
 			.selectFrom("_emdash_media_usage as u")
 			.innerJoin("_emdash_media_usage_sources as s", (join) =>
 				join.onRef("s.source_key", "=", "u.source_key"),
@@ -1994,11 +1992,8 @@ export class MediaUsageRepository {
 			.where(this.noActiveGenerationWriteExpression("u"))
 			.orderBy("u.created_at", "asc")
 			.orderBy("u.id", "asc")
-			.limit(batchLimit);
-		if (options.cleanupLease) {
-			query = query.where(this.activeCleanupLeaseExpression(options.cleanupLease));
-		}
-		const rows = await query.execute();
+			.limit(batchLimit)
+			.execute();
 
 		return this.deleteStaleCandidateIds(
 			rows.map((row) => row.id),
@@ -2024,8 +2019,9 @@ export class MediaUsageRepository {
 			);
 		}
 		if (!canIssueCleanupStatement(options.canIssueStatement)) return 0;
+		if (options.cleanupLease && !(await this.holdsCleanupLease(options.cleanupLease))) return 0;
 
-		let query = this.db
+		const rows = await this.db
 			.selectFrom("_emdash_media_usage as u")
 			.innerJoin("_emdash_media_usage_sources as s", (join) =>
 				join.onRef("s.source_key", "=", "u.source_key"),
@@ -2042,11 +2038,8 @@ export class MediaUsageRepository {
 			.where(this.noActiveGenerationWriteExpression("u"))
 			.orderBy("u.created_at", "asc")
 			.orderBy("u.id", "asc")
-			.limit(batchLimit);
-		if (options.cleanupLease) {
-			query = query.where(this.activeCleanupLeaseExpression(options.cleanupLease));
-		}
-		const rows = await query.execute();
+			.limit(batchLimit)
+			.execute();
 
 		return this.deleteAbandonedCandidateIds(
 			rows.map((row) => row.id),
@@ -2063,15 +2056,15 @@ export class MediaUsageRepository {
 	): Promise<number> {
 		const batchLimit = Math.floor(limit);
 		if (batchLimit <= 0 || !canIssueCleanupStatement(canIssueStatement)) return 0;
-		let query = this.db
+		if (cleanupLease && !(await this.holdsCleanupLease(cleanupLease))) return 0;
+		const rows = await this.db
 			.selectFrom("_emdash_media_usage_generation_writes")
 			.select("lease_token")
 			.where(this.generationWriteLeaseHasExpired("expires_at"))
 			.orderBy("expires_at", "asc")
 			.orderBy("lease_token", "asc")
-			.limit(batchLimit);
-		if (cleanupLease) query = query.where(this.activeCleanupLeaseExpression(cleanupLease));
-		const rows = await query.execute();
+			.limit(batchLimit)
+			.execute();
 		if (rows.length === 0 || !canIssueCleanupStatement(canIssueStatement)) return 0;
 		let deleteQuery = this.db
 			.deleteFrom("_emdash_media_usage_generation_writes")
@@ -2904,6 +2897,26 @@ export class MediaUsageRepository {
 					AND writer.generation = ${generation}
 					AND ${this.generationWriteLeaseExpiryIsInFuture("writer.expires_at")}
 			)`;
+	}
+
+	/**
+	 * Reads the lease row on its own so a lost lease can short-circuit a sweep.
+	 *
+	 * As a row-level `EXISTS` inside a `LIMIT`ed scan this predicate is constant
+	 * across every candidate row: when it is false the limit is unreachable and
+	 * the scan reads the whole `created_at` range before returning nothing.
+	 * Mutating statements still carry {@link activeCleanupLeaseExpression},
+	 * which is what actually fences a displaced owner.
+	 */
+	private async holdsCleanupLease(cleanupLease: MediaUsageCleanupLease): Promise<boolean> {
+		let query = this.db
+			.selectFrom("_emdash_media_usage_cleanup")
+			.select("task_key")
+			.where("task_key", "=", "projection_gc")
+			.where("lease_token", "=", cleanupLease.leaseToken)
+			.where(this.cleanupLeaseExpiryIsInFuture("_emdash_media_usage_cleanup.lease_expires_at"));
+		if (isPostgres(this.db)) query = query.forUpdate();
+		return (await query.executeTakeFirst()) !== undefined;
 	}
 
 	private activeCleanupLeaseExpression(cleanupLease: MediaUsageCleanupLease) {

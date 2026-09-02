@@ -17,7 +17,7 @@ interface CapturedQuery {
 	parameters: readonly unknown[];
 }
 
-const MAX_CLEANUP_STATEMENTS_PER_TICK = 14;
+const MAX_CLEANUP_STATEMENTS_PER_TICK = 16;
 const MAX_BIND_PARAMETERS_PER_CLEANUP_STATEMENT = 52;
 const MAX_CLEANUP_ADMISSION_TIME_MS = 5_000;
 
