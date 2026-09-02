@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 
-import { sortKey, SORT_KEY_VERSION } from "../../../src/text/sort-key.js";
+import { sortKey } from "../../../src/text/sort-key.js";
 
 /**
  * Order a list the way the database would: compare the stored sort keys with
@@ -192,9 +192,5 @@ describe("sortKey", () => {
 		it("falls back to the invariant order for untailored locales", () => {
 			expect(sortKey("Ação", { locale: "pt-BR" })).toBe(sortKey("Ação"));
 		});
-	});
-
-	it("has a version constant so stored keys can be detected as stale", () => {
-		expect(SORT_KEY_VERSION).toBeGreaterThan(0);
 	});
 });

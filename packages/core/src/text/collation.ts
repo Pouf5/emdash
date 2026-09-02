@@ -140,7 +140,18 @@ const TAILORINGS: Readonly<Record<string, Readonly<Record<string, string>>>> = {
 	},
 };
 
-const CACHE = new Map<string, Collation | undefined>();
+type CollationCache = Map<string, Collation | undefined>;
+
+const COLLATION_CACHE_KEY = Symbol.for("emdash:collation-cache");
+const g = globalThis as Record<symbol, unknown>;
+const CACHE: CollationCache =
+	// eslint-disable-next-line typescript/no-unsafe-type-assertion -- globalThis singleton pattern (see request-context.ts)
+	(g[COLLATION_CACHE_KEY] as CollationCache | undefined) ??
+	(() => {
+		const c: CollationCache = new Map();
+		g[COLLATION_CACHE_KEY] = c;
+		return c;
+	})();
 
 function build(table: Readonly<Record<string, string>>): Collation {
 	const elements = new Map(Object.entries(table));
