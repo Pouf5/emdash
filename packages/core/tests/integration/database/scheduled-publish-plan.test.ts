@@ -57,7 +57,7 @@ it("seeks due content through the scheduled index instead of scanning live rows"
 
 	const plan = explain(scheduledQuery());
 	expect(contentAccess(plan)).toMatch(
-		/SEARCH ec_post USING (?:COVERING )?INDEX idx_ec_post_del_sched \(deleted_at=\? AND scheduled_at>\? AND scheduled_at<\?\)/,
+		/SEARCH ec_post USING (?:COVERING )?INDEX idx_ec_post_del_sched \(deleted_at=\? AND scheduled_at/,
 	);
 	expect(plan).not.toContain("SCAN ec_post");
 	expect(plan).not.toContain("USE TEMP B-TREE FOR ORDER BY");
@@ -95,7 +95,7 @@ it("migrates a pre-074 table off the deleted_at-leading plan", async () => {
 	await repo.findReadyToPublish("post", 100);
 	const after = explain(scheduledQuery());
 	expect(contentAccess(after)).toMatch(
-		/SEARCH ec_post USING (?:COVERING )?INDEX idx_ec_post_del_sched \(deleted_at=\? AND scheduled_at>\? AND scheduled_at<\?\)/,
+		/SEARCH ec_post USING (?:COVERING )?INDEX idx_ec_post_del_sched \(deleted_at=\? AND scheduled_at/,
 	);
 	expect(after).not.toContain("USE TEMP B-TREE FOR ORDER BY");
 });

@@ -1463,10 +1463,10 @@ export class SchemaRegistry {
 			ON ${sql.ref(tableName)} (slug)
 		`.execute(conn);
 
-		// Name must stay identical to migration 074. Leading with `deleted_at` lets
-		// the scheduled-publishing sweep seek the soft-delete equality and walk
-		// `scheduled_at` for both its range and its ORDER BY; a `scheduled_at`-only
-		// index leaves a stats-blind planner reading every live row per tick.
+		// Name must stay identical to migration 074. `deleted_at` leads so the
+		// scheduled-publishing sweep can seek it and walk `scheduled_at` for both
+		// its range and its ORDER BY; a `scheduled_at`-only index leaves a
+		// stats-blind planner reading every live row.
 		await sql`
 			${createIndex} ${sql.ref(`idx_${tableName}_del_sched`)}
 			ON ${sql.ref(tableName)} (deleted_at, scheduled_at)

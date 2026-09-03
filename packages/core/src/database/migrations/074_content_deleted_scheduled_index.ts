@@ -7,20 +7,15 @@ import { listTablesLike } from "../dialect-helpers.js";
  * Migration: replace the single-column partial `scheduled_at` index on content
  * tables with a `(deleted_at, scheduled_at)` composite.
  *
- * The scheduled-publishing sweep reads `scheduled_at IS NOT NULL AND
- * scheduled_at <= ? AND deleted_at IS NULL` ordered by `scheduled_at`. A
- * stats-blind planner cannot seek the `scheduled_at`-only partial index and
- * satisfy `deleted_at IS NULL` too, so it takes the `deleted_at=?` equality on
- * whichever `deleted_at`-leading composite it finds first, reads every live row
- * in the table, and sorts the result in a temp b-tree. The sweep runs per
- * collection on every scheduler tick, so a site with no scheduled content still
- * pays its entire content size in reads every tick.
+ * The scheduled-publishing sweep filters `scheduled_at` by range and
+ * `deleted_at IS NULL`, ordered by `scheduled_at`. A `scheduled_at`-only index
+ * cannot satisfy the soft-delete term, so a stats-blind planner seeks a
+ * `deleted_at`-leading composite instead and reads every live row. Leading with
+ * `deleted_at` lets one index serve the equality, the range, and the ORDER BY.
+ * D1 never has `sqlite_stat1`, so the index shape is the only lever.
  *
- * Leading with `deleted_at` lets the same index serve the equality and then walk
- * `scheduled_at` in order, which satisfies the range and the ORDER BY together.
- * The partial `WHERE scheduled_at IS NOT NULL` clause is kept so the index stays
- * proportional to scheduled content rather than to the table. D1 never has
- * `sqlite_stat1`, so the index shape is the only lever.
+ * The partial predicate from migration 030 is kept so the index stays
+ * proportional to scheduled content rather than to the table.
  *
  * Forward-only and idempotent (`IF NOT EXISTS`).
  *
