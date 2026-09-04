@@ -40,17 +40,17 @@ msgid "-- Select --"
 msgstr "-- Оберіть --"
 
 #. placeholder {0}: item.filename
-#: packages/admin/src/components/MediaDetailPanel.tsx:1637
+#: packages/admin/src/components/MediaDetailPanel.tsx:1782
 msgid "\"{0}\" will be deleted from {providerName}."
 msgstr ""
 
 #. placeholder {0}: item.filename
-#: packages/admin/src/components/MediaDetailPanel.tsx:1638
+#: packages/admin/src/components/MediaDetailPanel.tsx:1783
 msgid "\"{0}\" will be deleted from its media provider."
 msgstr ""
 
 #. placeholder {0}: item.filename
-#: packages/admin/src/components/MediaDetailPanel.tsx:1639
+#: packages/admin/src/components/MediaDetailPanel.tsx:1784
 msgid "\"{0}\" will be permanently deleted."
 msgstr ""
 
@@ -117,7 +117,7 @@ msgstr "{0, plural, one {# елемент вмісту імпортовано} f
 
 #. placeholder {0}: locationFolders.length
 #. placeholder {0}: visibleFolders.length
-#: packages/admin/src/components/MediaDetailPanel.tsx:1269
+#: packages/admin/src/components/MediaDetailPanel.tsx:1388
 #: packages/admin/src/components/MediaLibrary.tsx:1012
 msgid "{0, plural, one {# folder loaded} other {# folders loaded}}"
 msgstr ""
@@ -540,7 +540,7 @@ msgstr "1. Увійдіть до адмін-панелі WordPress"
 msgid "1. Log into your WordPress admin dashboard"
 msgstr "1. Увійдіть до панелі керування WordPress"
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:416
+#: packages/admin/src/components/MediaDetailPanel.tsx:445
 msgid "16:9"
 msgstr ""
 
@@ -552,7 +552,7 @@ msgstr ""
 msgid "2. Go to Users → Profile"
 msgstr "2. Перейдіть до Користувачі → Профіль"
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:415
+#: packages/admin/src/components/MediaDetailPanel.tsx:444
 msgid "3:2"
 msgstr ""
 
@@ -584,7 +584,7 @@ msgstr "307 Тимчасове (суворе)"
 msgid "308 Permanent (Strict)"
 msgstr "308 Постійне (суворе)"
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:414
+#: packages/admin/src/components/MediaDetailPanel.tsx:443
 msgid "4:3"
 msgstr ""
 
@@ -644,7 +644,7 @@ msgstr "Короткий опис вашого сайту"
 msgid "A source and target locale are required"
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:408
+#: packages/admin/src/components/MediaDetailPanel.tsx:437
 msgid "About focal point"
 msgstr ""
 
@@ -1053,8 +1053,8 @@ msgstr "Альтернативний текст"
 
 #: packages/admin/src/components/editor/ImageDetailPanel.tsx:347
 #: packages/admin/src/components/editor/ImageDetailPanel.tsx:536
-#: packages/admin/src/components/MediaDetailPanel.tsx:1340
-#: packages/admin/src/components/MediaDetailPanel.tsx:1357
+#: packages/admin/src/components/MediaDetailPanel.tsx:1459
+#: packages/admin/src/components/MediaDetailPanel.tsx:1476
 msgid "Alt Text"
 msgstr "Альтернативний текст"
 
@@ -1142,7 +1142,7 @@ msgstr "Аналіз файлу експорту..."
 msgid "Analyzing WordPress site..."
 msgstr "Аналіз сайту WordPress..."
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1524
+#: packages/admin/src/components/MediaDetailPanel.tsx:1644
 msgid "Animated WebP files become still images when cropped."
 msgstr ""
 
@@ -1234,7 +1234,7 @@ msgstr "Як адміністратор, ви можете запрошуват�
 msgid "Ask an administrator to complete this setup."
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1466
+#: packages/admin/src/components/MediaDetailPanel.tsx:1586
 msgid "Aspect ratio"
 msgstr ""
 
@@ -1579,7 +1579,7 @@ msgstr "Може переглядати вміст"
 #: packages/admin/src/components/BylineCreditsEditor.tsx:1016
 #: packages/admin/src/components/BylineFieldEditor.tsx:315
 #: packages/admin/src/components/CapabilityConsentDialog.tsx:256
-#: packages/admin/src/components/ConfirmDialog.tsx:97
+#: packages/admin/src/components/ConfirmDialog.tsx:99
 #: packages/admin/src/components/ContentList.tsx:544
 #: packages/admin/src/components/ContentList.tsx:1363
 #: packages/admin/src/components/ContentList.tsx:1531
@@ -1594,7 +1594,7 @@ msgstr "Може переглядати вміст"
 #: packages/admin/src/components/editor/ImageNode.tsx:283
 #: packages/admin/src/components/editor/PluginBlockNode.tsx:406
 #: packages/admin/src/components/FieldEditor.tsx:701
-#: packages/admin/src/components/MediaDetailPanel.tsx:1571
+#: packages/admin/src/components/MediaDetailPanel.tsx:1716
 #: packages/admin/src/components/MediaFolderDialog.tsx:152
 #: packages/admin/src/components/MediaPickerModal.tsx:807
 #: packages/admin/src/components/MenuEditor.tsx:438
@@ -1658,7 +1658,7 @@ msgstr "Згода на можливості"
 #: packages/admin/src/components/editor/GalleryDetailPanel.tsx:387
 #: packages/admin/src/components/editor/ImageDetailPanel.tsx:355
 #: packages/admin/src/components/editor/ImageDetailPanel.tsx:544
-#: packages/admin/src/components/MediaDetailPanel.tsx:1368
+#: packages/admin/src/components/MediaDetailPanel.tsx:1487
 msgid "Caption"
 msgstr "Підпис"
 
@@ -1769,6 +1769,11 @@ msgstr "Перевірка, скільки збережених значень �
 msgid "Choose a date range"
 msgstr ""
 
+#. placeholder {0}: formatFileFormat(item.mimeType)
+#: packages/admin/src/components/MediaDetailPanel.tsx:794
+msgid "Choose a non-empty {0} image."
+msgstr ""
+
 #: packages/admin/src/components/BylineCreditsEditor.tsx:662
 #: packages/admin/src/components/BylineCreditsEditor.tsx:680
 msgid "Choose bylines"
@@ -1777,6 +1782,10 @@ msgstr ""
 #: packages/admin/src/components/SetupWizard.tsx:288
 msgid "Choose how to sign in"
 msgstr "Оберіть спосіб входу"
+
+#: packages/admin/src/components/MediaDetailPanel.tsx:1708
+msgid "Choose replacement image"
+msgstr ""
 
 #: packages/admin/src/components/Settings.tsx:134
 msgid "Choose your preferred admin language"
@@ -1837,8 +1846,8 @@ msgstr "Перейдіть за посиланням у листі, щоб ув�
 #: packages/admin/src/components/FieldEditor.tsx:387
 #: packages/admin/src/components/FieldEditor.tsx:391
 #: packages/admin/src/components/MarketplacePluginDetail.tsx:449
-#: packages/admin/src/components/MediaDetailPanel.tsx:889
-#: packages/admin/src/components/MediaDetailPanel.tsx:1571
+#: packages/admin/src/components/MediaDetailPanel.tsx:1008
+#: packages/admin/src/components/MediaDetailPanel.tsx:1716
 #: packages/admin/src/components/MediaPickerModal.tsx:531
 #: packages/admin/src/components/MediaPickerModal.tsx:537
 #: packages/admin/src/components/MediaPickerModal.tsx:541
@@ -2089,7 +2098,7 @@ msgstr "Вміст для імпорту"
 msgid "Content Types"
 msgstr "Типи вмісту"
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1657
+#: packages/admin/src/components/MediaDetailPanel.tsx:1802
 msgid "Content using this media item may show a broken reference."
 msgstr ""
 
@@ -2166,7 +2175,7 @@ msgstr "Скопіювати токен"
 
 #: packages/admin/src/components/editor/PluginBlockNode.tsx:322
 #: packages/admin/src/components/editor/PluginBlockNode.tsx:323
-#: packages/admin/src/components/MediaDetailPanel.tsx:1128
+#: packages/admin/src/components/MediaDetailPanel.tsx:1247
 msgid "Copy URL"
 msgstr "Скопіювати URL"
 
@@ -2186,7 +2195,7 @@ msgstr "Не вдалося завантажити дані панелі"
 msgid "Could not load image from URL"
 msgstr "Не вдалося завантажити зображення з URL"
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:664
+#: packages/admin/src/components/MediaDetailPanel.tsx:722
 msgid "Couldn’t confirm whether the media item or selected folder still exists. Try again."
 msgstr ""
 
@@ -2304,7 +2313,7 @@ msgstr "Створити підпис"
 msgid "Create Content Type"
 msgstr "Створити тип вмісту"
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1591
+#: packages/admin/src/components/MediaDetailPanel.tsx:1736
 msgid "Create cropped copy"
 msgstr ""
 
@@ -2452,7 +2461,7 @@ msgstr "Створено"
 msgid "Creating collections and fields..."
 msgstr "Створення колекцій і полів..."
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:719
+#: packages/admin/src/components/MediaDetailPanel.tsx:838
 msgid "Creating cropped copy..."
 msgstr ""
 
@@ -2465,7 +2474,7 @@ msgstr ""
 msgid "Creating..."
 msgstr "Створення..."
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1393
+#: packages/admin/src/components/MediaDetailPanel.tsx:1512
 msgid "Crop"
 msgstr ""
 
@@ -2475,7 +2484,7 @@ msgstr ""
 msgid "Crop area {0} by {1} pixels."
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1499
+#: packages/admin/src/components/MediaDetailPanel.tsx:1619
 msgid "Crop output dimensions"
 msgstr ""
 
@@ -2483,7 +2492,7 @@ msgstr ""
 msgid "Crop selection. Use the Arrow keys to move it."
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:618
+#: packages/admin/src/components/MediaDetailPanel.tsx:673
 #: packages/admin/src/components/MediaLibrary.tsx:1399
 msgid "Cropped copy created."
 msgstr ""
@@ -2623,8 +2632,8 @@ msgstr "Визначено в коді"
 #: packages/admin/src/components/editor/BlockMenu.tsx:318
 #: packages/admin/src/components/editor/HtmlBlockNode.tsx:130
 #: packages/admin/src/components/editor/PluginBlockNode.tsx:378
-#: packages/admin/src/components/MediaDetailPanel.tsx:1565
-#: packages/admin/src/components/MediaDetailPanel.tsx:1643
+#: packages/admin/src/components/MediaDetailPanel.tsx:1688
+#: packages/admin/src/components/MediaDetailPanel.tsx:1788
 #: packages/admin/src/components/MenuEditor.tsx:549
 #: packages/admin/src/components/MenuList.tsx:258
 #: packages/admin/src/components/Redirects.tsx:603
@@ -2729,7 +2738,7 @@ msgstr "Видалити HTML-блок"
 msgid "Delete image"
 msgstr "Видалити зображення"
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1631
+#: packages/admin/src/components/MediaDetailPanel.tsx:1776
 msgid "Delete media?"
 msgstr ""
 
@@ -2792,8 +2801,8 @@ msgstr "Видалення \"{0}\" також прибере {1, plural, one {# 
 #: packages/admin/src/components/comments/CommentInbox.tsx:400
 #: packages/admin/src/components/ContentTypeEditor.tsx:688
 #: packages/admin/src/components/ContentTypeList.tsx:237
-#: packages/admin/src/components/MediaDetailPanel.tsx:1565
-#: packages/admin/src/components/MediaDetailPanel.tsx:1644
+#: packages/admin/src/components/MediaDetailPanel.tsx:1688
+#: packages/admin/src/components/MediaDetailPanel.tsx:1789
 #: packages/admin/src/components/MediaFolderDialog.tsx:185
 #: packages/admin/src/components/MenuList.tsx:259
 #: packages/admin/src/components/Redirects.tsx:604
@@ -2837,7 +2846,7 @@ msgstr "Опишіть зображення..."
 
 #: packages/admin/src/components/editor/ImageDetailPanel.tsx:350
 #: packages/admin/src/components/editor/ImageDetailPanel.tsx:539
-#: packages/admin/src/components/MediaDetailPanel.tsx:1360
+#: packages/admin/src/components/MediaDetailPanel.tsx:1479
 msgid "Describe this image for accessibility"
 msgstr "Опишіть це зображення для доступності"
 
@@ -2870,8 +2879,8 @@ msgstr "Шлях призначення"
 msgid "Destructive"
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:917
-#: packages/admin/src/components/MediaDetailPanel.tsx:959
+#: packages/admin/src/components/MediaDetailPanel.tsx:1036
+#: packages/admin/src/components/MediaDetailPanel.tsx:1078
 msgid "Details"
 msgstr ""
 
@@ -2899,7 +2908,7 @@ msgstr "Не отримали лист?"
 msgid "Diff"
 msgstr "Різниця"
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1081
+#: packages/admin/src/components/MediaDetailPanel.tsx:1200
 msgid "Dimensions:"
 msgstr "Розміри:"
 
@@ -2947,7 +2956,7 @@ msgstr "Вимкнення <0>{0}</0> заборонить вхід до пов�
 msgid "Disabling..."
 msgstr "Вимкнення..."
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1617
+#: packages/admin/src/components/MediaDetailPanel.tsx:1762
 msgid "Discard"
 msgstr "Скасувати"
 
@@ -2956,7 +2965,7 @@ msgstr "Скасувати"
 msgid "Discard changes"
 msgstr "Скасувати зміни"
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1615
+#: packages/admin/src/components/MediaDetailPanel.tsx:1760
 msgid "Discard changes?"
 msgstr "Скасувати зміни?"
 
@@ -2964,7 +2973,7 @@ msgstr "Скасувати зміни?"
 msgid "Discard draft changes?"
 msgstr "Скасувати зміни чернетки?"
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1618
+#: packages/admin/src/components/MediaDetailPanel.tsx:1763
 msgid "Discarding..."
 msgstr "Скасування..."
 
@@ -3241,8 +3250,8 @@ msgstr ""
 msgid "Edit folder {0}"
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:922
-#: packages/admin/src/components/MediaDetailPanel.tsx:962
+#: packages/admin/src/components/MediaDetailPanel.tsx:1041
+#: packages/admin/src/components/MediaDetailPanel.tsx:1081
 msgid "Edit image"
 msgstr ""
 
@@ -3369,7 +3378,11 @@ msgstr "Вбудувати {0}"
 msgid "Embeds"
 msgstr "Вбудування"
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1692
+#: packages/admin/src/components/MediaDetailPanel.tsx:1838
+msgid "EmDash does not keep the previous image."
+msgstr ""
+
+#: packages/admin/src/components/MediaDetailPanel.tsx:1872
 msgid "EmDash does not keep the uncropped image."
 msgstr ""
 
@@ -3518,8 +3531,12 @@ msgstr "Помилка збереження секції"
 msgid "Error updating widget"
 msgstr "Помилка оновлення віджета"
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1674
+#: packages/admin/src/components/MediaDetailPanel.tsx:1854
 msgid "Every place using this image will update to the cropped version."
+msgstr ""
+
+#: packages/admin/src/components/MediaDetailPanel.tsx:1819
+msgid "Every place using this image will update to the selected version."
 msgstr ""
 
 #: packages/admin/src/components/RegistryPluginDetail.tsx:657
@@ -4269,13 +4286,13 @@ msgstr "Файл {0}"
 msgid "File from media library"
 msgstr "Файл з медіатеки"
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1176
-#: packages/admin/src/components/MediaDetailPanel.tsx:1193
+#: packages/admin/src/components/MediaDetailPanel.tsx:1295
+#: packages/admin/src/components/MediaDetailPanel.tsx:1312
 #: packages/admin/src/components/MediaLibrary.tsx:1215
 msgid "Filename"
 msgstr "Ім'я файлу"
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:403
+#: packages/admin/src/components/MediaDetailPanel.tsx:432
 msgid "Filename cannot be changed after upload"
 msgstr "Ім'я файлу не можна змінити після завантаження"
 
@@ -4337,12 +4354,12 @@ msgstr ""
 msgid "First-time commenters only"
 msgstr "Лише нові коментатори"
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1398
-#: packages/admin/src/components/MediaDetailPanel.tsx:1409
+#: packages/admin/src/components/MediaDetailPanel.tsx:1517
+#: packages/admin/src/components/MediaDetailPanel.tsx:1528
 msgid "Focal point"
 msgstr ""
 
-#: packages/admin/src/components/FocalPointEditor.tsx:176
+#: packages/admin/src/components/FocalPointEditor.tsx:205
 msgid "Focal point. Use arrow keys to move it."
 msgstr ""
 
@@ -4375,7 +4392,7 @@ msgstr ""
 msgid "Folders"
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1296
+#: packages/admin/src/components/MediaDetailPanel.tsx:1415
 #: packages/admin/src/components/MediaLibrary.tsx:1037
 #: packages/admin/src/components/MediaLibrary.tsx:1577
 msgid "Folders could not be loaded."
@@ -4397,11 +4414,11 @@ msgstr "Для повного імпорту, включно з чернетка
 msgid "For the best import experience, install the <0>EmDash Exporter</0> plugin on your WordPress site."
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1109
+#: packages/admin/src/components/MediaDetailPanel.tsx:1228
 msgid "Format:"
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:412
+#: packages/admin/src/components/MediaDetailPanel.tsx:441
 msgid "Freeform"
 msgstr ""
 
@@ -4590,7 +4607,7 @@ msgstr "Хуки"
 
 #. placeholder {0}: Math.round(next.focalX * 100)
 #. placeholder {1}: Math.round(next.focalY * 100)
-#: packages/admin/src/components/FocalPointEditor.tsx:98
+#: packages/admin/src/components/FocalPointEditor.tsx:118
 msgid "Horizontal {0}%, vertical {1}%"
 msgstr ""
 
@@ -4662,6 +4679,10 @@ msgstr "Зображення з медіатеки"
 #: packages/admin/src/components/ImageFieldRenderer.tsx:359
 msgid "Image not found"
 msgstr "Зображення не знайдено"
+
+#: packages/admin/src/components/MediaDetailPanel.tsx:619
+msgid "Image replaced."
+msgstr ""
 
 #: packages/admin/src/components/editor/ImageNode.tsx:238
 #: packages/admin/src/components/editor/ImageNode.tsx:239
@@ -5097,7 +5118,7 @@ msgstr "Мітка (множина)"
 msgid "Label (Singular)"
 msgstr "Мітка (однина)"
 
-#: packages/admin/src/components/FocalPointEditor.tsx:39
+#: packages/admin/src/components/FocalPointEditor.tsx:52
 msgid "Landscape"
 msgstr ""
 
@@ -5245,7 +5266,7 @@ msgstr "Завантажити ще"
 msgid "Load More"
 msgstr "Завантажити ще"
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1315
+#: packages/admin/src/components/MediaDetailPanel.tsx:1434
 #: packages/admin/src/components/MediaLibrary.tsx:1067
 #: packages/admin/src/components/MediaLibrary.tsx:1259
 msgid "Load more folders"
@@ -5285,7 +5306,7 @@ msgstr "Завантаження редактора..."
 msgid "Loading folders"
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1267
+#: packages/admin/src/components/MediaDetailPanel.tsx:1386
 msgid "Loading folders..."
 msgstr ""
 
@@ -5343,10 +5364,10 @@ msgstr "Завантаження віджетів..."
 #: packages/admin/src/components/ContentList.tsx:801
 #: packages/admin/src/components/ContentPickerModal.tsx:225
 #: packages/admin/src/components/MarketplaceBrowse.tsx:200
-#: packages/admin/src/components/MediaDetailPanel.tsx:479
-#: packages/admin/src/components/MediaDetailPanel.tsx:495
-#: packages/admin/src/components/MediaDetailPanel.tsx:497
-#: packages/admin/src/components/MediaDetailPanel.tsx:1504
+#: packages/admin/src/components/MediaDetailPanel.tsx:508
+#: packages/admin/src/components/MediaDetailPanel.tsx:524
+#: packages/admin/src/components/MediaDetailPanel.tsx:526
+#: packages/admin/src/components/MediaDetailPanel.tsx:1624
 #: packages/admin/src/components/MediaLibrary.tsx:1358
 #: packages/admin/src/components/MediaPickerModal.tsx:777
 #: packages/admin/src/components/MediaUsedIn.tsx:204
@@ -5376,14 +5397,14 @@ msgstr ""
 msgid "Locale"
 msgstr "Локаль"
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1204
-#: packages/admin/src/components/MediaDetailPanel.tsx:1232
 #: packages/admin/src/components/MediaDetailPanel.tsx:1323
+#: packages/admin/src/components/MediaDetailPanel.tsx:1351
+#: packages/admin/src/components/MediaDetailPanel.tsx:1442
 msgid "Location"
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:480
-#: packages/admin/src/components/MediaDetailPanel.tsx:497
+#: packages/admin/src/components/MediaDetailPanel.tsx:509
+#: packages/admin/src/components/MediaDetailPanel.tsx:526
 msgid "Location unavailable"
 msgstr ""
 
@@ -5432,7 +5453,7 @@ msgstr "Лише малі літери, цифри та підкреслення
 msgid "Lua"
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:448
+#: packages/admin/src/components/MediaDetailPanel.tsx:477
 msgid "Main library"
 msgstr ""
 
@@ -5485,11 +5506,11 @@ msgstr "Керуйте URL-перенаправленнями та перегл�
 msgid "Manage your passkeys and authentication"
 msgstr "Керуйте passkey та автентифікацією"
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1162
+#: packages/admin/src/components/MediaDetailPanel.tsx:1281
 msgid "Managed by {providerName}"
 msgstr "Керується {providerName}"
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1163
+#: packages/admin/src/components/MediaDetailPanel.tsx:1282
 msgid "Managed by an external media provider"
 msgstr "Керується зовнішнім медіа-провайдером"
 
@@ -5560,7 +5581,7 @@ msgstr "MDX"
 msgid "Media"
 msgstr "Медіа"
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:882
+#: packages/admin/src/components/MediaDetailPanel.tsx:1001
 msgid "Media details"
 msgstr ""
 
@@ -5808,7 +5829,7 @@ msgstr "Перемістити вниз"
 msgid "Move media here from Media Details."
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:407
+#: packages/admin/src/components/MediaDetailPanel.tsx:436
 msgid "Move the focal point to choose what stays visible in cropped images."
 msgstr ""
 
@@ -6136,7 +6157,7 @@ msgstr "Немає полів для порівняння"
 msgid "No files added"
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1275
+#: packages/admin/src/components/MediaDetailPanel.tsx:1394
 msgid "No folders found"
 msgstr ""
 
@@ -6258,7 +6279,7 @@ msgstr "Немає попереднього перегляду"
 msgid "No provenance was supplied; the signed publisher policy permits this."
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1131
+#: packages/admin/src/components/MediaDetailPanel.tsx:1250
 msgid "No public URL available"
 msgstr "Публічний URL недоступний"
 
@@ -6450,7 +6471,7 @@ msgstr ""
 msgid "Optional caption displayed below the image"
 msgstr "Необов'язковий підпис під зображенням"
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1371
+#: packages/admin/src/components/MediaDetailPanel.tsx:1490
 msgid "Optional caption for display"
 msgstr "Необов'язковий підпис для відображення"
 
@@ -6502,11 +6523,11 @@ msgstr "або завантажити безпосередньо"
 msgid "Order saved"
 msgstr "Порядок збережено"
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:411
+#: packages/admin/src/components/MediaDetailPanel.tsx:440
 msgid "Original"
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:632
+#: packages/admin/src/components/MediaDetailPanel.tsx:687
 msgid "Original image cropped."
 msgstr ""
 
@@ -6521,7 +6542,7 @@ msgstr "Оригінал:"
 msgid "Outline"
 msgstr "Структура"
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1497
+#: packages/admin/src/components/MediaDetailPanel.tsx:1617
 msgid "Output size"
 msgstr ""
 
@@ -6847,7 +6868,7 @@ msgstr "Відновлення на момент часу"
 msgid "Points search engines to the original version of this page, if it's duplicated from another URL"
 msgstr "Вказує пошуковим системам на оригінальну версію цієї сторінки, якщо вона дублюється з іншої URL-адреси"
 
-#: packages/admin/src/components/FocalPointEditor.tsx:37
+#: packages/admin/src/components/FocalPointEditor.tsx:50
 msgid "Portrait"
 msgstr ""
 
@@ -6887,7 +6908,7 @@ msgstr "Підготовка..."
 
 #: packages/admin/src/components/ContentSettingsPanel.tsx:164
 #: packages/admin/src/components/ContentTypeEditor.tsx:81
-#: packages/admin/src/components/MediaDetailPanel.tsx:1452
+#: packages/admin/src/components/MediaDetailPanel.tsx:1571
 #: packages/admin/src/components/MediaLibrary.tsx:1214
 msgid "Preview"
 msgstr "Попередній перегляд"
@@ -7299,6 +7320,8 @@ msgstr ""
 
 #: packages/admin/src/components/editor/GalleryDetailPanel.tsx:368
 #: packages/admin/src/components/editor/GalleryDetailPanel.tsx:401
+#: packages/admin/src/components/MediaDetailPanel.tsx:1699
+#: packages/admin/src/components/MediaDetailPanel.tsx:1823
 msgid "Replace image"
 msgstr ""
 
@@ -7308,22 +7331,28 @@ msgstr ""
 msgid "Replace Image"
 msgstr "Замінити зображення"
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1581
-#: packages/admin/src/components/MediaDetailPanel.tsx:1678
+#: packages/admin/src/components/MediaDetailPanel.tsx:1726
+#: packages/admin/src/components/MediaDetailPanel.tsx:1858
 msgid "Replace original"
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1670
+#: packages/admin/src/components/MediaDetailPanel.tsx:1815
+#: packages/admin/src/components/MediaDetailPanel.tsx:1850
 msgid "Replace original image?"
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1509
+#: packages/admin/src/components/MediaDetailPanel.tsx:1629
 msgid "Replace original is available with the Original aspect ratio."
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:719
-#: packages/admin/src/components/MediaDetailPanel.tsx:1679
-#: packages/admin/src/components/MediaDetailPanel.tsx:1699
+#: packages/admin/src/components/MediaDetailPanel.tsx:819
+#: packages/admin/src/components/MediaDetailPanel.tsx:1824
+msgid "Replacing image..."
+msgstr ""
+
+#: packages/admin/src/components/MediaDetailPanel.tsx:838
+#: packages/admin/src/components/MediaDetailPanel.tsx:1859
+#: packages/admin/src/components/MediaDetailPanel.tsx:1879
 msgid "Replacing original..."
 msgstr ""
 
@@ -7377,12 +7406,12 @@ msgstr "Надіслати email повторно"
 msgid "Resend in {resendCooldown}s"
 msgstr "Надіслати повторно через {resendCooldown} с"
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1444
-#: packages/admin/src/components/MediaDetailPanel.tsx:1493
+#: packages/admin/src/components/MediaDetailPanel.tsx:1563
+#: packages/admin/src/components/MediaDetailPanel.tsx:1613
 msgid "Reset"
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1478
+#: packages/admin/src/components/MediaDetailPanel.tsx:1598
 msgid "Reset crop"
 msgstr ""
 
@@ -7463,7 +7492,7 @@ msgstr "Відновлення..."
 
 #: packages/admin/src/components/BylineCreditsEditor.tsx:471
 #: packages/admin/src/components/MarketplaceBrowse.tsx:143
-#: packages/admin/src/components/MediaDetailPanel.tsx:1302
+#: packages/admin/src/components/MediaDetailPanel.tsx:1421
 #: packages/admin/src/components/MediaLibrary.tsx:1031
 #: packages/admin/src/components/MediaLibrary.tsx:1580
 #: packages/admin/src/components/PluginFieldErrorBoundary.tsx:44
@@ -7634,7 +7663,7 @@ msgstr "Те саме вікно"
 #: packages/admin/src/components/editor/ImageDetailPanel.tsx:592
 #: packages/admin/src/components/editor/ImageNode.tsx:294
 #: packages/admin/src/components/editor/PluginBlockNode.tsx:417
-#: packages/admin/src/components/MediaDetailPanel.tsx:1601
+#: packages/admin/src/components/MediaDetailPanel.tsx:1746
 #: packages/admin/src/components/MediaFolderDialog.tsx:171
 #: packages/admin/src/components/MenuEditor.tsx:626
 #: packages/admin/src/components/Redirects.tsx:191
@@ -7669,7 +7698,7 @@ msgstr "Зберегти вміст як чернетку перед публі�
 msgid "Save name"
 msgstr "Зберегти назву"
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1519
+#: packages/admin/src/components/MediaDetailPanel.tsx:1639
 msgid "Save or discard the other changes before cropping."
 msgstr ""
 
@@ -7688,7 +7717,7 @@ msgid "Saved \"{0}\"."
 msgstr "Збережено \"{0}\"."
 
 #: packages/admin/src/components/FieldEditor.tsx:712
-#: packages/admin/src/components/MediaDetailPanel.tsx:1601
+#: packages/admin/src/components/MediaDetailPanel.tsx:1746
 #: packages/admin/src/components/MediaFolderDialog.tsx:171
 #: packages/admin/src/components/MenuEditor.tsx:626
 #: packages/admin/src/components/PluginSettings.tsx:166
@@ -7857,8 +7886,8 @@ msgstr "Пошукова оптимізація"
 msgid "Search engine optimization and verification"
 msgstr "Пошукова оптимізація та верифікація"
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1255
-#: packages/admin/src/components/MediaDetailPanel.tsx:1256
+#: packages/admin/src/components/MediaDetailPanel.tsx:1374
+#: packages/admin/src/components/MediaDetailPanel.tsx:1375
 msgid "Search folders"
 msgstr ""
 
@@ -8039,7 +8068,7 @@ msgstr "Обрати {title}"
 msgid "Select a component..."
 msgstr "Оберіть компонент..."
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1245
+#: packages/admin/src/components/MediaDetailPanel.tsx:1364
 msgid "Select a location"
 msgstr ""
 
@@ -8443,7 +8472,7 @@ msgstr "Розмір"
 msgid "Size is not applicable to folders"
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1071
+#: packages/admin/src/components/MediaDetailPanel.tsx:1190
 msgid "Size:"
 msgstr "Розмір:"
 
@@ -8566,11 +8595,11 @@ msgstr "Таблиці"
 msgid "SQL"
 msgstr "SQL"
 
-#: packages/admin/src/components/FocalPointEditor.tsx:38
+#: packages/admin/src/components/FocalPointEditor.tsx:51
 msgid "Square"
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:413
+#: packages/admin/src/components/MediaDetailPanel.tsx:442
 msgid "Square (1:1)"
 msgstr ""
 
@@ -8754,7 +8783,7 @@ msgstr "test@example.com"
 msgid "Text formatting"
 msgstr "Форматування тексту"
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:669
+#: packages/admin/src/components/MediaDetailPanel.tsx:728
 msgid "The cropped image could not be created."
 msgstr ""
 
@@ -8815,8 +8844,12 @@ msgstr "Зазначене зображення більше недоступн�
 msgid "The referenced logo is no longer available. Pick a new one or remove the reference."
 msgstr "Зазначений логотип більше недоступний. Виберіть інший або приберіть посилання."
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:665
+#: packages/admin/src/components/MediaDetailPanel.tsx:723
 msgid "The selected folder no longer exists. Choose another location and save again."
+msgstr ""
+
+#: packages/admin/src/components/MediaDetailPanel.tsx:801
+msgid "The selected image could not be read."
 msgstr ""
 
 #: packages/admin/src/components/ThemeMarketplaceBrowse.tsx:153
@@ -8857,8 +8890,9 @@ msgstr "Теми"
 msgid "These tools remain disabled after installation until you explicitly enable agent access."
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1654
-#: packages/admin/src/components/MediaDetailPanel.tsx:1689
+#: packages/admin/src/components/MediaDetailPanel.tsx:1799
+#: packages/admin/src/components/MediaDetailPanel.tsx:1835
+#: packages/admin/src/components/MediaDetailPanel.tsx:1869
 msgid "This cannot be undone"
 msgstr ""
 
@@ -8895,7 +8929,7 @@ msgstr ""
 msgid "This folder is empty"
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1514
+#: packages/admin/src/components/MediaDetailPanel.tsx:1634
 msgid "This image could not be loaded for cropping."
 msgstr ""
 
@@ -8915,7 +8949,7 @@ msgstr "Посилання діє 7 днів і може бути викорис
 msgid "This may take a while for large exports."
 msgstr "Для великих експортів це може зайняти деякий час."
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:659
+#: packages/admin/src/components/MediaDetailPanel.tsx:717
 msgid "This media item no longer exists."
 msgstr ""
 
@@ -9499,7 +9533,7 @@ msgstr ""
 msgid "Upload WordPress export file"
 msgstr "Завантажити файл експорту WordPress"
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1094
+#: packages/admin/src/components/MediaDetailPanel.tsx:1213
 msgid "Uploaded:"
 msgstr "Завантажено:"
 
@@ -9540,7 +9574,7 @@ msgstr "Ідентифікатор, зручний для URL"
 msgid "URL-friendly identifier (e.g., \"primary\", \"footer\")"
 msgstr "Ідентифікатор для URL (напр., \"primary\", \"footer\")"
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1121
+#: packages/admin/src/components/MediaDetailPanel.tsx:1240
 msgid "URL:"
 msgstr "URL:"
 
@@ -9608,12 +9642,12 @@ msgstr "Використовується як ідентифікатор. Лиш
 msgid "Used as the main visual for this post on listing pages and at the top of the post"
 msgstr "Головне зображення допису в списках і на початку допису"
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:405
+#: packages/admin/src/components/MediaDetailPanel.tsx:434
 msgid "Used by screen readers and when image fails to load"
 msgstr "Для зчитувачів екрана та коли зображення не завантажилося"
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:928
-#: packages/admin/src/components/MediaDetailPanel.tsx:961
+#: packages/admin/src/components/MediaDetailPanel.tsx:1047
+#: packages/admin/src/components/MediaDetailPanel.tsx:1080
 #: packages/admin/src/components/MediaUsedIn.tsx:127
 msgid "Used in"
 msgstr ""
@@ -9837,7 +9871,7 @@ msgstr "Ціле число"
 msgid "Why are bylines shown in this order?"
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:404
+#: packages/admin/src/components/MediaDetailPanel.tsx:433
 msgid "Why can't this be changed?"
 msgstr "Чому це не можна змінити?"
 
@@ -9865,7 +9899,7 @@ msgstr "Чому це важливо для видимості в пошуку?"
 msgid "Why is this important for social sharing?"
 msgstr "Чому це важливо для поширення в соцмережах?"
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:406
+#: packages/admin/src/components/MediaDetailPanel.tsx:435
 msgid "Why is this important?"
 msgstr "Чому це важливо?"
 
@@ -10122,7 +10156,7 @@ msgstr "На вашому сайті випуски можна встановл�
 msgid "Your Twitter/X handle (e.g., @username)"
 msgstr "Ваш нік у Twitter/X (наприклад, @username)"
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1616
+#: packages/admin/src/components/MediaDetailPanel.tsx:1761
 msgid "Your unsaved media changes will be lost."
 msgstr "Незбережені зміни медіа буде втрачено."
 
