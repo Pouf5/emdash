@@ -92,6 +92,10 @@ describe("sortKey", () => {
 			expect(sortKey("مُحَمَّد")).toBe(sortKey("محمد"));
 		});
 
+		it("treats Greek final and medial sigma as the same letter", () => {
+			expect(sortKey("ΟΔΟΣ")).toBe(sortKey("οδοσ"));
+		});
+
 		it("alphabetizes Arabic-Indic numerals by value", () => {
 			expect(alphabetize(["الفصل ١٠", "الفصل ٢"])).toEqual(["الفصل ٢", "الفصل ١٠"]);
 		});
@@ -151,6 +155,12 @@ describe("sortKey", () => {
 			expect(alphabetize(["iade", "ışık"])).toEqual(["iade", "ışık"]);
 		});
 
+		it("files a Turkish accented i with i rather than with dotless ı", () => {
+			// The tailoring renumbers i to slot 1, so any i-with-mark that falls
+			// through to the default fold would land on ı's slot 0.
+			expect(alphabetize(["ışık", "îmza", "iade"], "tr")).toEqual(["ışık", "iade", "îmza"]);
+		});
+
 		it("sorts Turkish ç after every c-initial word", () => {
 			expect(alphabetize(["çam", "cuma"], "tr")).toEqual(["cuma", "çam"]);
 			expect(alphabetize(["çam", "cuma"])).toEqual(["çam", "cuma"]);
@@ -169,6 +179,17 @@ describe("sortKey", () => {
 					"sr-Latn",
 				),
 			).toEqual(["Cetinje", "Čačak", "Ćuprija", "Dunav", "Džemper", "Đorđe", "Lav", "Ljubav"]);
+		});
+
+		it("places Ukrainian й after ї, not alongside и", () => {
+			// й carries a removable breve, so the invariant fold collapses it onto
+			// и unless the tailoring claims it.
+			expect(alphabetize(["йод", "їжак", "ігор", "ива"], "uk")).toEqual([
+				"ива",
+				"ігор",
+				"їжак",
+				"йод",
+			]);
 		});
 
 		it("places Ukrainian ґ є і ї in alphabet order", () => {

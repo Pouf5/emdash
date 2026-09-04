@@ -17,6 +17,10 @@ describe("searchNormalize", () => {
 		expect(searchNormalize("ISTANBUL")).toBe("istanbul");
 	});
 
+	it("folds Greek final sigma, so a medial spelling still matches", () => {
+		expect(searchNormalize("ΟΔΟΣ")).toBe(searchNormalize("οδοσ"));
+	});
+
 	describe("Arabic", () => {
 		it("removes harakat", () => {
 			expect(searchNormalize("مُحَمَّد")).toBe("محمد");

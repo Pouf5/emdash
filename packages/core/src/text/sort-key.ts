@@ -1,4 +1,4 @@
-import { resolveCollation } from "./collation.js";
+import { resolveCollation, type Collation } from "./collation.js";
 import { foldLatinExpansions, foldMarks, normalizeText } from "./normalize.js";
 
 /**
@@ -80,14 +80,23 @@ function numericElement(digits: string): string {
 }
 
 /**
- * Elements for a character with no tailoring: fold it to its base letter and
- * bucket it under slot `0`. Punctuation is dropped so `O'Brien` files with
- * `OBrien`; whitespace becomes a separator so `de la Cruz` keeps its word
- * boundaries.
+ * A character with its removable marks stripped.
+ *
+ * ASCII short-circuits: it carries no marks and no expansion, so the common
+ * path skips the two `String.normalize` calls inside `foldMarks`.
  */
-function defaultElements(ch: string): string {
+function baseLetter(ch: string): string {
+	return (ch.codePointAt(0) ?? 0) < 0x80 ? ch : foldMarks(ch);
+}
+
+/**
+ * Elements for a character with no tailoring: bucket its base letter under
+ * slot `0`. Punctuation is dropped so `O'Brien` files with `OBrien`;
+ * whitespace becomes a separator so `de la Cruz` keeps its word boundaries.
+ */
+function defaultElements(base: string): string {
 	let out = "";
-	for (const folded of foldLatinExpansions(foldMarks(ch))) {
+	for (const folded of foldLatinExpansions(base)) {
 		if (SEPARATOR_RE.test(folded)) {
 			out += SEPARATOR_ELEMENT;
 			continue;
@@ -135,9 +144,8 @@ export function sortKey(text: string, options: SortKeyOptions = {}): string {
 			continue;
 		}
 
-		const tailored = collation
-			? matchTailoring(chars, index, collation.elements, collation.maxSequenceLength)
-			: undefined;
+		const base = baseLetter(ch);
+		const tailored = collation ? matchTailoring(chars, index, base, collation) : undefined;
 		if (tailored) {
 			if (!append(tailored.element)) break;
 			index += tailored.length;
@@ -146,7 +154,7 @@ export function sortKey(text: string, options: SortKeyOptions = {}): string {
 
 		// A single character can fold to several elements ("ß" to "s0s0"),
 		// so it is all-or-nothing against the length cap.
-		if (!append(defaultElements(ch))) break;
+		if (!append(defaultElements(base))) break;
 		index++;
 	}
 
@@ -156,13 +164,19 @@ export function sortKey(text: string, options: SortKeyOptions = {}): string {
 function matchTailoring(
 	chars: readonly string[],
 	index: number,
-	elements: ReadonlyMap<string, string>,
-	maxSequenceLength: number,
+	base: string,
+	collation: Collation,
 ): { element: string; length: number } | undefined {
-	const longest = Math.min(maxSequenceLength, chars.length - index);
+	const longest = Math.min(collation.maxSequenceLength, chars.length - index);
 	for (let length = longest; length >= 1; length--) {
-		const element = elements.get(chars.slice(index, index + length).join(""));
+		const element = collation.elements.get(chars.slice(index, index + length).join(""));
 		if (element !== undefined) return { element, length };
 	}
-	return undefined;
+
+	// A tailoring that renumbers a base letter -- Turkish moves i to slot 1 so
+	// dotless ı can hold slot 0 -- has to claim that letter's accented forms
+	// too, or they fold through to the slot the other letter now occupies.
+	if (base === chars[index]) return undefined;
+	const element = collation.elements.get(base);
+	return element === undefined ? undefined : { element, length: 1 };
 }

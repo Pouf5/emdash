@@ -80,14 +80,18 @@ const REMOVABLE_MARK_RANGES: readonly (readonly [number, number])[] = [
 ];
 
 /**
- * Arabic-script letters that differ only by orthographic convention.
+ * Letters that differ only by orthographic or positional convention.
  *
- * Hamza carriers fold to their base letter and the Farsi yeh/keheh fold to
- * their Arabic counterparts, so text keyed in either convention compares
- * equal. Ta marbuta is *not* here: folding it to heh raises search recall but
- * merges distinct names, so it belongs to the search pipeline only.
+ * Arabic hamza carriers fold to their base letter and the Farsi yeh/keheh
+ * fold to their Arabic counterparts, so text keyed in either convention
+ * compares equal. Ta marbuta is *not* here: folding it to heh raises search
+ * recall but merges distinct names, so it belongs to the search pipeline only.
+ *
+ * Greek final sigma is a positional spelling of the same letter -- lowercasing
+ * `ΟΔΟΣ` yields `ς`, so without this fold it would neither match nor sort with
+ * a medial `σ` typed directly.
  */
-const ARABIC_LETTER_FOLD: ReadonlyMap<string, string> = new Map([
+const LETTER_FOLD: ReadonlyMap<string, string> = new Map([
 	["آ", "ا"], // آ alef with madda
 	["أ", "ا"], // أ alef with hamza above
 	["إ", "ا"], // إ alef with hamza below
@@ -100,6 +104,7 @@ const ARABIC_LETTER_FOLD: ReadonlyMap<string, string> = new Map([
 	["ڪ", "ك"], // ڪ swash kaf
 	["ۀ", "ه"], // ۀ heh with yeh above
 	["ە", "ه"], // ە ae
+	["ς", "σ"], // ς Greek final sigma
 ]);
 
 export interface NormalizeOptions {
@@ -142,7 +147,7 @@ function foldCodePoints(text: string): string {
 			continue;
 		}
 
-		out += ARABIC_LETTER_FOLD.get(ch) ?? ch;
+		out += LETTER_FOLD.get(ch) ?? ch;
 	}
 	return out;
 }
@@ -150,9 +155,9 @@ function foldCodePoints(text: string): string {
 /**
  * Apply the normalization both pipelines share.
  *
- * NFKC, invisible-character removal, tatweel removal, Arabic-script letter
- * unification, katakana-to-hiragana folding, decimal-digit folding to ASCII,
- * case folding, and whitespace collapsing. Combining marks and Latin
+ * NFKC, invisible-character removal, tatweel removal, Arabic-script and Greek
+ * letter unification, katakana-to-hiragana folding, decimal-digit folding to
+ * ASCII, case folding, and whitespace collapsing. Combining marks and Latin
  * expansions such as `ß` are left alone -- they are lossy in ways the two
  * pipelines resolve differently.
  */

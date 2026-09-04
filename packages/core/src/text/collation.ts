@@ -132,26 +132,15 @@ const TAILORINGS: Readonly<Record<string, Readonly<Record<string, string>>>> = {
 		zs: "z9",
 	},
 	// Ukrainian: а б в г ґ д е є ж з и і ї й ...
+	// й carries a removable breve, so without an entry here it folds onto и.
 	uk: {
 		ґ: "г1",
 		є: "е1",
 		і: "и1",
 		ї: "и2",
+		й: "и3",
 	},
 };
-
-type CollationCache = Map<string, Collation | undefined>;
-
-const COLLATION_CACHE_KEY = Symbol.for("emdash:collation-cache");
-const g = globalThis as Record<symbol, unknown>;
-const CACHE: CollationCache =
-	// eslint-disable-next-line typescript/no-unsafe-type-assertion -- globalThis singleton pattern (see request-context.ts)
-	(g[COLLATION_CACHE_KEY] as CollationCache | undefined) ??
-	(() => {
-		const c: CollationCache = new Map();
-		g[COLLATION_CACHE_KEY] = c;
-		return c;
-	})();
 
 function build(table: Readonly<Record<string, string>>): Collation {
 	const elements = new Map(Object.entries(table));
@@ -163,6 +152,10 @@ function build(table: Readonly<Record<string, string>>): Collation {
 	return { elements, maxSequenceLength };
 }
 
+const COLLATIONS: ReadonlyMap<string, Collation> = new Map(
+	Object.entries(TAILORINGS).map(([tag, table]) => [tag, build(table)]),
+);
+
 /**
  * Find the tailoring for a BCP 47 tag, falling back through its parents.
  *
@@ -173,24 +166,13 @@ export function resolveCollation(locale: string | undefined): Collation | undefi
 	if (!locale) return undefined;
 
 	let tag = locale.toLowerCase();
-	const cached = CACHE.get(tag);
-	if (cached !== undefined || CACHE.has(tag)) return cached;
-
-	const lookup = tag;
 	for (;;) {
-		const table = TAILORINGS[tag];
-		if (table) {
-			const collation = build(table);
-			CACHE.set(lookup, collation);
-			return collation;
-		}
+		const collation = COLLATIONS.get(tag);
+		if (collation) return collation;
 		const cut = tag.lastIndexOf("-");
-		if (cut === -1) break;
+		if (cut === -1) return undefined;
 		tag = tag.slice(0, cut);
 	}
-
-	CACHE.set(lookup, undefined);
-	return undefined;
 }
 
 /** Locales with a collation tailoring, for tests and diagnostics. */
