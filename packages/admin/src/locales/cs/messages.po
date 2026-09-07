@@ -975,8 +975,8 @@ msgstr "Zarovnat vlevo"
 msgid "Align Right"
 msgstr "Zarovnat vpravo"
 
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:418
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:608
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:435
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:657
 msgid "Alignment"
 msgstr "Zarovnání"
 
@@ -1072,13 +1072,14 @@ msgid "Also match the byline linked to an entry's author when it has none assign
 msgstr ""
 
 #: packages/admin/src/components/editor/GalleryDetailPanel.tsx:483
-#: packages/admin/src/components/editor/ImageNode.tsx:263
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:466
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:470
+#: packages/admin/src/components/editor/ImageNode.tsx:278
 #: packages/admin/src/components/MediaLibrary.tsx:1204
 msgid "Alt text"
 msgstr "Alternativní text"
 
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:438
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:628
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:677
 #: packages/admin/src/components/MediaDetailPanel.tsx:1564
 #: packages/admin/src/components/MediaDetailPanel.tsx:1581
 msgid "Alt Text"
@@ -1191,6 +1192,7 @@ msgstr "Zobrazuje se u příspěvků a stránek"
 msgid "Application Password"
 msgstr "Heslo aplikace"
 
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:542
 #: packages/admin/src/components/PortableTextEditor.tsx:4246
 msgid "Apply"
 msgstr "Použít"
@@ -1612,9 +1614,10 @@ msgstr "Může zobrazit obsah"
 #: packages/admin/src/components/ContentSettingsPanel.tsx:1213
 #: packages/admin/src/components/editor/CodeBlockNode.tsx:311
 #: packages/admin/src/components/editor/CodeBlockNode.tsx:312
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:686
-#: packages/admin/src/components/editor/ImageNode.tsx:284
-#: packages/admin/src/components/editor/ImageNode.tsx:285
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:539
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:735
+#: packages/admin/src/components/editor/ImageNode.tsx:299
+#: packages/admin/src/components/editor/ImageNode.tsx:300
 #: packages/admin/src/components/editor/PluginBlockNode.tsx:406
 #: packages/admin/src/components/FieldEditor.tsx:701
 #: packages/admin/src/components/MediaDetailPanel.tsx:1835
@@ -1676,8 +1679,8 @@ msgid "Capability consent"
 msgstr "Souhlas s oprávněními"
 
 #: packages/admin/src/components/editor/GalleryDetailPanel.tsx:489
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:446
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:636
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:479
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:685
 #: packages/admin/src/components/MediaDetailPanel.tsx:1592
 msgid "Caption"
 msgstr "Popisek"
@@ -1704,7 +1707,7 @@ msgstr "Kategorie ({0})"
 msgid "Categories & Tags"
 msgstr "Kategorie a štítky"
 
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:225
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:228
 msgid "Center"
 msgstr "Na střed"
 
@@ -1892,10 +1895,8 @@ msgstr "Přihlaste se kliknutím na odkaz v e-mailu."
 #: packages/admin/src/components/ContentPickerModal.tsx:120
 #: packages/admin/src/components/ContentPickerModal.tsx:126
 #: packages/admin/src/components/ContentPickerModal.tsx:130
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:325
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:327
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:511
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:513
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:559
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:561
 #: packages/admin/src/components/FieldEditor.tsx:381
 #: packages/admin/src/components/FieldEditor.tsx:387
 #: packages/admin/src/components/FieldEditor.tsx:391
@@ -1958,6 +1959,10 @@ msgstr "Uzavřít komentáře po (dnech)"
 #: packages/admin/src/components/editor/GalleryDetailPanel.tsx:242
 msgid "Close gallery settings"
 msgstr "Zavřít nastavení galerie"
+
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:89
+msgid "Close image settings"
+msgstr ""
 
 #: packages/admin/src/components/users/UserDetail.tsx:121
 msgid "Close panel"
@@ -2799,8 +2804,8 @@ msgstr "Smazat galerii"
 msgid "Delete HTML block"
 msgstr "Smazat HTML blok"
 
-#: packages/admin/src/components/editor/ImageNode.tsx:252
-#: packages/admin/src/components/editor/ImageNode.tsx:253
+#: packages/admin/src/components/editor/ImageNode.tsx:267
+#: packages/admin/src/components/editor/ImageNode.tsx:268
 msgid "Delete image"
 msgstr "Smazat obrázek"
 
@@ -2905,13 +2910,20 @@ msgstr "Snižování oprávnění..."
 msgid "Deny"
 msgstr "Odmítnout"
 
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:473
+msgid "Describe the image"
+msgstr ""
+
 #: packages/admin/src/components/editor/GalleryDetailPanel.tsx:486
-#: packages/admin/src/components/editor/ImageNode.tsx:270
+#: packages/admin/src/components/editor/ImageNode.tsx:285
 msgid "Describe the image..."
 msgstr "Popište obrázek..."
 
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:441
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:631
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:461
+msgid "Describe the image's purpose and relevant details for people who cannot see it."
+msgstr ""
+
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:680
 #: packages/admin/src/components/MediaDetailPanel.tsx:1584
 msgid "Describe this image for accessibility"
 msgstr "Popište obrázek pro čtečky obrazovky"
@@ -3076,8 +3088,12 @@ msgstr "Zobrazované jméno"
 msgid "Display name for admin interface"
 msgstr "Zobrazovaný název v administraci"
 
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:363
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:553
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:390
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:398
+msgid "Display size"
+msgstr ""
+
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:601
 msgid "Display Size"
 msgstr "Velikost zobrazení"
 
@@ -3085,8 +3101,7 @@ msgstr "Velikost zobrazení"
 msgid "Display tag cloud"
 msgstr "Zobrazí mrak štítků"
 
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:450
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:640
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:689
 msgid "Displayed below the image as a visible caption."
 msgstr "Zobrazí se pod obrázkem jako viditelný popisek."
 
@@ -3305,7 +3320,7 @@ msgid "Edit {title}"
 msgstr "Upravit {title}"
 
 #: packages/admin/src/components/editor/GalleryDetailPanel.tsx:460
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:254
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:260
 #: packages/admin/src/components/ImageFieldRenderer.tsx:298
 #: packages/admin/src/components/ImageFieldRenderer.tsx:354
 #: packages/admin/src/components/ImageFieldRenderer.tsx:422
@@ -4544,7 +4559,7 @@ msgstr ""
 msgid "From URL"
 msgstr ""
 
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:228
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:231
 #: packages/admin/src/components/WordPressImport.tsx:1173
 msgid "Full"
 msgstr "Plná velikost"
@@ -4675,8 +4690,8 @@ msgstr "Nadpis 6"
 msgid "Headings"
 msgstr "Nadpisy"
 
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:402
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:592
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:426
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:640
 msgid "Height"
 msgstr "Výška"
 
@@ -4812,13 +4827,13 @@ msgstr "Obrázek nenalezen"
 msgid "Image replaced."
 msgstr ""
 
-#: packages/admin/src/components/editor/ImageNode.tsx:240
-#: packages/admin/src/components/editor/ImageNode.tsx:241
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:342
+#: packages/admin/src/components/editor/ImageNode.tsx:255
+#: packages/admin/src/components/editor/ImageNode.tsx:256
 msgid "Image settings"
 msgstr "Nastavení obrázku"
 
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:323
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:509
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:557
 msgid "Image Settings"
 msgstr "Nastavení obrázku"
 
@@ -5193,6 +5208,11 @@ msgstr "JSON"
 msgid "JSX"
 msgstr "JSX"
 
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:413
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:414
+msgid "Keep aspect ratio"
+msgstr ""
+
 #: packages/admin/src/components/settings/MediaUsageSettings.tsx:316
 msgid "Keep editing paused and deploy a compatible EmDash version before continuing."
 msgstr ""
@@ -5306,7 +5326,7 @@ msgstr "Chcete-li použít zjistitelný přístupový klíč, ponechte pole prá
 msgid "Leave unassigned"
 msgstr "Ponechat nepřiřazené"
 
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:224
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:227
 msgid "Left"
 msgstr "Vlevo"
 
@@ -5551,10 +5571,8 @@ msgstr ""
 msgid "Location unavailable"
 msgstr ""
 
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:390
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:391
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:580
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:581
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:628
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:629
 msgid "Lock aspect ratio"
 msgstr "Zamknout poměr stran"
 
@@ -5931,6 +5949,14 @@ msgstr ""
 #: packages/admin/src/components/ImageFieldRenderer.tsx:500
 msgid "More information about {label}"
 msgstr "Další informace – {label}"
+
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:464
+msgid "More information about Alt text"
+msgstr ""
+
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:388
+msgid "More information about Display size"
+msgstr ""
 
 #: packages/admin/src/components/MarketplaceBrowse.tsx:42
 msgid "Most Popular"
@@ -6528,7 +6554,7 @@ msgstr "Zatím žádní uživatelé."
 msgid "No widget areas yet. Create one to get started."
 msgstr "Zatím žádné oblasti widgetů. Začněte vytvořením první."
 
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:223
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:226
 msgid "None"
 msgstr "Žádný"
 
@@ -6608,10 +6634,10 @@ msgstr ""
 msgid "Open folder {0}"
 msgstr ""
 
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:473
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:474
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:663
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:664
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:510
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:511
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:712
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:713
 #: packages/admin/src/components/editor/PluginBlockNode.tsx:333
 #: packages/admin/src/components/editor/PluginBlockNode.tsx:334
 msgid "Open in new tab"
@@ -6636,11 +6662,11 @@ msgstr ""
 "Možnost 3"
 
 #: packages/admin/src/components/editor/GalleryDetailPanel.tsx:492
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:482
 msgid "Optional caption"
 msgstr "Volitelný popisek"
 
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:449
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:639
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:688
 msgid "Optional caption displayed below the image"
 msgstr "Volitelný popisek zobrazený pod obrázkem"
 
@@ -6652,8 +6678,11 @@ msgstr "Volitelný popisek pro zobrazení"
 msgid "Optional description"
 msgstr "Volitelný popis"
 
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:458
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:648
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:490
+msgid "Optional hover text"
+msgstr ""
+
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:697
 msgid "Optional tooltip on hover"
 msgstr "Volitelný popisek při najetí myší"
 
@@ -6701,8 +6730,8 @@ msgid "Original image cropped."
 msgstr ""
 
 #: packages/admin/src/components/editor/GalleryDetailPanel.tsx:476
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:351
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:541
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:370
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:589
 msgid "Original:"
 msgstr "Originál:"
 
@@ -7222,8 +7251,8 @@ msgstr "Python"
 msgid "Queued"
 msgstr ""
 
-#: packages/admin/src/components/editor/ImageNode.tsx:228
-#: packages/admin/src/components/editor/ImageNode.tsx:229
+#: packages/admin/src/components/editor/ImageNode.tsx:243
+#: packages/admin/src/components/editor/ImageNode.tsx:244
 msgid "Quick edit alt text"
 msgstr "Rychlá úprava alternativního textu"
 
@@ -7382,9 +7411,8 @@ msgstr ""
 #: packages/admin/src/components/BlockKitMediaPickerField.tsx:115
 #: packages/admin/src/components/ContentEditor.tsx:1989
 #: packages/admin/src/components/editor/GalleryDetailPanel.tsx:471
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:295
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:491
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:682
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:309
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:731
 #: packages/admin/src/components/ImageFieldRenderer.tsx:310
 #: packages/admin/src/components/ImageFieldRenderer.tsx:363
 #: packages/admin/src/components/ImageFieldRenderer.tsx:434
@@ -7441,6 +7469,7 @@ msgstr "Odebrat doménu?"
 msgid "Remove from post"
 msgstr ""
 
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:528
 #: packages/admin/src/components/ImageFieldRenderer.tsx:308
 #: packages/admin/src/components/SeoImageField.tsx:65
 msgid "Remove image"
@@ -7451,7 +7480,7 @@ msgstr "Odebrat obrázek"
 msgid "Remove image {0}"
 msgstr "Odebrat obrázek {0}"
 
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:293
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:307
 msgid "Remove image?"
 msgstr ""
 
@@ -7482,7 +7511,7 @@ msgstr ""
 msgid "Remove sub-field"
 msgstr "Odebrat podřazené pole"
 
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:294
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:308
 msgid "Remove this image from the document?"
 msgstr "Odebrat tento obrázek z dokumentu?"
 
@@ -7491,7 +7520,7 @@ msgstr "Odebrat tento obrázek z dokumentu?"
 msgid "Removed {0} from selection."
 msgstr ""
 
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:296
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:310
 #: packages/admin/src/components/settings/AllowedDomainsSettings.tsx:384
 #: packages/admin/src/components/settings/PasskeyItem.tsx:203
 msgid "Removing..."
@@ -7533,8 +7562,8 @@ msgstr "Opakující se skupina polí"
 #: packages/admin/src/components/ContentEditor.tsx:2016
 #: packages/admin/src/components/editor/GalleryDetailPanel.tsx:447
 #: packages/admin/src/components/editor/GalleryDetailPanel.tsx:504
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:244
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:310
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:250
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:324
 #: packages/admin/src/components/ImageFieldRenderer.tsx:284
 #: packages/admin/src/components/ImageFieldRenderer.tsx:344
 #: packages/admin/src/components/ImageFieldRenderer.tsx:407
@@ -7557,7 +7586,7 @@ msgid "Replace dark mode variant for {label}"
 msgstr ""
 
 #: packages/admin/src/components/editor/GalleryDetailPanel.tsx:503
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:309
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:323
 #: packages/admin/src/components/MediaDetailPanel.tsx:1815
 #: packages/admin/src/components/MediaDetailPanel.tsx:1943
 msgid "Replace image"
@@ -7620,8 +7649,7 @@ msgstr "Povinné"
 msgid "Required fields:"
 msgstr "Povinná pole:"
 
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:442
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:632
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:681
 msgid "Required for accessibility. Describes the image for screen readers."
 msgstr "Povinné pro přístupnost. Popisuje obrázek pro čtečky obrazovky."
 
@@ -7638,6 +7666,7 @@ msgstr "Odeslat e-mail znovu"
 msgid "Resend in {resendCooldown}s"
 msgstr "Znovu odeslat za {resendCooldown} s"
 
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:394
 #: packages/admin/src/components/MediaDetailPanel.tsx:1668
 #: packages/admin/src/components/MediaDetailPanel.tsx:1718
 msgid "Reset"
@@ -7647,8 +7676,7 @@ msgstr ""
 msgid "Reset crop"
 msgstr ""
 
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:371
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:561
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:609
 msgid "Reset to original"
 msgstr "Obnovit původní"
 
@@ -7838,7 +7866,7 @@ msgstr "Formátovaný textový obsah"
 msgid "Rich text editor"
 msgstr "Editor formátovaného textu"
 
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:226
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:229
 msgid "Right"
 msgstr "Vpravo"
 
@@ -7898,9 +7926,8 @@ msgstr "Rust"
 msgid "Same window"
 msgstr "Stejné okno"
 
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:494
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:689
-#: packages/admin/src/components/editor/ImageNode.tsx:296
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:738
+#: packages/admin/src/components/editor/ImageNode.tsx:311
 #: packages/admin/src/components/editor/PluginBlockNode.tsx:417
 #: packages/admin/src/components/MediaDetailPanel.tsx:1866
 #: packages/admin/src/components/MediaFolderDialog.tsx:171
@@ -7916,7 +7943,7 @@ msgstr "Uložit"
 msgid "Save (Enter)"
 msgstr "Uložit (Enter)"
 
-#: packages/admin/src/components/editor/ImageNode.tsx:297
+#: packages/admin/src/components/editor/ImageNode.tsx:312
 msgid "Save alt text"
 msgstr "Uložit alternativní text"
 
@@ -8504,10 +8531,13 @@ msgstr "Nastavení SEO uloženo"
 msgid "SEO Title"
 msgstr "SEO titulek"
 
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:410
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:600
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:649
 msgid "Set a custom display size for this image instance."
 msgstr "Nastavte vlastní velikost pro toto vložení obrázku."
+
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:385
+msgid "Set a custom width and height for this image in the document. Reset uses the original media dimensions. The original media file is unchanged."
+msgstr ""
 
 #: packages/admin/src/components/editor/CodeBlockNode.tsx:239
 msgid "Set language"
@@ -8632,8 +8662,7 @@ msgstr ""
 msgid "Shown to readers in this order."
 msgstr ""
 
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:459
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:649
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:698
 msgid "Shown when hovering over the image."
 msgstr "Zobrazí se při najetí myší na obrázek."
 
@@ -8827,8 +8856,9 @@ msgid "Sort themes"
 msgstr "Řadit šablony"
 
 #: packages/admin/src/components/ContentTypeList.tsx:184
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:465
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:655
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:496
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:500
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:704
 #: packages/admin/src/components/MarketplacePluginDetail.tsx:225
 #: packages/admin/src/components/PluginManager.tsx:597
 #: packages/admin/src/components/Redirects.tsx:475
@@ -9349,8 +9379,7 @@ msgstr "Časové pásmo pro zobrazení dat (např. America/New_York)"
 msgid "Title"
 msgstr "Titulek"
 
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:455
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:645
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:694
 msgid "Title (Tooltip)"
 msgstr "Titulek (nápověda)"
 
@@ -9387,6 +9416,10 @@ msgstr "Název tokenu"
 #: packages/admin/src/components/editor/codeBlockLanguages.ts:54
 msgid "TOML"
 msgstr "TOML"
+
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:487
+msgid "Tooltip text"
+msgstr ""
 
 #: packages/admin/src/components/ContentTypeEditor.tsx:77
 msgid "Track content history"
@@ -9614,10 +9647,8 @@ msgstr "Neznámá role"
 msgid "Unknown role"
 msgstr "Neznámá role"
 
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:390
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:391
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:580
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:581
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:628
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:629
 msgid "Unlock aspect ratio"
 msgstr "Odemknout poměr stran"
 
@@ -10188,7 +10219,7 @@ msgstr "Proč je to důležité pro sdílení na sociálních sítích?"
 msgid "Why is this important?"
 msgstr "Proč je to důležité?"
 
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:227
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:230
 msgid "Wide"
 msgstr "Na šířku"
 
@@ -10229,8 +10260,8 @@ msgstr "Widget aktualizován"
 msgid "Widgets"
 msgstr "Widgety"
 
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:378
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:568
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:401
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:616
 msgid "Width"
 msgstr "Šířka"
 
