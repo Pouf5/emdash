@@ -391,7 +391,7 @@ msgstr ""
 
 #. placeholder {0}: hasMore ? "+" : ""
 #. placeholder {1}: hasMore ? "+" : ""
-#: packages/admin/src/components/ContentList.tsx:1200
+#: packages/admin/src/components/ContentList.tsx:1207
 msgid "{filteredCount, plural, one {#{0} item} other {#{1} items}}"
 msgstr "{filteredCount, plural, one {#{0} item} other {#{1} items}}"
 
@@ -418,7 +418,7 @@ msgstr ""
 msgid "{label} moved to position {0}."
 msgstr ""
 
-#: packages/admin/src/components/ContentList.tsx:1189
+#: packages/admin/src/components/ContentList.tsx:1196
 msgid "{matchCount, plural, one {# item matching \"{searchQuery}\"} other {# items matching \"{searchQuery}\"}}"
 msgstr "{matchCount, plural, one {# item dat overeenkomt met \"{searchQuery}\"} other {# items die overeenkomen met \"{searchQuery}\"}}"
 
@@ -480,15 +480,15 @@ msgstr ""
 msgid "{rewrittenUrls, plural, one {<rewrittenCount>#</rewrittenCount> image URL updated in {updatedContentItems, plural, one {<contentCount>#</contentCount> content item} other {<contentCount>#</contentCount> content items}}} other {<rewrittenCount>#</rewrittenCount> image URLs updated in {updatedContentItems, plural, one {<contentCount>#</contentCount> content item} other {<contentCount>#</contentCount> content items}}}}"
 msgstr ""
 
-#: packages/admin/src/components/ContentList.tsx:493
+#: packages/admin/src/components/ContentList.tsx:494
 msgid "{selectedCount, plural, one {# selected} other {# selected}}"
 msgstr "{selectedCount, plural, one {# geselecteerd} other {# geselecteerd}}"
 
-#: packages/admin/src/components/ContentList.tsx:535
+#: packages/admin/src/components/ContentList.tsx:536
 msgid "{selectedCount, plural, one {Move # item to trash? You can restore it later.} other {Move # items to trash? You can restore them later.}}"
 msgstr "{selectedCount, plural, one {# item naar de prullenbak verplaatsen? Je kunt het later terugzetten.} other {# items naar de prullenbak verplaatsen? Je kunt ze later terugzetten.}}"
 
-#: packages/admin/src/components/ContentList.tsx:1195
+#: packages/admin/src/components/ContentList.tsx:1202
 msgid "{total, plural, one {# item} other {# items}}"
 msgstr "{total, plural, one {# item} other {# items}}"
 
@@ -724,8 +724,8 @@ msgid "ACF Fields"
 msgstr "ACF-velden"
 
 #: packages/admin/src/components/comments/CommentInbox.tsx:291
-#: packages/admin/src/components/ContentList.tsx:636
-#: packages/admin/src/components/ContentList.tsx:762
+#: packages/admin/src/components/ContentList.tsx:637
+#: packages/admin/src/components/ContentList.tsx:768
 #: packages/admin/src/components/ContentTypeList.tsx:190
 #: packages/admin/src/components/TaxonomyManager.tsx:1056
 #: packages/admin/src/routes/byline-schema.tsx:249
@@ -860,7 +860,7 @@ msgstr "Voeg links toe om je navigatiemenu op te bouwen"
 msgid "Add MIME type or extension"
 msgstr "MIME-type of extensie toevoegen"
 
-#: packages/admin/src/components/ContentList.tsx:431
+#: packages/admin/src/components/ContentList.tsx:432
 msgid "Add New"
 msgstr "Nieuwe toevoegen"
 
@@ -980,12 +980,12 @@ msgstr "Rechts uitlijnen"
 msgid "Alignment"
 msgstr "Uitlijning"
 
-#: packages/admin/src/components/ContentList.tsx:443
+#: packages/admin/src/components/ContentList.tsx:444
 msgid "All"
 msgstr "Alle"
 
-#: packages/admin/src/components/ContentList.tsx:911
-#: packages/admin/src/components/ContentList.tsx:915
+#: packages/admin/src/components/ContentList.tsx:918
+#: packages/admin/src/components/ContentList.tsx:922
 msgid "All authors"
 msgstr "Alle auteurs"
 
@@ -1023,7 +1023,7 @@ msgstr "Alle rollen"
 msgid "All Sources"
 msgstr "Alle bronnen"
 
-#: packages/admin/src/components/ContentList.tsx:850
+#: packages/admin/src/components/ContentList.tsx:857
 #: packages/admin/src/components/Redirects.tsx:426
 msgid "All statuses"
 msgstr "Alle statussen"
@@ -1225,7 +1225,7 @@ msgstr "Goedgekeurd"
 msgid "Arbitrary JSON data"
 msgstr "Willekeurige JSON-data"
 
-#: packages/admin/src/components/ContentList.tsx:854
+#: packages/admin/src/components/ContentList.tsx:861
 #: packages/admin/src/components/ContentStatusBadge.tsx:65
 msgid "Archived"
 msgstr "Gearchiveerd"
@@ -1606,9 +1606,9 @@ msgstr "Kan content bekijken"
 #: packages/admin/src/components/BylineFieldEditor.tsx:315
 #: packages/admin/src/components/CapabilityConsentDialog.tsx:256
 #: packages/admin/src/components/ConfirmDialog.tsx:99
-#: packages/admin/src/components/ContentList.tsx:544
-#: packages/admin/src/components/ContentList.tsx:1363
-#: packages/admin/src/components/ContentList.tsx:1531
+#: packages/admin/src/components/ContentList.tsx:545
+#: packages/admin/src/components/ContentList.tsx:1370
+#: packages/admin/src/components/ContentList.tsx:1552
 #: packages/admin/src/components/ContentPickerModal.tsx:240
 #: packages/admin/src/components/ContentSettingsPanel.tsx:312
 #: packages/admin/src/components/ContentSettingsPanel.tsx:1213
@@ -1797,8 +1797,8 @@ msgstr "Authenticatie controleren..."
 msgid "Checking how many stored values reference \"{0}\"…"
 msgstr "Controleren hoeveel opgeslagen waarden naar \"{0}\" verwijzen…"
 
-#: packages/admin/src/components/ContentList.tsx:1037
-#: packages/admin/src/components/ContentList.tsx:1043
+#: packages/admin/src/components/ContentList.tsx:1044
+#: packages/admin/src/components/ContentList.tsx:1050
 msgid "Choose a date range"
 msgstr ""
 
@@ -1852,8 +1852,8 @@ msgstr "Kies je voorkeurstaal voor de admin"
 msgid "Choosing a byline replaces this automatic credit."
 msgstr ""
 
-#: packages/admin/src/components/ContentList.tsx:570
-#: packages/admin/src/components/ContentList.tsx:1051
+#: packages/admin/src/components/ContentList.tsx:571
+#: packages/admin/src/components/ContentList.tsx:1058
 msgid "Clear"
 msgstr "Wissen"
 
@@ -1861,7 +1861,7 @@ msgstr "Wissen"
 msgid "Clear completed"
 msgstr ""
 
-#: packages/admin/src/components/ContentList.tsx:956
+#: packages/admin/src/components/ContentList.tsx:963
 #: packages/admin/src/components/MediaLibrary.tsx:1080
 #: packages/admin/src/components/users/UserList.tsx:122
 msgid "Clear filters"
@@ -2468,7 +2468,7 @@ msgstr ""
 msgid "Create your first navigation menu to get started"
 msgstr "Maak je eerste navigatiemenu aan om te beginnen"
 
-#: packages/admin/src/components/ContentList.tsx:664
+#: packages/admin/src/components/ContentList.tsx:665
 msgid "Create your first one"
 msgstr "Maak je eerste aan"
 
@@ -2498,7 +2498,7 @@ msgstr "Taxonomietermen aanmaken, bijwerken en verwijderen"
 msgid "Create, update, delete content"
 msgstr "Content aanmaken, bijwerken, verwijderen"
 
-#: packages/admin/src/components/ContentList.tsx:860
+#: packages/admin/src/components/ContentList.tsx:867
 #: packages/admin/src/components/ContentSettingsPanel.tsx:991
 #: packages/admin/src/components/settings/ApiTokenSettings.tsx:358
 #: packages/admin/src/components/users/UserDetail.tsx:219
@@ -2630,7 +2630,7 @@ msgid "Dashboard"
 msgstr "Dashboard"
 
 #: packages/admin/src/components/comments/CommentInbox.tsx:288
-#: packages/admin/src/components/ContentList.tsx:625
+#: packages/admin/src/components/ContentList.tsx:626
 msgid "Date"
 msgstr "Datum"
 
@@ -2643,7 +2643,7 @@ msgstr "Datum & tijd"
 msgid "Date and time picker"
 msgstr "Datum- en tijdkiezer"
 
-#: packages/admin/src/components/ContentList.tsx:933
+#: packages/admin/src/components/ContentList.tsx:940
 msgid "Date field to filter on"
 msgstr "Datumveld om op te filteren"
 
@@ -2651,7 +2651,7 @@ msgstr "Datumveld om op te filteren"
 msgid "Date Format"
 msgstr "Datumnotatie"
 
-#: packages/admin/src/components/ContentList.tsx:983
+#: packages/admin/src/components/ContentList.tsx:990
 msgid "Date range"
 msgstr ""
 
@@ -2822,11 +2822,11 @@ msgid "Delete permanently"
 msgstr "Definitief verwijderen"
 
 #: packages/admin/src/components/comments/CommentDetail.tsx:182
-#: packages/admin/src/components/ContentList.tsx:1542
+#: packages/admin/src/components/ContentList.tsx:1563
 msgid "Delete Permanently"
 msgstr "Definitief verwijderen"
 
-#: packages/admin/src/components/ContentList.tsx:1522
+#: packages/admin/src/components/ContentList.tsx:1543
 msgid "Delete Permanently?"
 msgstr "Definitief verwijderen?"
 
@@ -2859,7 +2859,7 @@ msgstr "Tabel verwijderen"
 msgid "Delete Widget Area?"
 msgstr "Widgetgebied verwijderen?"
 
-#: packages/admin/src/components/ContentList.tsx:759
+#: packages/admin/src/components/ContentList.tsx:765
 msgid "Deleted"
 msgstr "Verwijderd"
 
@@ -3144,7 +3144,7 @@ msgid "Don't have an account? <0>Sign up</0>"
 msgstr "Nog geen account? <0>Registreren</0>"
 
 #: packages/admin/src/components/BylineCreditsEditor.tsx:911
-#: packages/admin/src/components/ContentList.tsx:1059
+#: packages/admin/src/components/ContentList.tsx:1066
 #: packages/admin/src/components/MediaUploadDialog.tsx:353
 #: packages/admin/src/components/users/InviteUserModal.tsx:142
 #: packages/admin/src/components/WordPressImport.tsx:2144
@@ -3181,7 +3181,7 @@ msgstr "SBOM downloaden"
 msgid "Downloading"
 msgstr "Downloaden"
 
-#: packages/admin/src/components/ContentList.tsx:852
+#: packages/admin/src/components/ContentList.tsx:859
 #: packages/admin/src/components/ContentStatusBadge.tsx:61
 msgid "Draft"
 msgstr "Concept"
@@ -3264,7 +3264,7 @@ msgstr "Sleep je WordPress-exportbestand hierheen"
 msgid "Duplicate"
 msgstr "Dupliceren"
 
-#: packages/admin/src/components/ContentList.tsx:1336
+#: packages/admin/src/components/ContentList.tsx:1343
 msgid "Duplicate {title}"
 msgstr "{title} dupliceren"
 
@@ -3315,7 +3315,7 @@ msgstr "Veld {0} bewerken"
 msgid "Edit {itemLabel}"
 msgstr ""
 
-#: packages/admin/src/components/ContentList.tsx:1328
+#: packages/admin/src/components/ContentList.tsx:1335
 msgid "Edit {title}"
 msgstr "{title} bewerken"
 
@@ -3961,8 +3961,8 @@ msgstr "Ophalen van plugins mislukt"
 msgid "Failed to fetch provider media"
 msgstr "Ophalen van media van provider mislukt"
 
-#: packages/admin/src/lib/api/content.ts:609
-#: packages/admin/src/lib/api/content.ts:614
+#: packages/admin/src/lib/api/content.ts:611
+#: packages/admin/src/lib/api/content.ts:616
 msgid "Failed to fetch revision"
 msgstr "Ophalen van revisie mislukt"
 
@@ -4105,7 +4105,7 @@ msgstr "Laden van widget mislukt"
 msgid "Failed to perform bulk action"
 msgstr "Uitvoeren van bulkactie mislukt"
 
-#: packages/admin/src/lib/api/content.ts:370
+#: packages/admin/src/lib/api/content.ts:372
 msgid "Failed to permanently delete content"
 msgstr "Definitief verwijderen van content mislukt"
 
@@ -4164,12 +4164,12 @@ msgstr ""
 msgid "Failed to restore"
 msgstr "Herstellen mislukt"
 
-#: packages/admin/src/lib/api/content.ts:359
+#: packages/admin/src/lib/api/content.ts:361
 msgid "Failed to restore content"
 msgstr "Herstellen van content mislukt"
 
-#: packages/admin/src/lib/api/content.ts:631
-#: packages/admin/src/lib/api/content.ts:636
+#: packages/admin/src/lib/api/content.ts:633
+#: packages/admin/src/lib/api/content.ts:638
 msgid "Failed to restore revision"
 msgstr "Herstellen van revisie mislukt"
 
@@ -4404,7 +4404,7 @@ msgstr "Bestandsnaam kan na het uploaden niet meer worden gewijzigd"
 msgid "Files upload as soon as you add them."
 msgstr ""
 
-#: packages/admin/src/components/ContentList.tsx:907
+#: packages/admin/src/components/ContentList.tsx:914
 msgid "Filter by author"
 msgstr "Filteren op auteur"
 
@@ -4420,7 +4420,7 @@ msgstr "Filteren op mogelijkheid"
 msgid "Filter by collection"
 msgstr "Filteren op collectie"
 
-#: packages/admin/src/components/ContentList.tsx:1029
+#: packages/admin/src/components/ContentList.tsx:1036
 msgid "Filter by date range: {rangeLabel}"
 msgstr ""
 
@@ -4432,7 +4432,7 @@ msgstr "Filteren op rol"
 msgid "Filter by source"
 msgstr "Filteren op bron"
 
-#: packages/admin/src/components/ContentList.tsx:889
+#: packages/admin/src/components/ContentList.tsx:896
 #: packages/admin/src/components/Redirects.tsx:427
 msgid "Filter by status"
 msgstr "Filteren op status"
@@ -4547,7 +4547,7 @@ msgid "Freeform"
 msgstr ""
 
 #. placeholder {0}: formatter.format(from)
-#: packages/admin/src/components/ContentList.tsx:980
+#: packages/admin/src/components/ContentList.tsx:987
 msgid "From {0}"
 msgstr ""
 
@@ -5412,8 +5412,8 @@ msgstr "Live weergave"
 msgid "Load more"
 msgstr "Meer laden"
 
-#: packages/admin/src/components/ContentList.tsx:743
-#: packages/admin/src/components/ContentList.tsx:801
+#: packages/admin/src/components/ContentList.tsx:744
+#: packages/admin/src/components/ContentList.tsx:808
 #: packages/admin/src/components/MediaLibrary.tsx:1345
 #: packages/admin/src/components/users/UserList.tsx:162
 msgid "Load More"
@@ -5517,10 +5517,10 @@ msgstr ""
 msgid "Loading widgets..."
 msgstr "Widgets laden..."
 
-#: packages/admin/src/components/ContentList.tsx:646
-#: packages/admin/src/components/ContentList.tsx:743
-#: packages/admin/src/components/ContentList.tsx:772
-#: packages/admin/src/components/ContentList.tsx:801
+#: packages/admin/src/components/ContentList.tsx:647
+#: packages/admin/src/components/ContentList.tsx:744
+#: packages/admin/src/components/ContentList.tsx:778
+#: packages/admin/src/components/ContentList.tsx:808
 #: packages/admin/src/components/ContentPickerModal.tsx:225
 #: packages/admin/src/components/MarketplaceBrowse.tsx:200
 #: packages/admin/src/components/MediaDetailPanel.tsx:596
@@ -5554,7 +5554,8 @@ msgstr ""
 msgid "Local time"
 msgstr ""
 
-#: packages/admin/src/components/ContentList.tsx:618
+#: packages/admin/src/components/ContentList.tsx:619
+#: packages/admin/src/components/ContentList.tsx:761
 #: packages/admin/src/components/LocaleSwitcher.tsx:60
 msgid "Locale"
 msgstr "Taal"
@@ -5972,7 +5973,7 @@ msgstr "\"{0}\" omlaag verplaatsen"
 msgid "Move \"{0}\" up"
 msgstr "\"{0}\" omhoog verplaatsen"
 
-#: packages/admin/src/components/ContentList.tsx:1357
+#: packages/admin/src/components/ContentList.tsx:1364
 msgid "Move \"{title}\" to trash? You can restore it later."
 msgstr "\"{title}\" naar de prullenbak verplaatsen? Je kunt het later terugzetten."
 
@@ -6006,7 +6007,7 @@ msgstr ""
 msgid "Move {0} up — unavailable, its parent has no translation in this locale"
 msgstr ""
 
-#: packages/admin/src/components/ContentList.tsx:1348
+#: packages/admin/src/components/ContentList.tsx:1355
 msgid "Move {title} to trash"
 msgstr "{title} naar de prullenbak verplaatsen"
 
@@ -6022,19 +6023,19 @@ msgstr ""
 msgid "Move the focal point to choose what stays visible in cropped images."
 msgstr ""
 
-#: packages/admin/src/components/ContentList.tsx:528
+#: packages/admin/src/components/ContentList.tsx:529
 msgid "Move to trash"
 msgstr "Naar prullenbak verplaatsen"
 
-#: packages/admin/src/components/ContentList.tsx:555
-#: packages/admin/src/components/ContentList.tsx:1370
+#: packages/admin/src/components/ContentList.tsx:556
+#: packages/admin/src/components/ContentList.tsx:1377
 #: packages/admin/src/components/ContentSettingsPanel.tsx:1200
 #: packages/admin/src/components/ContentSettingsPanel.tsx:1220
 msgid "Move to Trash"
 msgstr "Naar prullenbak verplaatsen"
 
-#: packages/admin/src/components/ContentList.tsx:533
-#: packages/admin/src/components/ContentList.tsx:1355
+#: packages/admin/src/components/ContentList.tsx:534
+#: packages/admin/src/components/ContentList.tsx:1362
 #: packages/admin/src/components/ContentSettingsPanel.tsx:1205
 msgid "Move to Trash?"
 msgstr "Naar prullenbak verplaatsen?"
@@ -6218,7 +6219,7 @@ msgid "Next"
 msgstr "Volgende"
 
 #: packages/admin/src/components/comments/CommentInbox.tsx:363
-#: packages/admin/src/components/ContentList.tsx:731
+#: packages/admin/src/components/ContentList.tsx:732
 #: packages/admin/src/components/MediaLibrary.tsx:1309
 #: packages/admin/src/components/MediaPickerModal.tsx:1546
 msgid "Next page"
@@ -6228,7 +6229,7 @@ msgstr "Volgende pagina"
 msgid "Next screenshot"
 msgstr "Volgende screenshot"
 
-#: packages/admin/src/components/ContentList.tsx:1393
+#: packages/admin/src/components/ContentList.tsx:1400
 #: packages/admin/src/components/users/UserDetail.tsx:236
 #: packages/admin/src/routes/byline-schema.tsx:422
 msgid "No"
@@ -6244,7 +6245,7 @@ msgid "No {0} available."
 msgstr "Geen {0} beschikbaar."
 
 #. placeholder {0}: collectionLabel.toLowerCase()
-#: packages/admin/src/components/ContentList.tsx:657
+#: packages/admin/src/components/ContentList.tsx:658
 msgid "No {0} yet."
 msgstr "Nog geen {0}."
 
@@ -6494,8 +6495,8 @@ msgstr "Nog geen omleidingen"
 msgid "No results"
 msgstr "Geen resultaten"
 
-#: packages/admin/src/components/ContentList.tsx:654
-#: packages/admin/src/components/ContentList.tsx:673
+#: packages/admin/src/components/ContentList.tsx:655
+#: packages/admin/src/components/ContentList.tsx:674
 msgid "No results for \"{activeSearch}\""
 msgstr "Geen resultaten voor \"{activeSearch}\""
 
@@ -6567,7 +6568,7 @@ msgstr "Geen (hoogste niveau)"
 msgid "Not compatible with this environment"
 msgstr "Niet compatibel met deze omgeving"
 
-#: packages/admin/src/components/ContentList.tsx:1392
+#: packages/admin/src/components/ContentList.tsx:1399
 #: packages/admin/src/components/PluginSettings.tsx:341
 msgid "Not set"
 msgstr ""
@@ -6909,11 +6910,11 @@ msgstr ""
 msgid "Period"
 msgstr ""
 
-#: packages/admin/src/components/ContentList.tsx:1525
+#: packages/admin/src/components/ContentList.tsx:1546
 msgid "Permanently delete \"{title}\"? This cannot be undone."
 msgstr "\"{title}\" permanent verwijderen? Dit kan niet ongedaan worden gemaakt."
 
-#: packages/admin/src/components/ContentList.tsx:1514
+#: packages/admin/src/components/ContentList.tsx:1535
 msgid "Permanently delete {title}"
 msgstr "{title} permanent verwijderen"
 
@@ -7137,7 +7138,7 @@ msgid "Previous"
 msgstr "Vorige"
 
 #: packages/admin/src/components/comments/CommentInbox.tsx:344
-#: packages/admin/src/components/ContentList.tsx:719
+#: packages/admin/src/components/ContentList.tsx:720
 #: packages/admin/src/components/MediaLibrary.tsx:1308
 #: packages/admin/src/components/MediaPickerModal.tsx:1545
 msgid "Previous page"
@@ -7182,7 +7183,7 @@ msgstr "Provider:"
 msgid "Publication date"
 msgstr ""
 
-#: packages/admin/src/components/ContentList.tsx:504
+#: packages/admin/src/components/ContentList.tsx:505
 #: packages/admin/src/components/ContentSettingsPanel.tsx:526
 #: packages/admin/src/components/ContentSettingsPanel.tsx:550
 #: packages/admin/src/components/ContentSettingsPanel.tsx:864
@@ -7202,8 +7203,8 @@ msgstr ""
 msgid "Publish now"
 msgstr ""
 
-#: packages/admin/src/components/ContentList.tsx:851
-#: packages/admin/src/components/ContentList.tsx:862
+#: packages/admin/src/components/ContentList.tsx:858
+#: packages/admin/src/components/ContentList.tsx:869
 #: packages/admin/src/components/ContentStatusBadge.tsx:59
 #: packages/admin/src/components/Dashboard.tsx:297
 #: packages/admin/src/router.tsx:1169
@@ -7724,7 +7725,7 @@ msgstr ""
 msgid "Restore"
 msgstr "Herstellen"
 
-#: packages/admin/src/components/ContentList.tsx:1502
+#: packages/admin/src/components/ContentList.tsx:1523
 msgid "Restore {title}"
 msgstr "{title} herstellen"
 
@@ -8041,7 +8042,7 @@ msgstr ""
 msgid "Schedule publication"
 msgstr ""
 
-#: packages/admin/src/components/ContentList.tsx:853
+#: packages/admin/src/components/ContentList.tsx:860
 #: packages/admin/src/components/ContentSettingsPanel.tsx:545
 #: packages/admin/src/components/ContentStatusBadge.tsx:63
 #: packages/admin/src/router.tsx:1252
@@ -8128,12 +8129,12 @@ msgid "Search"
 msgstr "Zoeken"
 
 #. placeholder {0}: collectionLabel.toLowerCase()
-#: packages/admin/src/components/ContentList.tsx:465
+#: packages/admin/src/components/ContentList.tsx:466
 msgid "Search {0}"
 msgstr "Zoeken in {0}"
 
 #. placeholder {0}: collectionLabel.toLowerCase()
-#: packages/admin/src/components/ContentList.tsx:464
+#: packages/admin/src/components/ContentList.tsx:465
 msgid "Search {0}..."
 msgstr "Zoeken in {0}..."
 
@@ -8356,7 +8357,7 @@ msgstr "Selecteren"
 msgid "Select {label}"
 msgstr "{label} selecteren"
 
-#: packages/admin/src/components/ContentList.tsx:1253
+#: packages/admin/src/components/ContentList.tsx:1260
 msgid "Select {title}"
 msgstr "{title} selecteren"
 
@@ -8380,7 +8381,7 @@ msgstr ""
 msgid "Select all"
 msgstr "Alles selecteren"
 
-#: packages/admin/src/components/ContentList.tsx:586
+#: packages/admin/src/components/ContentList.tsx:587
 msgid "Select all on this page"
 msgstr "Alles op deze pagina selecteren"
 
@@ -8559,7 +8560,7 @@ msgstr ""
 msgid "Set to 0 to never close comments automatically."
 msgstr "Stel in op 0 om reacties nooit automatisch te sluiten."
 
-#: packages/admin/src/components/ContentList.tsx:514
+#: packages/admin/src/components/ContentList.tsx:515
 msgid "Set to draft"
 msgstr "Instellen als concept"
 
@@ -8914,7 +8915,7 @@ msgstr "Import starten"
 msgid "Start writing, or type '/' for commands"
 msgstr ""
 
-#: packages/admin/src/components/ContentList.tsx:611
+#: packages/admin/src/components/ContentList.tsx:612
 #: packages/admin/src/components/ContentTypeEditor.tsx:117
 #: packages/admin/src/components/Redirects.tsx:480
 #: packages/admin/src/components/settings/MediaUsageSettings.tsx:382
@@ -9379,8 +9380,8 @@ msgstr "Tijdzone"
 msgid "Timezone for displaying dates (e.g., America/New_York)"
 msgstr "Tijdzone voor het weergeven van datums (bijv. America/New_York)"
 
-#: packages/admin/src/components/ContentList.tsx:596
-#: packages/admin/src/components/ContentList.tsx:756
+#: packages/admin/src/components/ContentList.tsx:597
+#: packages/admin/src/components/ContentList.tsx:757
 #: packages/admin/src/components/SectionEditor.tsx:272
 #: packages/admin/src/components/Sections.tsx:170
 #: packages/admin/src/components/Widgets.tsx:891
@@ -9487,11 +9488,11 @@ msgstr "prullenbak"
 #: packages/admin/src/components/comments/CommentInbox.tsx:190
 #: packages/admin/src/components/comments/CommentInbox.tsx:249
 #: packages/admin/src/components/comments/CommentInbox.tsx:505
-#: packages/admin/src/components/ContentList.tsx:449
+#: packages/admin/src/components/ContentList.tsx:450
 msgid "Trash"
 msgstr "Prullenbak"
 
-#: packages/admin/src/components/ContentList.tsx:779
+#: packages/admin/src/components/ContentList.tsx:785
 msgid "Trash is empty"
 msgstr "Prullenbak is leeg"
 
@@ -9691,7 +9692,7 @@ msgid "Unsupported widget element type: {0}"
 msgstr "Niet-ondersteund elementtype voor widget: {0}"
 
 #. placeholder {0}: formatter.format(to)
-#: packages/admin/src/components/ContentList.tsx:982
+#: packages/admin/src/components/ContentList.tsx:989
 msgid "Until {0}"
 msgstr ""
 
@@ -9744,7 +9745,7 @@ msgstr "Werk deze omleidingsregel bij."
 msgid "Update to v{0}"
 msgstr "Bijwerken naar v{0}"
 
-#: packages/admin/src/components/ContentList.tsx:861
+#: packages/admin/src/components/ContentList.tsx:868
 #: packages/admin/src/components/ContentSettingsPanel.tsx:998
 #: packages/admin/src/components/RegistryPluginDetail.tsx:559
 msgid "Updated"
@@ -9919,7 +9920,7 @@ msgstr "Gebruik [param] of [...rest] in paden voor patroonherkenning."
 msgid "Use a URL ending in a recognized image extension, such as .jpg or .png."
 msgstr ""
 
-#: packages/admin/src/components/ContentList.tsx:1056
+#: packages/admin/src/components/ContentList.tsx:1063
 msgid "Use as end date"
 msgstr ""
 
@@ -10062,7 +10063,7 @@ msgstr "Bekijken in Marketplace"
 msgid "View mode"
 msgstr "Weergavemodus"
 
-#: packages/admin/src/components/ContentList.tsx:1320
+#: packages/admin/src/components/ContentList.tsx:1327
 msgid "View published {title}"
 msgstr "Gepubliceerde {title} bekijken"
 
@@ -10297,7 +10298,7 @@ msgstr "WordPress-autorisatie is geweigerd"
 msgid "WordPress Username"
 msgstr "WordPress-gebruikersnaam"
 
-#: packages/admin/src/components/ContentList.tsx:492
+#: packages/admin/src/components/ContentList.tsx:493
 msgid "Working on {selectedCount} items…"
 msgstr "Bezig met {selectedCount} items…"
 
@@ -10325,7 +10326,7 @@ msgstr "YAML"
 msgid "Yearly"
 msgstr "Jaarlijks"
 
-#: packages/admin/src/components/ContentList.tsx:1395
+#: packages/admin/src/components/ContentList.tsx:1402
 #: packages/admin/src/components/users/UserDetail.tsx:236
 #: packages/admin/src/routes/byline-schema.tsx:420
 #: packages/admin/src/routes/byline-schema.tsx:422

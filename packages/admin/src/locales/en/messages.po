@@ -391,7 +391,7 @@ msgstr "{failedCount, plural, one {# upload failed} other {# uploads failed}}"
 
 #. placeholder {0}: hasMore ? "+" : ""
 #. placeholder {1}: hasMore ? "+" : ""
-#: packages/admin/src/components/ContentList.tsx:1200
+#: packages/admin/src/components/ContentList.tsx:1207
 msgid "{filteredCount, plural, one {#{0} item} other {#{1} items}}"
 msgstr "{filteredCount, plural, one {#{0} item} other {#{1} items}}"
 
@@ -418,7 +418,7 @@ msgstr "{label} moved to position {0} of {1}."
 msgid "{label} moved to position {0}."
 msgstr "{label} moved to position {0}."
 
-#: packages/admin/src/components/ContentList.tsx:1189
+#: packages/admin/src/components/ContentList.tsx:1196
 msgid "{matchCount, plural, one {# item matching \"{searchQuery}\"} other {# items matching \"{searchQuery}\"}}"
 msgstr "{matchCount, plural, one {# item matching \"{searchQuery}\"} other {# items matching \"{searchQuery}\"}}"
 
@@ -480,15 +480,15 @@ msgstr "{rejectedCount, plural, one {# file was not added.} other {# files were 
 msgid "{rewrittenUrls, plural, one {<rewrittenCount>#</rewrittenCount> image URL updated in {updatedContentItems, plural, one {<contentCount>#</contentCount> content item} other {<contentCount>#</contentCount> content items}}} other {<rewrittenCount>#</rewrittenCount> image URLs updated in {updatedContentItems, plural, one {<contentCount>#</contentCount> content item} other {<contentCount>#</contentCount> content items}}}}"
 msgstr "{rewrittenUrls, plural, one {<rewrittenCount>#</rewrittenCount> image URL updated in {updatedContentItems, plural, one {<contentCount>#</contentCount> content item} other {<contentCount>#</contentCount> content items}}} other {<rewrittenCount>#</rewrittenCount> image URLs updated in {updatedContentItems, plural, one {<contentCount>#</contentCount> content item} other {<contentCount>#</contentCount> content items}}}}"
 
-#: packages/admin/src/components/ContentList.tsx:493
+#: packages/admin/src/components/ContentList.tsx:494
 msgid "{selectedCount, plural, one {# selected} other {# selected}}"
 msgstr "{selectedCount, plural, one {# selected} other {# selected}}"
 
-#: packages/admin/src/components/ContentList.tsx:535
+#: packages/admin/src/components/ContentList.tsx:536
 msgid "{selectedCount, plural, one {Move # item to trash? You can restore it later.} other {Move # items to trash? You can restore them later.}}"
 msgstr "{selectedCount, plural, one {Move # item to trash? You can restore it later.} other {Move # items to trash? You can restore them later.}}"
 
-#: packages/admin/src/components/ContentList.tsx:1195
+#: packages/admin/src/components/ContentList.tsx:1202
 msgid "{total, plural, one {# item} other {# items}}"
 msgstr "{total, plural, one {# item} other {# items}}"
 
@@ -724,8 +724,8 @@ msgid "ACF Fields"
 msgstr "ACF Fields"
 
 #: packages/admin/src/components/comments/CommentInbox.tsx:291
-#: packages/admin/src/components/ContentList.tsx:636
-#: packages/admin/src/components/ContentList.tsx:762
+#: packages/admin/src/components/ContentList.tsx:637
+#: packages/admin/src/components/ContentList.tsx:768
 #: packages/admin/src/components/ContentTypeList.tsx:190
 #: packages/admin/src/components/TaxonomyManager.tsx:1056
 #: packages/admin/src/routes/byline-schema.tsx:249
@@ -860,7 +860,7 @@ msgstr "Add links to build your navigation menu"
 msgid "Add MIME type or extension"
 msgstr "Add MIME type or extension"
 
-#: packages/admin/src/components/ContentList.tsx:431
+#: packages/admin/src/components/ContentList.tsx:432
 msgid "Add New"
 msgstr "Add New"
 
@@ -980,12 +980,12 @@ msgstr "Align Right"
 msgid "Alignment"
 msgstr "Alignment"
 
-#: packages/admin/src/components/ContentList.tsx:443
+#: packages/admin/src/components/ContentList.tsx:444
 msgid "All"
 msgstr "All"
 
-#: packages/admin/src/components/ContentList.tsx:911
-#: packages/admin/src/components/ContentList.tsx:915
+#: packages/admin/src/components/ContentList.tsx:918
+#: packages/admin/src/components/ContentList.tsx:922
 msgid "All authors"
 msgstr "All authors"
 
@@ -1023,7 +1023,7 @@ msgstr "All roles"
 msgid "All Sources"
 msgstr "All Sources"
 
-#: packages/admin/src/components/ContentList.tsx:850
+#: packages/admin/src/components/ContentList.tsx:857
 #: packages/admin/src/components/Redirects.tsx:426
 msgid "All statuses"
 msgstr "All statuses"
@@ -1225,7 +1225,7 @@ msgstr "Approved"
 msgid "Arbitrary JSON data"
 msgstr "Arbitrary JSON data"
 
-#: packages/admin/src/components/ContentList.tsx:854
+#: packages/admin/src/components/ContentList.tsx:861
 #: packages/admin/src/components/ContentStatusBadge.tsx:65
 msgid "Archived"
 msgstr "Archived"
@@ -1606,9 +1606,9 @@ msgstr "Can view content"
 #: packages/admin/src/components/BylineFieldEditor.tsx:315
 #: packages/admin/src/components/CapabilityConsentDialog.tsx:256
 #: packages/admin/src/components/ConfirmDialog.tsx:99
-#: packages/admin/src/components/ContentList.tsx:544
-#: packages/admin/src/components/ContentList.tsx:1363
-#: packages/admin/src/components/ContentList.tsx:1531
+#: packages/admin/src/components/ContentList.tsx:545
+#: packages/admin/src/components/ContentList.tsx:1370
+#: packages/admin/src/components/ContentList.tsx:1552
 #: packages/admin/src/components/ContentPickerModal.tsx:240
 #: packages/admin/src/components/ContentSettingsPanel.tsx:312
 #: packages/admin/src/components/ContentSettingsPanel.tsx:1213
@@ -1797,8 +1797,8 @@ msgstr "Checking authentication..."
 msgid "Checking how many stored values reference \"{0}\"…"
 msgstr "Checking how many stored values reference \"{0}\"…"
 
-#: packages/admin/src/components/ContentList.tsx:1037
-#: packages/admin/src/components/ContentList.tsx:1043
+#: packages/admin/src/components/ContentList.tsx:1044
+#: packages/admin/src/components/ContentList.tsx:1050
 msgid "Choose a date range"
 msgstr "Choose a date range"
 
@@ -1852,8 +1852,8 @@ msgstr "Choose your preferred admin language"
 msgid "Choosing a byline replaces this automatic credit."
 msgstr "Choosing a byline replaces this automatic credit."
 
-#: packages/admin/src/components/ContentList.tsx:570
-#: packages/admin/src/components/ContentList.tsx:1051
+#: packages/admin/src/components/ContentList.tsx:571
+#: packages/admin/src/components/ContentList.tsx:1058
 msgid "Clear"
 msgstr "Clear"
 
@@ -1861,7 +1861,7 @@ msgstr "Clear"
 msgid "Clear completed"
 msgstr "Clear completed"
 
-#: packages/admin/src/components/ContentList.tsx:956
+#: packages/admin/src/components/ContentList.tsx:963
 #: packages/admin/src/components/MediaLibrary.tsx:1080
 #: packages/admin/src/components/users/UserList.tsx:122
 msgid "Clear filters"
@@ -2468,7 +2468,7 @@ msgstr "Create your first content type"
 msgid "Create your first navigation menu to get started"
 msgstr "Create your first navigation menu to get started"
 
-#: packages/admin/src/components/ContentList.tsx:664
+#: packages/admin/src/components/ContentList.tsx:665
 msgid "Create your first one"
 msgstr "Create your first one"
 
@@ -2498,7 +2498,7 @@ msgstr "Create, update, and delete taxonomy terms"
 msgid "Create, update, delete content"
 msgstr "Create, update, delete content"
 
-#: packages/admin/src/components/ContentList.tsx:860
+#: packages/admin/src/components/ContentList.tsx:867
 #: packages/admin/src/components/ContentSettingsPanel.tsx:991
 #: packages/admin/src/components/settings/ApiTokenSettings.tsx:358
 #: packages/admin/src/components/users/UserDetail.tsx:219
@@ -2630,7 +2630,7 @@ msgid "Dashboard"
 msgstr "Dashboard"
 
 #: packages/admin/src/components/comments/CommentInbox.tsx:288
-#: packages/admin/src/components/ContentList.tsx:625
+#: packages/admin/src/components/ContentList.tsx:626
 msgid "Date"
 msgstr "Date"
 
@@ -2643,7 +2643,7 @@ msgstr "Date & Time"
 msgid "Date and time picker"
 msgstr "Date and time picker"
 
-#: packages/admin/src/components/ContentList.tsx:933
+#: packages/admin/src/components/ContentList.tsx:940
 msgid "Date field to filter on"
 msgstr "Date field to filter on"
 
@@ -2651,7 +2651,7 @@ msgstr "Date field to filter on"
 msgid "Date Format"
 msgstr "Date Format"
 
-#: packages/admin/src/components/ContentList.tsx:983
+#: packages/admin/src/components/ContentList.tsx:990
 msgid "Date range"
 msgstr "Date range"
 
@@ -2822,11 +2822,11 @@ msgid "Delete permanently"
 msgstr "Delete permanently"
 
 #: packages/admin/src/components/comments/CommentDetail.tsx:182
-#: packages/admin/src/components/ContentList.tsx:1542
+#: packages/admin/src/components/ContentList.tsx:1563
 msgid "Delete Permanently"
 msgstr "Delete Permanently"
 
-#: packages/admin/src/components/ContentList.tsx:1522
+#: packages/admin/src/components/ContentList.tsx:1543
 msgid "Delete Permanently?"
 msgstr "Delete Permanently?"
 
@@ -2859,7 +2859,7 @@ msgstr "Delete table"
 msgid "Delete Widget Area?"
 msgstr "Delete Widget Area?"
 
-#: packages/admin/src/components/ContentList.tsx:759
+#: packages/admin/src/components/ContentList.tsx:765
 msgid "Deleted"
 msgstr "Deleted"
 
@@ -3144,7 +3144,7 @@ msgid "Don't have an account? <0>Sign up</0>"
 msgstr "Don't have an account? <0>Sign up</0>"
 
 #: packages/admin/src/components/BylineCreditsEditor.tsx:911
-#: packages/admin/src/components/ContentList.tsx:1059
+#: packages/admin/src/components/ContentList.tsx:1066
 #: packages/admin/src/components/MediaUploadDialog.tsx:353
 #: packages/admin/src/components/users/InviteUserModal.tsx:142
 #: packages/admin/src/components/WordPressImport.tsx:2144
@@ -3181,7 +3181,7 @@ msgstr "Download SBOM"
 msgid "Downloading"
 msgstr "Downloading"
 
-#: packages/admin/src/components/ContentList.tsx:852
+#: packages/admin/src/components/ContentList.tsx:859
 #: packages/admin/src/components/ContentStatusBadge.tsx:61
 msgid "Draft"
 msgstr "Draft"
@@ -3264,7 +3264,7 @@ msgstr "Drop your WordPress export file here"
 msgid "Duplicate"
 msgstr "Duplicate"
 
-#: packages/admin/src/components/ContentList.tsx:1336
+#: packages/admin/src/components/ContentList.tsx:1343
 msgid "Duplicate {title}"
 msgstr "Duplicate {title}"
 
@@ -3315,7 +3315,7 @@ msgstr "Edit {0} field"
 msgid "Edit {itemLabel}"
 msgstr "Edit {itemLabel}"
 
-#: packages/admin/src/components/ContentList.tsx:1328
+#: packages/admin/src/components/ContentList.tsx:1335
 msgid "Edit {title}"
 msgstr "Edit {title}"
 
@@ -3961,8 +3961,8 @@ msgstr "Failed to fetch plugins"
 msgid "Failed to fetch provider media"
 msgstr "Failed to fetch provider media"
 
-#: packages/admin/src/lib/api/content.ts:609
-#: packages/admin/src/lib/api/content.ts:614
+#: packages/admin/src/lib/api/content.ts:611
+#: packages/admin/src/lib/api/content.ts:616
 msgid "Failed to fetch revision"
 msgstr "Failed to fetch revision"
 
@@ -4105,7 +4105,7 @@ msgstr "Failed to load widget"
 msgid "Failed to perform bulk action"
 msgstr "Failed to perform bulk action"
 
-#: packages/admin/src/lib/api/content.ts:370
+#: packages/admin/src/lib/api/content.ts:372
 msgid "Failed to permanently delete content"
 msgstr "Failed to permanently delete content"
 
@@ -4164,12 +4164,12 @@ msgstr "Failed to replace media image"
 msgid "Failed to restore"
 msgstr "Failed to restore"
 
-#: packages/admin/src/lib/api/content.ts:359
+#: packages/admin/src/lib/api/content.ts:361
 msgid "Failed to restore content"
 msgstr "Failed to restore content"
 
-#: packages/admin/src/lib/api/content.ts:631
-#: packages/admin/src/lib/api/content.ts:636
+#: packages/admin/src/lib/api/content.ts:633
+#: packages/admin/src/lib/api/content.ts:638
 msgid "Failed to restore revision"
 msgstr "Failed to restore revision"
 
@@ -4404,7 +4404,7 @@ msgstr "Filename cannot be changed after upload"
 msgid "Files upload as soon as you add them."
 msgstr "Files upload as soon as you add them."
 
-#: packages/admin/src/components/ContentList.tsx:907
+#: packages/admin/src/components/ContentList.tsx:914
 msgid "Filter by author"
 msgstr "Filter by author"
 
@@ -4420,7 +4420,7 @@ msgstr "Filter by capability"
 msgid "Filter by collection"
 msgstr "Filter by collection"
 
-#: packages/admin/src/components/ContentList.tsx:1029
+#: packages/admin/src/components/ContentList.tsx:1036
 msgid "Filter by date range: {rangeLabel}"
 msgstr "Filter by date range: {rangeLabel}"
 
@@ -4432,7 +4432,7 @@ msgstr "Filter by role"
 msgid "Filter by source"
 msgstr "Filter by source"
 
-#: packages/admin/src/components/ContentList.tsx:889
+#: packages/admin/src/components/ContentList.tsx:896
 #: packages/admin/src/components/Redirects.tsx:427
 msgid "Filter by status"
 msgstr "Filter by status"
@@ -4547,7 +4547,7 @@ msgid "Freeform"
 msgstr "Freeform"
 
 #. placeholder {0}: formatter.format(from)
-#: packages/admin/src/components/ContentList.tsx:980
+#: packages/admin/src/components/ContentList.tsx:987
 msgid "From {0}"
 msgstr "From {0}"
 
@@ -5412,8 +5412,8 @@ msgstr "Live View"
 msgid "Load more"
 msgstr "Load more"
 
-#: packages/admin/src/components/ContentList.tsx:743
-#: packages/admin/src/components/ContentList.tsx:801
+#: packages/admin/src/components/ContentList.tsx:744
+#: packages/admin/src/components/ContentList.tsx:808
 #: packages/admin/src/components/MediaLibrary.tsx:1345
 #: packages/admin/src/components/users/UserList.tsx:162
 msgid "Load More"
@@ -5517,10 +5517,10 @@ msgstr "Loading usage"
 msgid "Loading widgets..."
 msgstr "Loading widgets..."
 
-#: packages/admin/src/components/ContentList.tsx:646
-#: packages/admin/src/components/ContentList.tsx:743
-#: packages/admin/src/components/ContentList.tsx:772
-#: packages/admin/src/components/ContentList.tsx:801
+#: packages/admin/src/components/ContentList.tsx:647
+#: packages/admin/src/components/ContentList.tsx:744
+#: packages/admin/src/components/ContentList.tsx:778
+#: packages/admin/src/components/ContentList.tsx:808
 #: packages/admin/src/components/ContentPickerModal.tsx:225
 #: packages/admin/src/components/MarketplaceBrowse.tsx:200
 #: packages/admin/src/components/MediaDetailPanel.tsx:596
@@ -5554,7 +5554,8 @@ msgstr "Loading…"
 msgid "Local time"
 msgstr "Local time"
 
-#: packages/admin/src/components/ContentList.tsx:618
+#: packages/admin/src/components/ContentList.tsx:619
+#: packages/admin/src/components/ContentList.tsx:761
 #: packages/admin/src/components/LocaleSwitcher.tsx:60
 msgid "Locale"
 msgstr "Locale"
@@ -5972,7 +5973,7 @@ msgstr "Move \"{0}\" down"
 msgid "Move \"{0}\" up"
 msgstr "Move \"{0}\" up"
 
-#: packages/admin/src/components/ContentList.tsx:1357
+#: packages/admin/src/components/ContentList.tsx:1364
 msgid "Move \"{title}\" to trash? You can restore it later."
 msgstr "Move \"{title}\" to trash? You can restore it later."
 
@@ -6006,7 +6007,7 @@ msgstr "Move {0} up"
 msgid "Move {0} up — unavailable, its parent has no translation in this locale"
 msgstr "Move {0} up — unavailable, its parent has no translation in this locale"
 
-#: packages/admin/src/components/ContentList.tsx:1348
+#: packages/admin/src/components/ContentList.tsx:1355
 msgid "Move {title} to trash"
 msgstr "Move {title} to trash"
 
@@ -6022,19 +6023,19 @@ msgstr "Move media here from Media Details."
 msgid "Move the focal point to choose what stays visible in cropped images."
 msgstr "Move the focal point to choose what stays visible in cropped images."
 
-#: packages/admin/src/components/ContentList.tsx:528
+#: packages/admin/src/components/ContentList.tsx:529
 msgid "Move to trash"
 msgstr "Move to trash"
 
-#: packages/admin/src/components/ContentList.tsx:555
-#: packages/admin/src/components/ContentList.tsx:1370
+#: packages/admin/src/components/ContentList.tsx:556
+#: packages/admin/src/components/ContentList.tsx:1377
 #: packages/admin/src/components/ContentSettingsPanel.tsx:1200
 #: packages/admin/src/components/ContentSettingsPanel.tsx:1220
 msgid "Move to Trash"
 msgstr "Move to Trash"
 
-#: packages/admin/src/components/ContentList.tsx:533
-#: packages/admin/src/components/ContentList.tsx:1355
+#: packages/admin/src/components/ContentList.tsx:534
+#: packages/admin/src/components/ContentList.tsx:1362
 #: packages/admin/src/components/ContentSettingsPanel.tsx:1205
 msgid "Move to Trash?"
 msgstr "Move to Trash?"
@@ -6218,7 +6219,7 @@ msgid "Next"
 msgstr "Next"
 
 #: packages/admin/src/components/comments/CommentInbox.tsx:363
-#: packages/admin/src/components/ContentList.tsx:731
+#: packages/admin/src/components/ContentList.tsx:732
 #: packages/admin/src/components/MediaLibrary.tsx:1309
 #: packages/admin/src/components/MediaPickerModal.tsx:1546
 msgid "Next page"
@@ -6228,7 +6229,7 @@ msgstr "Next page"
 msgid "Next screenshot"
 msgstr "Next screenshot"
 
-#: packages/admin/src/components/ContentList.tsx:1393
+#: packages/admin/src/components/ContentList.tsx:1400
 #: packages/admin/src/components/users/UserDetail.tsx:236
 #: packages/admin/src/routes/byline-schema.tsx:422
 msgid "No"
@@ -6244,7 +6245,7 @@ msgid "No {0} available."
 msgstr "No {0} available."
 
 #. placeholder {0}: collectionLabel.toLowerCase()
-#: packages/admin/src/components/ContentList.tsx:657
+#: packages/admin/src/components/ContentList.tsx:658
 msgid "No {0} yet."
 msgstr "No {0} yet."
 
@@ -6494,8 +6495,8 @@ msgstr "No redirects yet"
 msgid "No results"
 msgstr "No results"
 
-#: packages/admin/src/components/ContentList.tsx:654
-#: packages/admin/src/components/ContentList.tsx:673
+#: packages/admin/src/components/ContentList.tsx:655
+#: packages/admin/src/components/ContentList.tsx:674
 msgid "No results for \"{activeSearch}\""
 msgstr "No results for \"{activeSearch}\""
 
@@ -6567,7 +6568,7 @@ msgstr "None (top level)"
 msgid "Not compatible with this environment"
 msgstr "Not compatible with this environment"
 
-#: packages/admin/src/components/ContentList.tsx:1392
+#: packages/admin/src/components/ContentList.tsx:1399
 #: packages/admin/src/components/PluginSettings.tsx:341
 msgid "Not set"
 msgstr "Not set"
@@ -6909,11 +6910,11 @@ msgstr "Per page"
 msgid "Period"
 msgstr "Period"
 
-#: packages/admin/src/components/ContentList.tsx:1525
+#: packages/admin/src/components/ContentList.tsx:1546
 msgid "Permanently delete \"{title}\"? This cannot be undone."
 msgstr "Permanently delete \"{title}\"? This cannot be undone."
 
-#: packages/admin/src/components/ContentList.tsx:1514
+#: packages/admin/src/components/ContentList.tsx:1535
 msgid "Permanently delete {title}"
 msgstr "Permanently delete {title}"
 
@@ -7137,7 +7138,7 @@ msgid "Previous"
 msgstr "Previous"
 
 #: packages/admin/src/components/comments/CommentInbox.tsx:344
-#: packages/admin/src/components/ContentList.tsx:719
+#: packages/admin/src/components/ContentList.tsx:720
 #: packages/admin/src/components/MediaLibrary.tsx:1308
 #: packages/admin/src/components/MediaPickerModal.tsx:1545
 msgid "Previous page"
@@ -7182,7 +7183,7 @@ msgstr "Provider:"
 msgid "Publication date"
 msgstr "Publication date"
 
-#: packages/admin/src/components/ContentList.tsx:504
+#: packages/admin/src/components/ContentList.tsx:505
 #: packages/admin/src/components/ContentSettingsPanel.tsx:526
 #: packages/admin/src/components/ContentSettingsPanel.tsx:550
 #: packages/admin/src/components/ContentSettingsPanel.tsx:864
@@ -7202,8 +7203,8 @@ msgstr "Publish changes now"
 msgid "Publish now"
 msgstr "Publish now"
 
-#: packages/admin/src/components/ContentList.tsx:851
-#: packages/admin/src/components/ContentList.tsx:862
+#: packages/admin/src/components/ContentList.tsx:858
+#: packages/admin/src/components/ContentList.tsx:869
 #: packages/admin/src/components/ContentStatusBadge.tsx:59
 #: packages/admin/src/components/Dashboard.tsx:297
 #: packages/admin/src/router.tsx:1169
@@ -7724,7 +7725,7 @@ msgstr "Restart numbering"
 msgid "Restore"
 msgstr "Restore"
 
-#: packages/admin/src/components/ContentList.tsx:1502
+#: packages/admin/src/components/ContentList.tsx:1523
 msgid "Restore {title}"
 msgstr "Restore {title}"
 
@@ -8041,7 +8042,7 @@ msgstr "Schedule date"
 msgid "Schedule publication"
 msgstr "Schedule publication"
 
-#: packages/admin/src/components/ContentList.tsx:853
+#: packages/admin/src/components/ContentList.tsx:860
 #: packages/admin/src/components/ContentSettingsPanel.tsx:545
 #: packages/admin/src/components/ContentStatusBadge.tsx:63
 #: packages/admin/src/router.tsx:1252
@@ -8128,12 +8129,12 @@ msgid "Search"
 msgstr "Search"
 
 #. placeholder {0}: collectionLabel.toLowerCase()
-#: packages/admin/src/components/ContentList.tsx:465
+#: packages/admin/src/components/ContentList.tsx:466
 msgid "Search {0}"
 msgstr "Search {0}"
 
 #. placeholder {0}: collectionLabel.toLowerCase()
-#: packages/admin/src/components/ContentList.tsx:464
+#: packages/admin/src/components/ContentList.tsx:465
 msgid "Search {0}..."
 msgstr "Search {0}..."
 
@@ -8356,7 +8357,7 @@ msgstr "Select"
 msgid "Select {label}"
 msgstr "Select {label}"
 
-#: packages/admin/src/components/ContentList.tsx:1253
+#: packages/admin/src/components/ContentList.tsx:1260
 msgid "Select {title}"
 msgstr "Select {title}"
 
@@ -8380,7 +8381,7 @@ msgstr "Select a release before verifying it"
 msgid "Select all"
 msgstr "Select all"
 
-#: packages/admin/src/components/ContentList.tsx:586
+#: packages/admin/src/components/ContentList.tsx:587
 msgid "Select all on this page"
 msgstr "Select all on this page"
 
@@ -8559,7 +8560,7 @@ msgstr "Set role"
 msgid "Set to 0 to never close comments automatically."
 msgstr "Set to 0 to never close comments automatically."
 
-#: packages/admin/src/components/ContentList.tsx:514
+#: packages/admin/src/components/ContentList.tsx:515
 msgid "Set to draft"
 msgstr "Set to draft"
 
@@ -8914,7 +8915,7 @@ msgstr "Start Import"
 msgid "Start writing, or type '/' for commands"
 msgstr "Start writing, or type '/' for commands"
 
-#: packages/admin/src/components/ContentList.tsx:611
+#: packages/admin/src/components/ContentList.tsx:612
 #: packages/admin/src/components/ContentTypeEditor.tsx:117
 #: packages/admin/src/components/Redirects.tsx:480
 #: packages/admin/src/components/settings/MediaUsageSettings.tsx:382
@@ -9379,8 +9380,8 @@ msgstr "Timezone"
 msgid "Timezone for displaying dates (e.g., America/New_York)"
 msgstr "Timezone for displaying dates (e.g., America/New_York)"
 
-#: packages/admin/src/components/ContentList.tsx:596
-#: packages/admin/src/components/ContentList.tsx:756
+#: packages/admin/src/components/ContentList.tsx:597
+#: packages/admin/src/components/ContentList.tsx:757
 #: packages/admin/src/components/SectionEditor.tsx:272
 #: packages/admin/src/components/Sections.tsx:170
 #: packages/admin/src/components/Widgets.tsx:891
@@ -9487,11 +9488,11 @@ msgstr "trash"
 #: packages/admin/src/components/comments/CommentInbox.tsx:190
 #: packages/admin/src/components/comments/CommentInbox.tsx:249
 #: packages/admin/src/components/comments/CommentInbox.tsx:505
-#: packages/admin/src/components/ContentList.tsx:449
+#: packages/admin/src/components/ContentList.tsx:450
 msgid "Trash"
 msgstr "Trash"
 
-#: packages/admin/src/components/ContentList.tsx:779
+#: packages/admin/src/components/ContentList.tsx:785
 msgid "Trash is empty"
 msgstr "Trash is empty"
 
@@ -9691,7 +9692,7 @@ msgid "Unsupported widget element type: {0}"
 msgstr "Unsupported widget element type: {0}"
 
 #. placeholder {0}: formatter.format(to)
-#: packages/admin/src/components/ContentList.tsx:982
+#: packages/admin/src/components/ContentList.tsx:989
 msgid "Until {0}"
 msgstr "Until {0}"
 
@@ -9744,7 +9745,7 @@ msgstr "Update this redirect rule."
 msgid "Update to v{0}"
 msgstr "Update to v{0}"
 
-#: packages/admin/src/components/ContentList.tsx:861
+#: packages/admin/src/components/ContentList.tsx:868
 #: packages/admin/src/components/ContentSettingsPanel.tsx:998
 #: packages/admin/src/components/RegistryPluginDetail.tsx:559
 msgid "Updated"
@@ -9919,7 +9920,7 @@ msgstr "Use [param] or [...rest] in paths for pattern matching."
 msgid "Use a URL ending in a recognized image extension, such as .jpg or .png."
 msgstr "Use a URL ending in a recognized image extension, such as .jpg or .png."
 
-#: packages/admin/src/components/ContentList.tsx:1056
+#: packages/admin/src/components/ContentList.tsx:1063
 msgid "Use as end date"
 msgstr "Use as end date"
 
@@ -10062,7 +10063,7 @@ msgstr "View in Marketplace"
 msgid "View mode"
 msgstr "View mode"
 
-#: packages/admin/src/components/ContentList.tsx:1320
+#: packages/admin/src/components/ContentList.tsx:1327
 msgid "View published {title}"
 msgstr "View published {title}"
 
@@ -10297,7 +10298,7 @@ msgstr "WordPress authorization was rejected"
 msgid "WordPress Username"
 msgstr "WordPress Username"
 
-#: packages/admin/src/components/ContentList.tsx:492
+#: packages/admin/src/components/ContentList.tsx:493
 msgid "Working on {selectedCount} items…"
 msgstr "Working on {selectedCount} items…"
 
@@ -10325,7 +10326,7 @@ msgstr "YAML"
 msgid "Yearly"
 msgstr "Yearly"
 
-#: packages/admin/src/components/ContentList.tsx:1395
+#: packages/admin/src/components/ContentList.tsx:1402
 #: packages/admin/src/components/users/UserDetail.tsx:236
 #: packages/admin/src/routes/byline-schema.tsx:420
 #: packages/admin/src/routes/byline-schema.tsx:422
