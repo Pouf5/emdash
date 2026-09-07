@@ -1,8 +1,10 @@
 import * as React from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { userEvent } from "vitest/browser";
 
 import {
 	ImageDetailPanel,
+	type ImageAttributes,
 	type ImagePanelAttributes,
 } from "../../src/components/editor/ImageDetailPanel.js";
 import { ApiResponseError, fetchMediaItem } from "../../src/lib/api";
@@ -98,19 +100,56 @@ const replacements: Record<string, MediaItem> = {
 };
 
 vi.mock("../../src/components/MediaPickerModal.js", () => ({
-	MediaPickerModal: ({ open, onSelect }: { open: boolean; onSelect: (item: MediaItem) => void }) =>
+	MediaPickerModal: ({
+		open,
+		onOpenChange,
+		onSelect,
+	}: {
+		open: boolean;
+		onOpenChange: (open: boolean) => void;
+		onSelect: (item: MediaItem) => void;
+	}) =>
 		open ? (
-			<>
+			<div role="dialog" aria-label="Replace image">
 				{Object.entries(replacements).map(([label, item]) => (
 					<button key={label} type="button" onClick={() => onSelect(item)}>
 						{label}
 					</button>
 				))}
-			</>
+				<button type="button" onClick={() => onOpenChange(false)}>
+					Close image picker
+				</button>
+			</div>
 		) : null,
 }));
 
-describe("ImageDetailPanel replacement", () => {
+const baseAttributes: ImageAttributes = {
+	src: "https://media.example/image.jpg",
+	alt: "Current description",
+	width: 1200,
+	height: 800,
+};
+
+async function renderPanel(attributes: ImagePanelAttributes = baseAttributes, inline = true) {
+	const onUpdate = vi.fn();
+	const onReplace = vi.fn();
+	const onDelete = vi.fn();
+	const onClose = vi.fn();
+	const screen = await render(
+		<ImageDetailPanel
+			attributes={attributes}
+			onUpdate={onUpdate}
+			onReplace={onReplace}
+			onDelete={onDelete}
+			onClose={onClose}
+			inline={inline}
+		/>,
+	);
+
+	return { screen, onUpdate, onReplace, onDelete, onClose };
+}
+
+describe("ImageDetailPanel", () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
 		vi.mocked(fetchMediaItem).mockResolvedValue({
@@ -127,25 +166,266 @@ describe("ImageDetailPanel replacement", () => {
 		});
 	});
 
+	it("reveals field help by pointer and keyboard focus", async () => {
+		const { screen } = await renderPanel();
+		const altHelp = screen.getByText(
+			"Describe the image's purpose and relevant details for people who cannot see it.",
+		);
+		const altTrigger = screen.getByRole("button", { name: "More information about Alt text" });
+
+		await userEvent.hover(altTrigger.element());
+		await expect.element(altHelp).toBeVisible();
+		await userEvent.hover(document.body);
+		await vi.waitFor(() => expect(altHelp.query()).toBeNull());
+
+		const sizeHelp = screen.getByText(
+			"Set a custom width and height for this image in the document. Reset uses the original media dimensions. The original media file is unchanged.",
+		);
+		screen.getByRole("button", { name: "More information about Display size" }).element().focus();
+		await expect.element(sizeHelp).toBeVisible();
+	});
+
+	it("applies the selected alignment", async () => {
+		const { screen, onUpdate } = await renderPanel();
+
+		await screen.getByRole("combobox", { name: "Alignment" }).click();
+		await screen.getByRole("option", { name: "Left" }).click();
+		await screen.getByRole("button", { name: "Apply" }).click();
+
+		expect(onUpdate).toHaveBeenCalledWith(expect.objectContaining({ alignment: "left" }));
+	});
+
+	it.each(["wide", "full"] as const)(
+		"preserves imported %s without showing unsupported authoring choices",
+		async (alignment) => {
+			const { screen, onUpdate } = await renderPanel({ ...baseAttributes, alignment });
+			const select = screen.getByRole("combobox", { name: "Alignment" });
+			await expect.element(select).toHaveTextContent(alignment === "wide" ? "Wide" : "Full");
+			await screen.getByRole("textbox", { name: "Alt text" }).fill("Updated description");
+			await screen.getByRole("button", { name: "Apply" }).click();
+			expect(onUpdate).toHaveBeenLastCalledWith(expect.objectContaining({ alignment }));
+			await select.click();
+			await expect.element(screen.getByRole("option", { name: "None" })).toBeVisible();
+			expect(screen.getByRole("option", { name: "Wide" }).query()).toBeNull();
+			expect(screen.getByRole("option", { name: "Full" }).query()).toBeNull();
+			await userEvent.keyboard("{End}{Enter}");
+			await expect.element(select).toHaveTextContent("Right");
+			await screen.getByRole("button", { name: "Apply" }).click();
+			expect(onUpdate).toHaveBeenLastCalledWith(expect.objectContaining({ alignment: "right" }));
+		},
+	);
+
+	it("omits unsupported alignment buttons from the fixed panel", async () => {
+		const { screen } = await renderPanel({ ...baseAttributes, mediaId: "image-1" }, false);
+		await expect.element(screen.getByRole("button", { name: "Right", exact: true })).toBeVisible();
+		expect(screen.getByRole("button", { name: "Wide", exact: true }).query()).toBeNull();
+		expect(screen.getByRole("button", { name: "Full", exact: true }).query()).toBeNull();
+	});
+
+	it.each([undefined, null])(
+		"preserves %s display overrides on alignment-only Apply",
+		async (absent) => {
+			const { screen, onUpdate } = await renderPanel({
+				...baseAttributes,
+				displayWidth: absent,
+				displayHeight: absent,
+			} as ImageAttributes);
+			await screen.getByRole("combobox", { name: "Alignment" }).click();
+			await screen.getByRole("option", { name: "Left" }).click();
+			await screen.getByRole("button", { name: "Apply" }).click();
+			expect(onUpdate).toHaveBeenCalledWith(
+				expect.objectContaining({
+					alignment: "left",
+					displayWidth: undefined,
+					displayHeight: undefined,
+				}),
+			);
+		},
+	);
+
+	it.each([
+		{ displayWidth: undefined, displayHeight: undefined },
+		{ displayWidth: 600, displayHeight: undefined },
+		{ displayWidth: undefined, displayHeight: 300 },
+	])(
+		"preserves existing overrides $displayWidth × $displayHeight on text-only Apply",
+		async (size) => {
+			const { screen, onUpdate } = await renderPanel({ ...baseAttributes, ...size });
+			await screen.getByRole("textbox", { name: "Alt text" }).fill("New description");
+			await screen.getByRole("button", { name: "Apply" }).click();
+			expect(onUpdate).toHaveBeenCalledWith(expect.objectContaining(size));
+		},
+	);
+
+	it("clears custom overrides with Reset, even when they match the original size", async () => {
+		const { screen, onUpdate } = await renderPanel({
+			...baseAttributes,
+			displayWidth: 1200,
+			displayHeight: 800,
+		});
+		await screen.getByRole("button", { name: "Reset", exact: true }).click();
+		await expect.element(screen.getByRole("button", { name: "Apply" })).toBeEnabled();
+		await screen.getByRole("button", { name: "Apply" }).click();
+		expect(onUpdate).toHaveBeenCalledWith(
+			expect.objectContaining({
+				displayWidth: undefined,
+				displayHeight: undefined,
+			}),
+		);
+	});
+
+	it("saves edited dimensions and allows either dimension to be cleared", async () => {
+		const { screen, onUpdate } = await renderPanel();
+		await screen.getByLabelText("Width").fill("600");
+		await expect.element(screen.getByLabelText("Height")).toHaveValue(400);
+		await screen.getByLabelText("Height").fill("");
+		await screen.getByRole("button", { name: "Apply" }).click();
+		expect(onUpdate).toHaveBeenCalledWith(
+			expect.objectContaining({
+				displayWidth: 600,
+				displayHeight: undefined,
+			}),
+		);
+	});
+
+	it("retains the other original dimension when the first resize is unlocked", async () => {
+		const { screen, onUpdate } = await renderPanel();
+		await screen.getByRole("button", { name: "Keep aspect ratio" }).click();
+		await screen.getByLabelText("Width").fill("600");
+		await screen.getByRole("button", { name: "Apply" }).click();
+		expect(onUpdate).toHaveBeenCalledWith(
+			expect.objectContaining({ displayWidth: 600, displayHeight: 800 }),
+		);
+	});
+
+	it("maps the None alignment option back to an omitted attribute", async () => {
+		const { screen, onUpdate } = await renderPanel({ ...baseAttributes, alignment: "center" });
+
+		await screen.getByRole("combobox", { name: "Alignment" }).click();
+		await screen.getByRole("option", { name: "None" }).click();
+		await screen.getByRole("button", { name: "Apply" }).click();
+
+		expect(onUpdate).toHaveBeenCalledWith(expect.objectContaining({ alignment: undefined }));
+	});
+
+	it.each(["text", "dimension", "alignment"])(
+		"enables Apply after a meaningful %s change",
+		async (change) => {
+			const { screen } = await renderPanel();
+			const apply = screen.getByRole("button", { name: "Apply" });
+			await expect.element(apply).toBeDisabled();
+
+			if (change === "text") await screen.getByRole("textbox", { name: "Alt text" }).fill("New");
+			if (change === "dimension")
+				await screen.getByRole("spinbutton", { name: "Width" }).fill("600");
+			if (change === "alignment") {
+				await screen.getByRole("combobox", { name: "Alignment" }).click();
+				await screen.getByRole("option", { name: "Right" }).click();
+			}
+
+			await expect.element(apply).toBeEnabled();
+		},
+	);
+
+	it.each(["Cancel", "Close image settings"])(
+		"closes with %s without applying staged fields",
+		async (action) => {
+			const { screen, onUpdate, onClose } = await renderPanel();
+			await screen.getByRole("textbox", { name: "Alt text" }).fill("Staged only");
+			await screen.getByRole("button", { name: action }).click();
+
+			expect(onClose).toHaveBeenCalledOnce();
+			expect(onUpdate).not.toHaveBeenCalled();
+		},
+	);
+
+	it("groups display-size controls and preserves aspect-ratio behavior", async () => {
+		const { screen } = await renderPanel();
+		const group = screen.getByRole("group", { name: "Display size" });
+		const width = group.getByRole("spinbutton", { name: "Width" });
+		const height = group.getByRole("spinbutton", { name: "Height" });
+		const aspectRatio = group.getByRole("button", { name: "Keep aspect ratio" });
+
+		await expect.element(aspectRatio).toHaveAttribute("aria-pressed", "true");
+		await width.fill("600");
+		await expect.element(height).toHaveValue(400);
+		await aspectRatio.click();
+		await expect.element(aspectRatio).toHaveAttribute("aria-pressed", "false");
+		await width.fill("300");
+		await expect.element(height).toHaveValue(400);
+	});
+
+	it("requires confirmation before removing the image", async () => {
+		const { screen, onDelete } = await renderPanel();
+
+		await screen.getByRole("button", { name: "Remove image" }).click();
+		expect(onDelete).not.toHaveBeenCalled();
+		screen.getByRole("button", { name: "Remove", exact: true }).element().click();
+		expect(onDelete).toHaveBeenCalledOnce();
+	});
+
+	it("applies changed fields with the platform save shortcut", async () => {
+		const { screen, onUpdate, onClose } = await renderPanel();
+		await screen.getByRole("textbox", { name: "Alt text" }).fill("Shortcut change");
+		const mod = navigator.platform.includes("Mac") ? "{Meta>}" : "{Control>}";
+		const modUp = navigator.platform.includes("Mac") ? "{/Meta}" : "{/Control}";
+
+		await userEvent.keyboard(`${mod}s${modUp}`);
+
+		expect(onUpdate).toHaveBeenCalledWith(expect.objectContaining({ alt: "Shortcut change" }));
+		expect(onClose).toHaveBeenCalledOnce();
+	});
+
+	it("keeps an unchanged panel open when the save shortcut is pressed", async () => {
+		const { onUpdate, onClose } = await renderPanel();
+		const event = new KeyboardEvent("keydown", {
+			key: "s",
+			metaKey: true,
+			bubbles: true,
+			cancelable: true,
+		});
+
+		window.dispatchEvent(event);
+
+		expect(event.defaultPrevented).toBe(true);
+		expect(onUpdate).not.toHaveBeenCalled();
+		expect(onClose).not.toHaveBeenCalled();
+	});
+
+	it("cancels staged fields with Escape", async () => {
+		const { screen, onUpdate, onClose } = await renderPanel();
+		await screen.getByRole("textbox", { name: "Alt text" }).fill("Staged only");
+
+		await userEvent.keyboard("{Escape}");
+
+		expect(onClose).toHaveBeenCalledOnce();
+		expect(onUpdate).not.toHaveBeenCalled();
+	});
+
+	it.each(["picker", "confirmation"])(
+		"leaves the parent panel open while the %s overlay handles Escape",
+		async (overlay) => {
+			const { screen, onUpdate, onClose } = await renderPanel();
+			await screen
+				.getByRole("button", { name: overlay === "picker" ? "Replace" : "Remove image" })
+				.click();
+
+			await userEvent.keyboard("{Escape}");
+
+			expect(onClose).not.toHaveBeenCalled();
+			expect(onUpdate).not.toHaveBeenCalled();
+		},
+	);
+
 	it.each([
 		{ action: "Choose local image", expectedProvider: "local" },
 		{ action: "Choose provider image", expectedProvider: "cloudflare-images" },
 	])("uses the replacement provider for $action", async ({ action, expectedProvider }) => {
-		const onReplace = vi.fn();
-		const screen = await render(
-			<ImageDetailPanel
-				attributes={{
-					src: "https://media.example/old.jpg",
-					provider: "old-provider",
-					mediaId: "old-image",
-				}}
-				onUpdate={vi.fn()}
-				onReplace={onReplace}
-				onDelete={vi.fn()}
-				onClose={vi.fn()}
-				inline
-			/>,
-		);
+		const { screen, onReplace } = await renderPanel({
+			src: "https://media.example/old.jpg",
+			provider: "old-provider",
+			mediaId: "old-image",
+		});
 
 		await screen.getByRole("button", { name: "Replace" }).click();
 		await screen.getByRole("button", { name: action }).click();
@@ -178,7 +458,7 @@ describe("ImageDetailPanel replacement", () => {
 
 		await expect.element(screen.getByRole("button", { name: "Replace" })).toBeVisible();
 		await expect.element(screen.getByRole("button", { name: "Edit asset" })).toBeVisible();
-		await expect.element(screen.getByRole("button", { name: "Remove" })).toBeVisible();
+		await expect.element(screen.getByRole("button", { name: "Remove image" })).toBeVisible();
 		expect(fetchMediaItem).not.toHaveBeenCalled();
 		await screen.getByRole("button", { name: "Edit asset" }).click();
 		await vi.waitFor(() =>
@@ -315,7 +595,7 @@ describe("ImageDetailPanel replacement", () => {
 		await screen.getByRole("button", { name: "Edit asset" }).click();
 
 		await expect.element(screen.getByRole("button", { name: "Replace" })).toBeDisabled();
-		await expect.element(screen.getByRole("button", { name: "Remove" })).toBeDisabled();
+		await expect.element(screen.getByRole("button", { name: "Remove image" })).toBeDisabled();
 		resolveItem({
 			id: "old-image",
 			filename: "old.jpg",
@@ -330,38 +610,74 @@ describe("ImageDetailPanel replacement", () => {
 		});
 	});
 
-	it("keeps implicit display dimensions aligned with the cropped asset", async () => {
-		const screen = await render(
-			<ImageDetailPanel
-				attributes={{
-					src: "/_emdash/api/media/file/old.jpg",
-					provider: "local",
-					mediaId: "old-image",
-					width: 1200,
-					height: 800,
-				}}
-				onUpdate={vi.fn()}
-				onReplace={vi.fn()}
-				onDelete={vi.fn()}
-				onClose={vi.fn()}
-				inline
-			/>,
-		);
+	it.each([undefined, null])(
+		"keeps %s implicit display dimensions aligned with the cropped asset",
+		async (absent) => {
+			const screen = await render(
+				<ImageDetailPanel
+					attributes={{
+						src: "/_emdash/api/media/file/old.jpg",
+						provider: "local",
+						mediaId: "old-image",
+						width: 1200,
+						height: 800,
+						displayWidth: absent as number | undefined,
+						displayHeight: absent as number | undefined,
+					}}
+					onUpdate={vi.fn()}
+					onReplace={vi.fn()}
+					onDelete={vi.fn()}
+					onClose={vi.fn()}
+					inline
+				/>,
+			);
 
-		await screen.getByRole("button", { name: "Edit asset" }).click();
-		await screen.getByRole("button", { name: "Use cropped asset" }).click();
+			await screen.getByRole("button", { name: "Edit asset" }).click();
+			await screen.getByRole("button", { name: "Use cropped asset" }).click();
 
-		await expect.element(screen.getByLabelText("Width")).toHaveValue(640);
-		await expect.element(screen.getByLabelText("Height")).toHaveValue(480);
-		await expect.element(screen.getByRole("button", { name: "Save" })).toBeDisabled();
+			await expect.element(screen.getByLabelText("Width")).toHaveValue(640);
+			await expect.element(screen.getByLabelText("Height")).toHaveValue(480);
+			await expect.element(screen.getByRole("button", { name: "Apply" })).toBeDisabled();
 
-		await screen.getByRole("button", { name: "Edit asset" }).click();
-		await vi.waitFor(() =>
-			expect(fetchMediaItem).toHaveBeenLastCalledWith("cropped-image", {
-				signal: expect.any(AbortSignal),
-			}),
-		);
-	});
+			await screen.getByRole("button", { name: "Edit asset" }).click();
+			await vi.waitFor(() =>
+				expect(fetchMediaItem).toHaveBeenLastCalledWith("cropped-image", {
+					signal: expect.any(AbortSignal),
+				}),
+			);
+		},
+	);
+
+	it.each(["custom", "reset"])(
+		"retains the %s sizing choice after editing the asset",
+		async (choice) => {
+			const { screen, onUpdate } = await renderPanel({
+				...baseAttributes,
+				provider: "local",
+				mediaId: "old-image",
+				displayWidth: 600,
+				displayHeight: 400,
+			});
+			if (choice === "reset")
+				await screen.getByRole("button", { name: "Reset", exact: true }).click();
+			await screen.getByRole("button", { name: "Edit asset" }).click();
+			await screen.getByRole("button", { name: "Use cropped asset" }).click();
+			await expect
+				.element(screen.getByLabelText("Width"))
+				.toHaveValue(choice === "reset" ? 640 : 600);
+			await expect
+				.element(screen.getByLabelText("Height"))
+				.toHaveValue(choice === "reset" ? 480 : 400);
+			await screen.getByRole("textbox", { name: "Alt text" }).fill("Edited asset");
+			await screen.getByRole("button", { name: "Apply" }).click();
+			expect(onUpdate).toHaveBeenLastCalledWith(
+				expect.objectContaining({
+					displayWidth: choice === "reset" ? undefined : 600,
+					displayHeight: choice === "reset" ? undefined : 400,
+				}),
+			);
+		},
+	);
 
 	it("resyncs the complete form when the sidebar switches image nodes", async () => {
 		const firstNode = {};
@@ -419,9 +735,11 @@ describe("ImageDetailPanel replacement", () => {
 		await expect
 			.element(screen.getByRole("img", { name: "Second alt" }))
 			.toHaveAttribute("src", "/_emdash/api/media/file/second.jpg");
-		await expect.element(screen.getByLabelText("Alt Text")).toHaveValue("Second alt");
+		await expect
+			.element(screen.getByRole("textbox", { name: "Alt text", exact: true }))
+			.toHaveValue("Second alt");
 		await expect.element(screen.getByLabelText("Caption")).toHaveValue("Second caption");
-		await expect.element(screen.getByLabelText("Title (Tooltip)")).toHaveValue("Second title");
+		await expect.element(screen.getByLabelText("Tooltip text")).toHaveValue("Second title");
 		await expect.element(screen.getByLabelText("Width")).toHaveValue(450);
 		await expect.element(screen.getByLabelText("Height")).toHaveValue(300);
 
@@ -437,25 +755,25 @@ describe("ImageDetailPanel replacement", () => {
 					alt: "Third alt",
 					caption: "Third caption",
 					title: "Third title",
-					displayWidth: 300,
-					displayHeight: 200,
 					alignment: "full",
 				},
 				onThirdUpdate,
 			),
 		);
 
-		await expect.element(screen.getByLabelText("Alt Text")).toHaveValue("Third alt");
-		await screen.getByLabelText("Alt Text").fill("Updated third alt");
-		await screen.getByRole("button", { name: "Save" }).click();
+		await expect
+			.element(screen.getByRole("textbox", { name: "Alt text", exact: true }))
+			.toHaveValue("Third alt");
+		await screen.getByRole("textbox", { name: "Alt text", exact: true }).fill("Updated third alt");
+		await screen.getByRole("button", { name: "Apply" }).click();
 
 		expect(onSecondUpdate).not.toHaveBeenCalled();
 		expect(onThirdUpdate).toHaveBeenCalledWith({
 			alt: "Updated third alt",
 			caption: "Third caption",
 			title: "Third title",
-			displayWidth: 300,
-			displayHeight: 200,
+			displayWidth: undefined,
+			displayHeight: undefined,
 			alignment: "full",
 		});
 	});

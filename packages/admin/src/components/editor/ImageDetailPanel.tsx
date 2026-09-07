@@ -5,7 +5,7 @@
  * Shows preview and allows editing alt text, caption, and link settings.
  */
 
-import { Button, Input, InputArea, Label, LinkButton } from "@cloudflare/kumo";
+import { Button, Input, InputArea, Label, LinkButton, Select, Text } from "@cloudflare/kumo";
 import { useLingui } from "@lingui/react/macro";
 import {
 	X,
@@ -22,7 +22,9 @@ import * as React from "react";
 import type { MediaItem } from "../../lib/api";
 import { useStableCallback } from "../../lib/hooks";
 import { canonicalMediaProviderId, metaString } from "../../lib/media-utils.js";
+import { cn } from "../../lib/utils.js";
 import { ConfirmDialog } from "../ConfirmDialog";
+import { FieldHelpLabel } from "../FieldHelpLabel.js";
 import { useMediaAssetEditor } from "../media/useMediaAssetEditor.js";
 import { MediaPickerModal } from "../MediaPickerModal";
 
@@ -60,6 +62,8 @@ export interface ImageDetailPanelProps {
 	onReplace: (attrs: ImageAttributes) => void;
 	onDelete: () => void;
 	onClose: () => void;
+	inlineClassName?: string;
+	stickyFooter?: boolean;
 	/** When true, renders inline within the sidebar column instead of as a fixed overlay */
 	inline?: boolean;
 }
@@ -75,9 +79,14 @@ export function ImageDetailPanel({
 	onReplace,
 	onDelete,
 	onClose,
+	inlineClassName,
+	stickyFooter = false,
 	inline = false,
 }: ImageDetailPanelProps) {
 	const { t } = useLingui();
+	const altInputId = React.useId();
+	const sourceInputId = React.useId();
+	const closeLabel = t`Close image settings`;
 	// Form state
 	const [alt, setAlt] = React.useState(attributes.alt ?? "");
 	const [caption, setCaption] = React.useState(attributes.caption ?? "");
@@ -86,12 +95,6 @@ export function ImageDetailPanel({
 	const [asset, setAsset] = React.useState(attributes);
 	const handleAssetItemChanged = React.useCallback(
 		(item: MediaItem) => {
-			setDisplayWidth((current) =>
-				attributes.displayWidth === undefined && current === asset.width ? item.width : current,
-			);
-			setDisplayHeight((current) =>
-				attributes.displayHeight === undefined && current === asset.height ? item.height : current,
-			);
 			setAsset((current) => ({
 				...current,
 				src: item.url,
@@ -112,16 +115,18 @@ export function ImageDetailPanel({
 				dominantColor: item.dominantColor ?? metaString(item.meta, "dominantColor"),
 			});
 		},
-		[asset.height, asset.width, attributes.displayHeight, attributes.displayWidth, onUpdate],
+		[onUpdate],
 	);
 	const assetEditor = useMediaAssetEditor(handleAssetItemChanged);
 
-	// Dimension state - default to display dimensions, fall back to original
+	const [hasCustomSize, setHasCustomSize] = React.useState(
+		attributes.displayWidth != null || attributes.displayHeight != null,
+	);
 	const [displayWidth, setDisplayWidth] = React.useState<number | undefined>(
-		attributes.displayWidth ?? attributes.width,
+		attributes.displayWidth ?? undefined,
 	);
 	const [displayHeight, setDisplayHeight] = React.useState<number | undefined>(
-		attributes.displayHeight ?? attributes.height,
+		attributes.displayHeight ?? undefined,
 	);
 	const [lockAspectRatio, setLockAspectRatio] = React.useState(true);
 	const [alignment, setAlignment] = React.useState<ImageAttributes["alignment"]>(
@@ -134,8 +139,9 @@ export function ImageDetailPanel({
 		setCaption(attributes.caption ?? "");
 		setTitle(attributes.title ?? "");
 		setAsset(attributes);
-		setDisplayWidth(attributes.displayWidth ?? attributes.width);
-		setDisplayHeight(attributes.displayHeight ?? attributes.height);
+		setHasCustomSize(attributes.displayWidth != null || attributes.displayHeight != null);
+		setDisplayWidth(attributes.displayWidth ?? undefined);
+		setDisplayHeight(attributes.displayHeight ?? undefined);
 		setLockAspectRatio(true);
 		setAlignment(attributes.alignment);
 		// eslint-disable-next-line react-hooks/exhaustive-deps -- the node token identifies a new attribute snapshot
@@ -145,24 +151,31 @@ export function ImageDetailPanel({
 	const aspectRatio = asset.width && asset.height ? asset.width / asset.height : undefined;
 
 	const handleWidthChange = (value: string) => {
+		setHasCustomSize(true);
 		const newWidth = value ? parseInt(value, 10) : undefined;
 		setDisplayWidth(newWidth);
 		if (lockAspectRatio && aspectRatio && newWidth) {
 			setDisplayHeight(Math.round(newWidth / aspectRatio));
+		} else if (!hasCustomSize) {
+			setDisplayHeight(asset.height);
 		}
 	};
 
 	const handleHeightChange = (value: string) => {
+		setHasCustomSize(true);
 		const newHeight = value ? parseInt(value, 10) : undefined;
 		setDisplayHeight(newHeight);
 		if (lockAspectRatio && aspectRatio && newHeight) {
 			setDisplayWidth(Math.round(newHeight * aspectRatio));
+		} else if (!hasCustomSize) {
+			setDisplayWidth(asset.width);
 		}
 	};
 
 	const handleResetDimensions = () => {
-		setDisplayWidth(asset.width);
-		setDisplayHeight(asset.height);
+		setHasCustomSize(false);
+		setDisplayWidth(undefined);
+		setDisplayHeight(undefined);
 	};
 
 	const handleMediaSelect = (item: MediaItem) => {
@@ -185,8 +198,8 @@ export function ImageDetailPanel({
 
 	// Track if form has unsaved changes
 	const hasChanges = React.useMemo(() => {
-		const originalDisplayWidth = attributes.displayWidth ?? asset.width;
-		const originalDisplayHeight = attributes.displayHeight ?? asset.height;
+		const originalDisplayWidth = attributes.displayWidth ?? undefined;
+		const originalDisplayHeight = attributes.displayHeight ?? undefined;
 		return (
 			alt !== (attributes.alt ?? "") ||
 			caption !== (attributes.caption ?? "") ||
@@ -195,17 +208,7 @@ export function ImageDetailPanel({
 			displayHeight !== originalDisplayHeight ||
 			alignment !== attributes.alignment
 		);
-	}, [
-		asset.height,
-		asset.width,
-		attributes,
-		alt,
-		caption,
-		title,
-		displayWidth,
-		displayHeight,
-		alignment,
-	]);
+	}, [attributes, alt, caption, title, displayWidth, displayHeight, alignment]);
 
 	const handleSave = () => {
 		onUpdate({
@@ -227,6 +230,9 @@ export function ImageDetailPanel({
 		{ value: "wide", label: t`Wide` },
 		{ value: "full", label: t`Full` },
 	];
+	const selectableAlignmentOptions = alignmentOptions.filter(
+		(option) => option.value !== "wide" && option.value !== "full",
+	);
 
 	const [showDeleteConfirm, setShowDeleteConfirm] = React.useState(false);
 	const canEditAsset = Boolean(
@@ -277,13 +283,21 @@ export function ImageDetailPanel({
 			}
 			if (saveShortcut) {
 				e.preventDefault();
-				stableHandleSave();
+				if (!inline || hasChanges) stableHandleSave();
 			}
 		};
 
 		window.addEventListener("keydown", handleKeyDown);
 		return () => window.removeEventListener("keydown", handleKeyDown);
-	}, [assetEditor.isActive, showDeleteConfirm, showMediaPicker, stableOnClose, stableHandleSave]);
+	}, [
+		assetEditor.isActive,
+		hasChanges,
+		inline,
+		showDeleteConfirm,
+		showMediaPicker,
+		stableOnClose,
+		stableHandleSave,
+	]);
 
 	const dialogs = (
 		<>
@@ -315,22 +329,27 @@ export function ImageDetailPanel({
 
 	if (inline) {
 		return (
-			<div className="rounded-lg border bg-kumo-base flex flex-col">
+			<div
+				className={cn(
+					"flex min-w-0 flex-col whitespace-normal rounded-lg border bg-kumo-base",
+					inlineClassName,
+				)}
+			>
 				{/* Header */}
-				<div className="flex items-center justify-between p-4 border-b">
+				<div className="flex items-center justify-between border-b px-4 py-3">
 					<div className="flex items-center gap-2">
-						<SlidersHorizontal className="h-4 w-4 text-kumo-subtle" />
-						<h3 className="text-sm font-semibold">{t`Image Settings`}</h3>
+						<Text bold as="h3">
+							{t`Image settings`}
+						</Text>
 					</div>
-					<Button variant="ghost" shape="square" aria-label={t`Close`} onClick={onClose}>
-						<X className="h-4 w-4" />
-						<span className="sr-only">{t`Close`}</span>
+					<Button variant="ghost" shape="square" aria-label={closeLabel} onClick={onClose}>
+						<X className="h-4 w-4" aria-hidden="true" />
 					</Button>
 				</div>
 
 				{/* Preview */}
 				<div className="p-4 border-b">
-					<div className="emdash-media-transparency-grid relative flex aspect-video items-center justify-center overflow-hidden rounded-lg">
+					<div className="emdash-media-transparency-grid relative flex aspect-video items-center justify-center overflow-hidden rounded-lg ring-1 ring-kumo-line">
 						<img
 							src={asset.src}
 							alt={attributes.alt || ""}
@@ -346,125 +365,143 @@ export function ImageDetailPanel({
 
 					{/* Original dimensions */}
 					{(asset.width || asset.height) && (
-						<div className="flex items-center gap-2 text-sm mt-3">
-							<Ruler className="h-4 w-4 text-kumo-subtle" />
+						<Text size="sm" variant="secondary" DANGEROUS_className="mt-3 flex items-center gap-2">
+							<Ruler className="size-4" aria-hidden="true" />
 							<span className="text-kumo-subtle">{t`Original:`}</span>
-							<span>
+							<span className="tabular-nums text-kumo-default">
 								{asset.width} × {asset.height}
 							</span>
-						</div>
+						</Text>
 					)}
 				</div>
 
 				{/* Display Size — shown for any image; migrated images may lack original dims */}
 				{asset.src && (
-					<div className="p-4 border-b space-y-3">
-						<div className="flex items-center justify-between">
-							<Label>{t`Display Size`}</Label>
+					<div className="p-4 border-b space-y-4">
+						<div className="flex items-center justify-between gap-2">
+							<FieldHelpLabel
+								help={
+									<span className="block max-w-64 text-pretty">
+										{t`Set a custom width and height for this image in the document. Reset uses the original media dimensions. The original media file is unchanged.`}
+									</span>
+								}
+								helpLabel={t`More information about Display size`}
+							>
+								{t`Display size`}
+							</FieldHelpLabel>
 							{asset.width && asset.height && (
-								<Button
-									variant="ghost"
-									size="sm"
-									onClick={handleResetDimensions}
-									className="h-auto py-1 px-2 text-xs"
-								>
-									{t`Reset to original`}
+								<Button variant="ghost" size="sm" onClick={handleResetDimensions}>
+									{t`Reset`}
 								</Button>
 							)}
 						</div>
-						<div className="flex items-center gap-2">
-							<div className="flex-1">
+						<div className="flex min-w-0 items-end gap-2" role="group" aria-label={t`Display size`}>
+							<div className="min-w-0 flex-1">
 								<Input
 									label={t`Width`}
 									type="number"
-									value={displayWidth ?? ""}
+									value={(hasCustomSize ? displayWidth : asset.width) ?? ""}
 									onChange={(e) => handleWidthChange(e.target.value)}
+									className="w-full min-w-0"
 								/>
 							</div>
 							{aspectRatio && (
 								<Button
 									variant="ghost"
 									shape="square"
-									className="mt-5"
 									onClick={() => setLockAspectRatio(!lockAspectRatio)}
-									title={lockAspectRatio ? t`Unlock aspect ratio` : t`Lock aspect ratio`}
-									aria-label={lockAspectRatio ? t`Unlock aspect ratio` : t`Lock aspect ratio`}
+									title={t`Keep aspect ratio`}
+									aria-label={t`Keep aspect ratio`}
+									aria-pressed={lockAspectRatio}
 								>
 									{lockAspectRatio ? (
-										<LinkSimple className="h-4 w-4" />
+										<LinkSimple className="h-4 w-4" aria-hidden="true" />
 									) : (
-										<LinkBreak className="h-4 w-4 text-kumo-subtle" />
+										<LinkBreak className="h-4 w-4 text-kumo-subtle" aria-hidden="true" />
 									)}
 								</Button>
 							)}
-							<div className="flex-1">
+							<div className="min-w-0 flex-1">
 								<Input
 									label={t`Height`}
 									type="number"
-									value={displayHeight ?? ""}
+									value={(hasCustomSize ? displayHeight : asset.height) ?? ""}
 									onChange={(e) => handleHeightChange(e.target.value)}
+									className="w-full min-w-0"
 								/>
 							</div>
 						</div>
-						<p className="text-xs text-kumo-subtle">
-							{t`Set a custom display size for this image instance.`}
-						</p>
-					</div>
-				)}
-
-				{/* Alignment */}
-				{asset.src && (
-					<div className="p-4 border-b space-y-3">
-						<Label>{t`Alignment`}</Label>
-						<div className="flex flex-wrap gap-1">
-							{alignmentOptions.map((opt) => (
-								<Button
-									key={opt.value ?? "none"}
-									type="button"
-									size="sm"
-									variant={alignment === opt.value ? "primary" : "secondary"}
-									onClick={() => setAlignment(opt.value)}
-								>
-									{opt.label}
-								</Button>
+						<Select
+							label={t`Alignment`}
+							value={alignment ?? "none"}
+							onValueChange={(value) =>
+								setAlignment(value === "none" ? undefined : (value as ImageAttributes["alignment"]))
+							}
+							renderValue={(value) =>
+								alignmentOptions.find((option) => (option.value ?? "none") === value)?.label
+							}
+							className="w-full"
+						>
+							{selectableAlignmentOptions.map((option) => (
+								<Select.Option key={option.value ?? "none"} value={option.value ?? "none"}>
+									{option.label}
+								</Select.Option>
 							))}
-						</div>
+						</Select>
 					</div>
 				)}
 
 				{/* Editable Fields */}
-				<div className="p-4 space-y-4">
-					<Input
-						label={t`Alt Text`}
-						value={alt}
-						onChange={(e) => setAlt(e.target.value)}
-						placeholder={t`Describe this image for accessibility`}
-						description={t`Required for accessibility. Describes the image for screen readers.`}
-					/>
+				<div className="p-4 space-y-4 border-b">
+					<div className="space-y-1.5">
+						<FieldHelpLabel
+							htmlFor={altInputId}
+							help={
+								<span className="block max-w-64 text-pretty">
+									{t`Describe the image's purpose and relevant details for people who cannot see it.`}
+								</span>
+							}
+							helpLabel={t`More information about Alt text`}
+						>
+							{t`Alt text`}
+						</FieldHelpLabel>
+						<Input
+							id={altInputId}
+							aria-label={t`Alt text`}
+							value={alt}
+							onChange={(e) => setAlt(e.target.value)}
+							placeholder={t`Describe the image`}
+							className="w-full"
+						/>
+					</div>
 
 					<InputArea
 						label={t`Caption`}
 						value={caption}
 						onChange={(e) => setCaption(e.target.value)}
-						placeholder={t`Optional caption displayed below the image`}
-						description={t`Displayed below the image as a visible caption.`}
+						placeholder={t`Optional caption`}
 						rows={2}
 					/>
 
 					<Input
-						label={t`Title (Tooltip)`}
+						label={t`Tooltip text`}
 						value={title}
 						onChange={(e) => setTitle(e.target.value)}
-						placeholder={t`Optional tooltip on hover`}
-						description={t`Shown when hovering over the image.`}
+						placeholder={t`Optional hover text`}
 					/>
 
 					{/* Source URL - only show for external images (no mediaId) */}
 					{!asset.mediaId && asset.src && (
 						<div>
-							<Label>{t`Source`}</Label>
-							<div className="mt-1.5 flex gap-2">
-								<Input value={asset.src} readOnly className="text-xs font-mono flex-1" />
+							<Label htmlFor={sourceInputId}>{t`Source`}</Label>
+							<div className="mt-1.5 flex min-w-0 gap-2">
+								<Input
+									id={sourceInputId}
+									aria-label={t`Source`}
+									value={asset.src}
+									readOnly
+									className="min-w-0 flex-1 font-mono text-xs"
+								/>
 								<LinkButton
 									variant="outline"
 									shape="square"
@@ -473,7 +510,7 @@ export function ImageDetailPanel({
 									title={t`Open in new tab`}
 									aria-label={t`Open in new tab`}
 								>
-									<ArrowSquareOut className="h-4 w-4" />
+									<ArrowSquareOut className="h-4 w-4" aria-hidden="true" />
 								</LinkButton>
 							</div>
 						</div>
@@ -481,17 +518,28 @@ export function ImageDetailPanel({
 				</div>
 
 				{/* Actions */}
-				<div className="p-4 border-t flex items-center justify-between gap-2">
+				<div className="p-4">
 					<Button
-						variant="destructive"
-						size="sm"
+						variant="secondary-destructive"
+						className="w-full hover:bg-kumo-danger/10"
 						onClick={handleDelete}
 						disabled={assetEditor.isActive}
 					>
-						{t`Remove`}
+						{t`Remove image`}
 					</Button>
-					<Button size="sm" onClick={handleSave} disabled={!hasChanges}>
-						{t`Save`}
+				</div>
+
+				<div
+					className={cn(
+						"flex items-center justify-end gap-2 border-t bg-kumo-base px-4 py-3",
+						stickyFooter && "sticky bottom-0 z-10",
+					)}
+				>
+					<Button variant="outline" onClick={onClose}>
+						{t`Cancel`}
+					</Button>
+					<Button variant="primary" onClick={handleSave} disabled={!hasChanges}>
+						{t`Apply`}
 					</Button>
 				</div>
 
@@ -562,20 +610,20 @@ export function ImageDetailPanel({
 								</Button>
 							)}
 						</div>
-						<div className="flex items-center gap-2">
-							<div className="flex-1">
+						<div className="flex items-end gap-2">
+							<div className="min-w-0 flex-1">
 								<Input
 									label={t`Width`}
 									type="number"
-									value={displayWidth ?? ""}
+									value={(hasCustomSize ? displayWidth : asset.width) ?? ""}
 									onChange={(e) => handleWidthChange(e.target.value)}
+									className="w-full min-w-0"
 								/>
 							</div>
 							{aspectRatio && (
 								<Button
 									variant="ghost"
 									shape="square"
-									className="mt-5"
 									onClick={() => setLockAspectRatio(!lockAspectRatio)}
 									title={lockAspectRatio ? t`Unlock aspect ratio` : t`Lock aspect ratio`}
 									aria-label={lockAspectRatio ? t`Unlock aspect ratio` : t`Lock aspect ratio`}
@@ -587,12 +635,13 @@ export function ImageDetailPanel({
 									)}
 								</Button>
 							)}
-							<div className="flex-1">
+							<div className="min-w-0 flex-1">
 								<Input
 									label={t`Height`}
 									type="number"
-									value={displayHeight ?? ""}
+									value={(hasCustomSize ? displayHeight : asset.height) ?? ""}
 									onChange={(e) => handleHeightChange(e.target.value)}
+									className="w-full min-w-0"
 								/>
 							</div>
 						</div>
@@ -607,7 +656,7 @@ export function ImageDetailPanel({
 					<div className="p-4 border-b space-y-3">
 						<Label>{t`Alignment`}</Label>
 						<div className="flex flex-wrap gap-1">
-							{alignmentOptions.map((opt) => (
+							{selectableAlignmentOptions.map((opt) => (
 								<Button
 									key={opt.value ?? "none"}
 									type="button"
@@ -653,8 +702,8 @@ export function ImageDetailPanel({
 					{!asset.mediaId && asset.src && (
 						<div>
 							<Label>{t`Source`}</Label>
-							<div className="mt-1.5 flex gap-2">
-								<Input value={asset.src} readOnly className="text-xs font-mono flex-1" />
+							<div className="mt-1.5 flex min-w-0 gap-2">
+								<Input value={asset.src} readOnly className="min-w-0 flex-1 font-mono text-xs" />
 								<LinkButton
 									variant="outline"
 									shape="square"
