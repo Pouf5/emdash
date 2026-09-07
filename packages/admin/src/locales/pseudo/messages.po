@@ -35,17 +35,17 @@ msgid "-- Select --"
 msgstr ""
 
 #. placeholder {0}: item.filename
-#: packages/admin/src/components/MediaDetailPanel.tsx:1782
+#: packages/admin/src/components/MediaDetailPanel.tsx:1902
 msgid "\"{0}\" will be deleted from {providerName}."
 msgstr ""
 
 #. placeholder {0}: item.filename
-#: packages/admin/src/components/MediaDetailPanel.tsx:1783
+#: packages/admin/src/components/MediaDetailPanel.tsx:1903
 msgid "\"{0}\" will be deleted from its media provider."
 msgstr ""
 
 #. placeholder {0}: item.filename
-#: packages/admin/src/components/MediaDetailPanel.tsx:1784
+#: packages/admin/src/components/MediaDetailPanel.tsx:1904
 msgid "\"{0}\" will be permanently deleted."
 msgstr ""
 
@@ -106,18 +106,18 @@ msgid "{0, plural, one {# content item imported} other {# content items imported
 msgstr ""
 
 #. placeholder {0}: uploadQueue.jobs.filter( (job) => job.status === "queued" || job.status === "uploading", ).length
-#: packages/admin/src/components/MediaPickerModal.tsx:1338
+#: packages/admin/src/components/MediaPickerModal.tsx:1607
 msgid "{0, plural, one {# file uploading} other {# files uploading}}"
 msgstr ""
 
 #. placeholder {0}: uploadQueue.overflowCount
-#: packages/admin/src/components/MediaPickerModal.tsx:1047
+#: packages/admin/src/components/MediaPickerModal.tsx:1290
 msgid "{0, plural, one {# file was not added because the upload list is full.} other {# files were not added because the upload list is full.}}"
 msgstr ""
 
 #. placeholder {0}: locationFolders.length
 #. placeholder {0}: visibleFolders.length
-#: packages/admin/src/components/MediaDetailPanel.tsx:1388
+#: packages/admin/src/components/MediaDetailPanel.tsx:1496
 #: packages/admin/src/components/MediaLibrary.tsx:998
 msgid "{0, plural, one {# folder loaded} other {# folders loaded}}"
 msgstr ""
@@ -189,17 +189,17 @@ msgid "{0, plural, one {# taxonomy created} other {# taxonomies created}}"
 msgstr ""
 
 #. placeholder {0}: uploadQueue.failedCount
-#: packages/admin/src/components/MediaPickerModal.tsx:1345
+#: packages/admin/src/components/MediaPickerModal.tsx:1614
 msgid "{0, plural, one {# upload failed} other {# uploads failed}}"
 msgstr ""
 
 #. placeholder {0}: selectedItems.length
-#: packages/admin/src/components/MediaPickerModal.tsx:644
+#: packages/admin/src/components/MediaPickerModal.tsx:858
 msgid "{0, plural, one {Add # file} other {Add # files}}"
 msgstr ""
 
 #. placeholder {0}: selectedItems.length
-#: packages/admin/src/components/MediaPickerModal.tsx:645
+#: packages/admin/src/components/MediaPickerModal.tsx:859
 msgid "{0, plural, one {Add # image} other {Add # images}}"
 msgstr ""
 
@@ -407,6 +407,12 @@ msgstr ""
 msgid "{label} — view translation"
 msgstr ""
 
+#. placeholder {0}: newIndex + 1
+#. placeholder {1}: images.length
+#: packages/admin/src/components/editor/GalleryDetailPanel.tsx:170
+msgid "{label} moved to position {0} of {1}."
+msgstr ""
+
 #. placeholder {0}: to + 1
 #: packages/admin/src/components/BylineCreditsEditor.tsx:291
 msgid "{label} moved to position {0}."
@@ -466,7 +472,7 @@ msgstr ""
 msgid "{readingTime, plural, one {# min read} other {# min read}}"
 msgstr ""
 
-#: packages/admin/src/components/MediaPickerModal.tsx:710
+#: packages/admin/src/components/MediaPickerModal.tsx:924
 msgid "{rejectedCount, plural, one {# file was not added.} other {# files were not added.}}"
 msgstr ""
 
@@ -549,7 +555,7 @@ msgstr ""
 msgid "1. Log into your WordPress admin dashboard"
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:445
+#: packages/admin/src/components/MediaDetailPanel.tsx:533
 msgid "16:9"
 msgstr ""
 
@@ -561,7 +567,7 @@ msgstr ""
 msgid "2. Go to Users → Profile"
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:444
+#: packages/admin/src/components/MediaDetailPanel.tsx:532
 msgid "3:2"
 msgstr ""
 
@@ -593,7 +599,7 @@ msgstr ""
 msgid "308 Permanent (Strict)"
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:443
+#: packages/admin/src/components/MediaDetailPanel.tsx:531
 msgid "4:3"
 msgstr ""
 
@@ -663,7 +669,7 @@ msgstr ""
 msgid "A source and target locale are required"
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:437
+#: packages/admin/src/components/MediaDetailPanel.tsx:525
 msgid "About focal point"
 msgstr ""
 
@@ -791,7 +797,7 @@ msgstr ""
 msgid "Add Custom Link"
 msgstr ""
 
-#: packages/admin/src/components/ImageFieldRenderer.tsx:277
+#: packages/admin/src/components/ImageFieldRenderer.tsx:447
 msgid "Add dark mode variant"
 msgstr ""
 
@@ -826,11 +832,11 @@ msgstr ""
 msgid "Add First Item"
 msgstr ""
 
-#: packages/admin/src/components/editor/GalleryDetailPanel.tsx:204
+#: packages/admin/src/components/editor/GalleryDetailPanel.tsx:265
 msgid "Add Images"
 msgstr ""
 
-#: packages/admin/src/components/editor/GalleryDetailPanel.tsx:251
+#: packages/admin/src/components/editor/GalleryDetailPanel.tsx:319
 msgid "Add images to gallery"
 msgstr ""
 
@@ -969,8 +975,8 @@ msgstr ""
 msgid "Align Right"
 msgstr ""
 
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:328
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:517
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:418
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:608
 msgid "Alignment"
 msgstr ""
 
@@ -1023,7 +1029,7 @@ msgid "All statuses"
 msgstr ""
 
 #: packages/admin/src/components/MediaLibrary.tsx:980
-#: packages/admin/src/components/MediaPickerModal.tsx:321
+#: packages/admin/src/components/MediaPickerModal.tsx:381
 #: packages/admin/src/components/Redirects.tsx:432
 msgid "All types"
 msgstr ""
@@ -1065,16 +1071,16 @@ msgstr ""
 msgid "Also match the byline linked to an entry's author when it has none assigned."
 msgstr ""
 
-#: packages/admin/src/components/editor/GalleryDetailPanel.tsx:381
-#: packages/admin/src/components/editor/ImageNode.tsx:261
+#: packages/admin/src/components/editor/GalleryDetailPanel.tsx:483
+#: packages/admin/src/components/editor/ImageNode.tsx:263
 #: packages/admin/src/components/MediaLibrary.tsx:1204
 msgid "Alt text"
 msgstr ""
 
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:348
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:537
-#: packages/admin/src/components/MediaDetailPanel.tsx:1459
-#: packages/admin/src/components/MediaDetailPanel.tsx:1476
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:438
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:628
+#: packages/admin/src/components/MediaDetailPanel.tsx:1564
+#: packages/admin/src/components/MediaDetailPanel.tsx:1581
 msgid "Alt Text"
 msgstr ""
 
@@ -1162,7 +1168,7 @@ msgstr ""
 msgid "Analyzing WordPress site..."
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1644
+#: packages/admin/src/components/MediaDetailPanel.tsx:1749
 msgid "Animated WebP files become still images when cropped."
 msgstr ""
 
@@ -1254,7 +1260,7 @@ msgstr ""
 msgid "Ask an administrator to complete this setup."
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1586
+#: packages/admin/src/components/MediaDetailPanel.tsx:1691
 msgid "Aspect ratio"
 msgstr ""
 
@@ -1268,7 +1274,7 @@ msgstr ""
 
 #: packages/admin/src/components/AllowedTypesEditor.tsx:69
 #: packages/admin/src/components/MediaLibrary.tsx:983
-#: packages/admin/src/components/MediaPickerModal.tsx:325
+#: packages/admin/src/components/MediaPickerModal.tsx:385
 msgid "Audio"
 msgstr ""
 
@@ -1392,6 +1398,7 @@ msgid "Avatar"
 msgstr ""
 
 #: packages/admin/src/components/editor/BlockMenu.tsx:266
+#: packages/admin/src/components/MediaDetailPanel.tsx:1793
 #: packages/admin/src/components/MediaLibrary.tsx:807
 #: packages/admin/src/components/MenuEditor.tsx:362
 #: packages/admin/src/components/WordPressImport.tsx:1526
@@ -1605,14 +1612,14 @@ msgstr ""
 #: packages/admin/src/components/ContentSettingsPanel.tsx:1213
 #: packages/admin/src/components/editor/CodeBlockNode.tsx:311
 #: packages/admin/src/components/editor/CodeBlockNode.tsx:312
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:590
-#: packages/admin/src/components/editor/ImageNode.tsx:282
-#: packages/admin/src/components/editor/ImageNode.tsx:283
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:686
+#: packages/admin/src/components/editor/ImageNode.tsx:284
+#: packages/admin/src/components/editor/ImageNode.tsx:285
 #: packages/admin/src/components/editor/PluginBlockNode.tsx:406
 #: packages/admin/src/components/FieldEditor.tsx:701
-#: packages/admin/src/components/MediaDetailPanel.tsx:1716
+#: packages/admin/src/components/MediaDetailPanel.tsx:1835
 #: packages/admin/src/components/MediaFolderDialog.tsx:152
-#: packages/admin/src/components/MediaPickerModal.tsx:1325
+#: packages/admin/src/components/MediaPickerModal.tsx:1588
 #: packages/admin/src/components/MenuEditor.tsx:438
 #: packages/admin/src/components/MenuEditor.tsx:623
 #: packages/admin/src/components/MenuList.tsx:175
@@ -1668,10 +1675,10 @@ msgstr ""
 msgid "Capability consent"
 msgstr ""
 
-#: packages/admin/src/components/editor/GalleryDetailPanel.tsx:387
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:356
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:545
-#: packages/admin/src/components/MediaDetailPanel.tsx:1487
+#: packages/admin/src/components/editor/GalleryDetailPanel.tsx:489
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:446
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:636
+#: packages/admin/src/components/MediaDetailPanel.tsx:1592
 msgid "Caption"
 msgstr ""
 
@@ -1697,16 +1704,13 @@ msgstr ""
 msgid "Categories & Tags"
 msgstr ""
 
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:164
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:225
 msgid "Center"
 msgstr ""
 
 #: packages/admin/src/components/BlockKitMediaPickerField.tsx:76
 #: packages/admin/src/components/BlockKitMediaPickerField.tsx:107
-#: packages/admin/src/components/ContentEditor.tsx:1979
 #: packages/admin/src/components/FieldEditor.tsx:438
-#: packages/admin/src/components/ImageFieldRenderer.tsx:368
-#: packages/admin/src/components/ImageFieldRenderer.tsx:398
 #: packages/admin/src/components/SeoImageField.tsx:57
 msgid "Change"
 msgstr ""
@@ -1795,7 +1799,7 @@ msgstr ""
 msgid "Choose a date range"
 msgstr ""
 
-#: packages/admin/src/components/MediaPickerModal.tsx:210
+#: packages/admin/src/components/MediaPickerModal.tsx:230
 msgid "Choose a file from the library or upload a new one."
 msgstr ""
 
@@ -1804,11 +1808,11 @@ msgid "Choose a new publication time for this draft."
 msgstr ""
 
 #. placeholder {0}: formatFileFormat(item.mimeType)
-#: packages/admin/src/components/MediaDetailPanel.tsx:794
+#: packages/admin/src/components/MediaDetailPanel.tsx:907
 msgid "Choose a non-empty {0} image."
 msgstr ""
 
-#: packages/admin/src/components/MediaPickerModal.tsx:211
+#: packages/admin/src/components/MediaPickerModal.tsx:231
 msgid "Choose an image from the library or upload a new one."
 msgstr ""
 
@@ -1817,7 +1821,7 @@ msgstr ""
 msgid "Choose bylines"
 msgstr ""
 
-#: packages/admin/src/components/MediaPickerModal.tsx:851
+#: packages/admin/src/components/MediaPickerModal.tsx:1094
 msgid "Choose files to upload"
 msgstr ""
 
@@ -1825,7 +1829,7 @@ msgstr ""
 msgid "Choose how to sign in"
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1708
+#: packages/admin/src/components/MediaDetailPanel.tsx:1824
 msgid "Choose replacement image"
 msgstr ""
 
@@ -1888,18 +1892,18 @@ msgstr ""
 #: packages/admin/src/components/ContentPickerModal.tsx:120
 #: packages/admin/src/components/ContentPickerModal.tsx:126
 #: packages/admin/src/components/ContentPickerModal.tsx:130
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:231
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:233
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:416
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:418
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:325
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:327
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:511
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:513
 #: packages/admin/src/components/FieldEditor.tsx:381
 #: packages/admin/src/components/FieldEditor.tsx:387
 #: packages/admin/src/components/FieldEditor.tsx:391
 #: packages/admin/src/components/MarketplacePluginDetail.tsx:449
-#: packages/admin/src/components/MediaDetailPanel.tsx:1008
-#: packages/admin/src/components/MediaDetailPanel.tsx:1716
-#: packages/admin/src/components/MediaPickerModal.tsx:760
-#: packages/admin/src/components/MediaPickerModal.tsx:767
+#: packages/admin/src/components/MediaDetailPanel.tsx:1116
+#: packages/admin/src/components/MediaDetailPanel.tsx:1835
+#: packages/admin/src/components/MediaPickerModal.tsx:1001
+#: packages/admin/src/components/MediaPickerModal.tsx:1008
 #: packages/admin/src/components/MediaUploadDialog.tsx:255
 #: packages/admin/src/components/MenuEditor.tsx:400
 #: packages/admin/src/components/MenuEditor.tsx:406
@@ -1951,7 +1955,7 @@ msgstr ""
 msgid "Close comments after (days)"
 msgstr ""
 
-#: packages/admin/src/components/editor/GalleryDetailPanel.tsx:182
+#: packages/admin/src/components/editor/GalleryDetailPanel.tsx:242
 msgid "Close gallery settings"
 msgstr ""
 
@@ -2004,7 +2008,7 @@ msgstr ""
 msgid "Collections created:"
 msgstr ""
 
-#: packages/admin/src/components/editor/GalleryDetailPanel.tsx:189
+#: packages/admin/src/components/editor/GalleryDetailPanel.tsx:249
 msgid "Columns"
 msgstr ""
 
@@ -2148,7 +2152,7 @@ msgstr ""
 msgid "Content Types"
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1802
+#: packages/admin/src/components/MediaDetailPanel.tsx:1922
 msgid "Content using this media item may show a broken reference."
 msgstr ""
 
@@ -2225,7 +2229,7 @@ msgstr ""
 
 #: packages/admin/src/components/editor/PluginBlockNode.tsx:322
 #: packages/admin/src/components/editor/PluginBlockNode.tsx:323
-#: packages/admin/src/components/MediaDetailPanel.tsx:1247
+#: packages/admin/src/components/MediaDetailPanel.tsx:1355
 msgid "Copy URL"
 msgstr ""
 
@@ -2241,19 +2245,19 @@ msgstr ""
 msgid "Could not load dashboard data"
 msgstr ""
 
-#: packages/admin/src/components/MediaPickerModal.tsx:602
+#: packages/admin/src/components/MediaPickerModal.tsx:662
 msgid "Could not load image from URL"
 msgstr ""
 
-#: packages/admin/src/components/MediaPickerModal.tsx:1147
+#: packages/admin/src/components/MediaPickerModal.tsx:1390
 msgid "Could not load media."
 msgstr ""
 
-#: packages/admin/src/components/MediaPickerModal.tsx:959
+#: packages/admin/src/components/MediaPickerModal.tsx:1202
 msgid "Could not load this folder."
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:722
+#: packages/admin/src/components/MediaDetailPanel.tsx:816
 msgid "Couldn’t confirm whether the media item or selected folder still exists. Try again."
 msgstr ""
 
@@ -2371,7 +2375,7 @@ msgstr ""
 msgid "Create Content Type"
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1736
+#: packages/admin/src/components/MediaDetailPanel.tsx:1856
 msgid "Create cropped copy"
 msgstr ""
 
@@ -2523,7 +2527,7 @@ msgstr ""
 msgid "Creating collections and fields..."
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:838
+#: packages/admin/src/components/MediaDetailPanel.tsx:951
 msgid "Creating cropped copy..."
 msgstr ""
 
@@ -2536,7 +2540,7 @@ msgstr ""
 msgid "Creating..."
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1512
+#: packages/admin/src/components/MediaDetailPanel.tsx:1617
 msgid "Crop"
 msgstr ""
 
@@ -2546,7 +2550,7 @@ msgstr ""
 msgid "Crop area {0} by {1} pixels."
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1619
+#: packages/admin/src/components/MediaDetailPanel.tsx:1724
 msgid "Crop output dimensions"
 msgstr ""
 
@@ -2554,7 +2558,7 @@ msgstr ""
 msgid "Crop selection. Use the Arrow keys to move it."
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:673
+#: packages/admin/src/components/MediaDetailPanel.tsx:761
 #: packages/admin/src/components/MediaLibrary.tsx:1386
 msgid "Cropped copy created."
 msgstr ""
@@ -2608,7 +2612,7 @@ msgid "Dark"
 msgstr ""
 
 #: packages/admin/src/components/FieldEditor.tsx:688
-#: packages/admin/src/components/ImageFieldRenderer.tsx:240
+#: packages/admin/src/components/ImageFieldRenderer.tsx:391
 msgid "Dark mode variant"
 msgstr ""
 
@@ -2694,8 +2698,8 @@ msgstr ""
 #: packages/admin/src/components/editor/BlockMenu.tsx:318
 #: packages/admin/src/components/editor/HtmlBlockNode.tsx:130
 #: packages/admin/src/components/editor/PluginBlockNode.tsx:378
-#: packages/admin/src/components/MediaDetailPanel.tsx:1688
-#: packages/admin/src/components/MediaDetailPanel.tsx:1788
+#: packages/admin/src/components/MediaDetailPanel.tsx:1804
+#: packages/admin/src/components/MediaDetailPanel.tsx:1908
 #: packages/admin/src/components/MenuEditor.tsx:549
 #: packages/admin/src/components/MenuList.tsx:258
 #: packages/admin/src/components/Redirects.tsx:603
@@ -2785,9 +2789,9 @@ msgstr ""
 msgid "Delete folder"
 msgstr ""
 
-#: packages/admin/src/components/editor/GalleryDetailPanel.tsx:241
-#: packages/admin/src/components/editor/GalleryNode.tsx:223
-#: packages/admin/src/components/editor/GalleryNode.tsx:224
+#: packages/admin/src/components/editor/GalleryDetailPanel.tsx:309
+#: packages/admin/src/components/editor/GalleryNode.tsx:253
+#: packages/admin/src/components/editor/GalleryNode.tsx:254
 msgid "Delete gallery"
 msgstr ""
 
@@ -2795,12 +2799,12 @@ msgstr ""
 msgid "Delete HTML block"
 msgstr ""
 
-#: packages/admin/src/components/editor/ImageNode.tsx:250
-#: packages/admin/src/components/editor/ImageNode.tsx:251
+#: packages/admin/src/components/editor/ImageNode.tsx:252
+#: packages/admin/src/components/editor/ImageNode.tsx:253
 msgid "Delete image"
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1776
+#: packages/admin/src/components/MediaDetailPanel.tsx:1896
 msgid "Delete media?"
 msgstr ""
 
@@ -2863,8 +2867,8 @@ msgstr ""
 #: packages/admin/src/components/comments/CommentInbox.tsx:400
 #: packages/admin/src/components/ContentTypeEditor.tsx:688
 #: packages/admin/src/components/ContentTypeList.tsx:237
-#: packages/admin/src/components/MediaDetailPanel.tsx:1688
-#: packages/admin/src/components/MediaDetailPanel.tsx:1789
+#: packages/admin/src/components/MediaDetailPanel.tsx:1804
+#: packages/admin/src/components/MediaDetailPanel.tsx:1909
 #: packages/admin/src/components/MediaFolderDialog.tsx:185
 #: packages/admin/src/components/MenuList.tsx:259
 #: packages/admin/src/components/Redirects.tsx:604
@@ -2901,14 +2905,14 @@ msgstr ""
 msgid "Deny"
 msgstr ""
 
-#: packages/admin/src/components/editor/GalleryDetailPanel.tsx:384
-#: packages/admin/src/components/editor/ImageNode.tsx:268
+#: packages/admin/src/components/editor/GalleryDetailPanel.tsx:486
+#: packages/admin/src/components/editor/ImageNode.tsx:270
 msgid "Describe the image..."
 msgstr ""
 
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:351
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:540
-#: packages/admin/src/components/MediaDetailPanel.tsx:1479
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:441
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:631
+#: packages/admin/src/components/MediaDetailPanel.tsx:1584
 msgid "Describe this image for accessibility"
 msgstr ""
 
@@ -2941,8 +2945,8 @@ msgstr ""
 msgid "Destructive"
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1036
-#: packages/admin/src/components/MediaDetailPanel.tsx:1078
+#: packages/admin/src/components/MediaDetailPanel.tsx:1144
+#: packages/admin/src/components/MediaDetailPanel.tsx:1186
 msgid "Details"
 msgstr ""
 
@@ -2970,7 +2974,7 @@ msgstr ""
 msgid "Diff"
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1200
+#: packages/admin/src/components/MediaDetailPanel.tsx:1308
 msgid "Dimensions:"
 msgstr ""
 
@@ -3018,7 +3022,7 @@ msgstr ""
 msgid "Disabling..."
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1762
+#: packages/admin/src/components/MediaDetailPanel.tsx:1882
 msgid "Discard"
 msgstr ""
 
@@ -3027,7 +3031,7 @@ msgstr ""
 msgid "Discard changes"
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1760
+#: packages/admin/src/components/MediaDetailPanel.tsx:1880
 msgid "Discard changes?"
 msgstr ""
 
@@ -3035,7 +3039,7 @@ msgstr ""
 msgid "Discard draft changes?"
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1763
+#: packages/admin/src/components/MediaDetailPanel.tsx:1883
 msgid "Discarding..."
 msgstr ""
 
@@ -3072,8 +3076,8 @@ msgstr ""
 msgid "Display name for admin interface"
 msgstr ""
 
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:273
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:462
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:363
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:553
 msgid "Display Size"
 msgstr ""
 
@@ -3081,8 +3085,8 @@ msgstr ""
 msgid "Display tag cloud"
 msgstr ""
 
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:360
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:549
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:450
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:640
 msgid "Displayed below the image as a visible caption."
 msgstr ""
 
@@ -3100,7 +3104,7 @@ msgstr ""
 
 #: packages/admin/src/components/AllowedTypesEditor.tsx:66
 #: packages/admin/src/components/MediaLibrary.tsx:984
-#: packages/admin/src/components/MediaPickerModal.tsx:326
+#: packages/admin/src/components/MediaPickerModal.tsx:386
 msgid "Documents"
 msgstr ""
 
@@ -3300,8 +3304,21 @@ msgstr ""
 msgid "Edit {title}"
 msgstr ""
 
+#: packages/admin/src/components/editor/GalleryDetailPanel.tsx:460
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:254
+#: packages/admin/src/components/ImageFieldRenderer.tsx:298
+#: packages/admin/src/components/ImageFieldRenderer.tsx:354
+#: packages/admin/src/components/ImageFieldRenderer.tsx:422
+#: packages/admin/src/components/MediaPickerModal.tsx:1584
+msgid "Edit asset"
+msgstr ""
+
 #: packages/admin/src/components/BylineFieldEditor.tsx:209
 msgid "Edit byline field"
+msgstr ""
+
+#: packages/admin/src/components/ImageFieldRenderer.tsx:420
+msgid "Edit dark mode asset"
 msgstr ""
 
 #: packages/admin/src/components/settings/AllowedDomainsSettings.tsx:330
@@ -3322,13 +3339,13 @@ msgstr ""
 msgid "Edit folder {0}"
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1041
-#: packages/admin/src/components/MediaDetailPanel.tsx:1081
+#: packages/admin/src/components/MediaDetailPanel.tsx:1149
+#: packages/admin/src/components/MediaDetailPanel.tsx:1189
 msgid "Edit image"
 msgstr ""
 
 #. placeholder {0}: index + 1
-#: packages/admin/src/components/editor/GalleryNode.tsx:181
+#: packages/admin/src/components/editor/GalleryNode.tsx:214
 msgid "Edit image {0}"
 msgstr ""
 
@@ -3447,11 +3464,11 @@ msgstr ""
 msgid "Embeds"
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1838
+#: packages/admin/src/components/MediaDetailPanel.tsx:1958
 msgid "EmDash does not keep the previous image."
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1872
+#: packages/admin/src/components/MediaDetailPanel.tsx:1992
 msgid "EmDash does not keep the uncropped image."
 msgstr ""
 
@@ -3471,7 +3488,7 @@ msgstr ""
 msgid "EmDash will scan existing content to show where media is used."
 msgstr ""
 
-#: packages/admin/src/components/editor/GalleryNode.tsx:163
+#: packages/admin/src/components/editor/GalleryNode.tsx:196
 msgid "Empty gallery — open settings to add images"
 msgstr ""
 
@@ -3600,11 +3617,11 @@ msgstr ""
 msgid "Error updating widget"
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1854
+#: packages/admin/src/components/MediaDetailPanel.tsx:1974
 msgid "Every place using this image will update to the cropped version."
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1819
+#: packages/admin/src/components/MediaDetailPanel.tsx:1939
 msgid "Every place using this image will update to the selected version."
 msgstr ""
 
@@ -4020,7 +4037,7 @@ msgstr ""
 msgid "Failed to load email settings"
 msgstr ""
 
-#: packages/admin/src/components/MediaPickerModal.tsx:586
+#: packages/admin/src/components/MediaPickerModal.tsx:646
 msgid "Failed to load image"
 msgstr ""
 
@@ -4355,13 +4372,13 @@ msgstr ""
 msgid "File from media library"
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1295
-#: packages/admin/src/components/MediaDetailPanel.tsx:1312
+#: packages/admin/src/components/MediaDetailPanel.tsx:1403
+#: packages/admin/src/components/MediaDetailPanel.tsx:1420
 #: packages/admin/src/components/MediaLibrary.tsx:1201
 msgid "Filename"
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:432
+#: packages/admin/src/components/MediaDetailPanel.tsx:520
 msgid "Filename cannot be changed after upload"
 msgstr ""
 
@@ -4403,7 +4420,7 @@ msgid "Filter by status"
 msgstr ""
 
 #: packages/admin/src/components/MediaLibrary.tsx:986
-#: packages/admin/src/components/MediaPickerModal.tsx:1033
+#: packages/admin/src/components/MediaPickerModal.tsx:1276
 #: packages/admin/src/components/Redirects.tsx:433
 msgid "Filter by type"
 msgstr ""
@@ -4417,7 +4434,7 @@ msgid "Finish any current edits."
 msgstr ""
 
 #: packages/admin/src/components/MediaLibrary.tsx:1307
-#: packages/admin/src/components/MediaPickerModal.tsx:1293
+#: packages/admin/src/components/MediaPickerModal.tsx:1544
 msgid "First page"
 msgstr ""
 
@@ -4433,8 +4450,8 @@ msgstr ""
 msgid "Fix invalid fields before changing the schedule"
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1517
-#: packages/admin/src/components/MediaDetailPanel.tsx:1528
+#: packages/admin/src/components/MediaDetailPanel.tsx:1622
+#: packages/admin/src/components/MediaDetailPanel.tsx:1633
 msgid "Focal point"
 msgstr ""
 
@@ -4442,7 +4459,7 @@ msgstr ""
 msgid "Focal point. Use arrow keys to move it."
 msgstr ""
 
-#: packages/admin/src/components/MediaPickerModal.tsx:953
+#: packages/admin/src/components/MediaPickerModal.tsx:1196
 msgid "Folder"
 msgstr ""
 
@@ -4459,7 +4476,7 @@ msgstr ""
 msgid "Folder no longer exists"
 msgstr ""
 
-#: packages/admin/src/components/MediaPickerModal.tsx:421
+#: packages/admin/src/components/MediaPickerModal.tsx:481
 msgid "Folder no longer exists. Returned to the main library."
 msgstr ""
 
@@ -4476,14 +4493,14 @@ msgid "Folder unavailable"
 msgstr ""
 
 #: packages/admin/src/components/MediaLibrary.tsx:1013
-#: packages/admin/src/components/MediaPickerModal.tsx:1071
+#: packages/admin/src/components/MediaPickerModal.tsx:1314
 msgid "Folders"
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1415
+#: packages/admin/src/components/MediaDetailPanel.tsx:1523
 #: packages/admin/src/components/MediaLibrary.tsx:1023
 #: packages/admin/src/components/MediaLibrary.tsx:1564
-#: packages/admin/src/components/MediaPickerModal.tsx:1076
+#: packages/admin/src/components/MediaPickerModal.tsx:1319
 msgid "Folders could not be loaded."
 msgstr ""
 
@@ -4503,11 +4520,11 @@ msgstr ""
 msgid "For the best import experience, install the <0>EmDash Exporter</0> plugin on your WordPress site."
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1228
+#: packages/admin/src/components/MediaDetailPanel.tsx:1336
 msgid "Format:"
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:441
+#: packages/admin/src/components/MediaDetailPanel.tsx:529
 msgid "Freeform"
 msgstr ""
 
@@ -4520,11 +4537,11 @@ msgstr ""
 msgid "From the post owner"
 msgstr ""
 
-#: packages/admin/src/components/MediaPickerModal.tsx:303
+#: packages/admin/src/components/MediaPickerModal.tsx:363
 msgid "From URL"
 msgstr ""
 
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:167
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:228
 #: packages/admin/src/components/WordPressImport.tsx:1173
 msgid "Full"
 msgstr ""
@@ -4537,13 +4554,13 @@ msgstr ""
 msgid "Full admin access"
 msgstr ""
 
-#: packages/admin/src/components/editor/GalleryDetailPanel.tsx:175
+#: packages/admin/src/components/editor/GalleryDetailPanel.tsx:235
 #: packages/admin/src/components/PortableTextEditor.tsx:2729
 msgid "Gallery"
 msgstr ""
 
-#: packages/admin/src/components/editor/GalleryNode.tsx:211
-#: packages/admin/src/components/editor/GalleryNode.tsx:212
+#: packages/admin/src/components/editor/GalleryNode.tsx:241
+#: packages/admin/src/components/editor/GalleryNode.tsx:242
 msgid "Gallery settings"
 msgstr ""
 
@@ -4594,7 +4611,7 @@ msgid "GraphQL"
 msgstr ""
 
 #: packages/admin/src/components/MediaLibrary.tsx:941
-#: packages/admin/src/components/MediaPickerModal.tsx:989
+#: packages/admin/src/components/MediaPickerModal.tsx:1232
 msgid "Grid view"
 msgstr ""
 
@@ -4655,8 +4672,8 @@ msgstr ""
 msgid "Headings"
 msgstr ""
 
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:312
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:501
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:402
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:592
 msgid "Height"
 msgstr ""
 
@@ -4732,7 +4749,7 @@ msgstr ""
 msgid "https://example.com or /about"
 msgstr ""
 
-#: packages/admin/src/components/MediaPickerModal.tsx:878
+#: packages/admin/src/components/MediaPickerModal.tsx:1121
 msgid "https://example.com/image.jpg"
 msgstr ""
 
@@ -4764,8 +4781,18 @@ msgid "Image"
 msgstr ""
 
 #. placeholder {0}: index + 1
-#: packages/admin/src/components/editor/GalleryDetailPanel.tsx:298
+#. placeholder {0}: oldIndex + 1
+#: packages/admin/src/components/editor/GalleryDetailPanel.tsx:142
+#: packages/admin/src/components/editor/GalleryDetailPanel.tsx:155
+#: packages/admin/src/components/editor/GalleryDetailPanel.tsx:167
+#: packages/admin/src/components/editor/GalleryDetailPanel.tsx:174
+#: packages/admin/src/components/editor/GalleryDetailPanel.tsx:366
 msgid "Image {0}"
+msgstr ""
+
+#: packages/admin/src/components/ImageFieldRenderer.tsx:317
+#: packages/admin/src/components/ImageFieldRenderer.tsx:331
+msgid "Image actions"
 msgstr ""
 
 #: packages/admin/src/components/FieldEditor.tsx:237
@@ -4773,22 +4800,22 @@ msgid "Image from media library"
 msgstr ""
 
 #: packages/admin/src/components/BlockKitMediaPickerField.tsx:67
-#: packages/admin/src/components/ImageFieldRenderer.tsx:290
-#: packages/admin/src/components/ImageFieldRenderer.tsx:359
+#: packages/admin/src/components/ImageFieldRenderer.tsx:463
+#: packages/admin/src/components/ImageFieldRenderer.tsx:515
 msgid "Image not found"
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:619
+#: packages/admin/src/components/MediaDetailPanel.tsx:707
 msgid "Image replaced."
 msgstr ""
 
-#: packages/admin/src/components/editor/ImageNode.tsx:238
-#: packages/admin/src/components/editor/ImageNode.tsx:239
+#: packages/admin/src/components/editor/ImageNode.tsx:240
+#: packages/admin/src/components/editor/ImageNode.tsx:241
 msgid "Image settings"
 msgstr ""
 
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:229
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:414
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:323
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:509
 msgid "Image Settings"
 msgstr ""
 
@@ -4796,15 +4823,15 @@ msgstr ""
 msgid "Image shown when this page is shared on social media"
 msgstr ""
 
-#: packages/admin/src/components/MediaPickerModal.tsx:867
-#: packages/admin/src/components/MediaPickerModal.tsx:877
+#: packages/admin/src/components/MediaPickerModal.tsx:1110
+#: packages/admin/src/components/MediaPickerModal.tsx:1120
 msgid "Image URL"
 msgstr ""
 
 #: packages/admin/src/components/AllowedTypesEditor.tsx:64
-#: packages/admin/src/components/editor/GalleryDetailPanel.tsx:196
+#: packages/admin/src/components/editor/GalleryDetailPanel.tsx:256
 #: packages/admin/src/components/MediaLibrary.tsx:981
-#: packages/admin/src/components/MediaPickerModal.tsx:323
+#: packages/admin/src/components/MediaPickerModal.tsx:383
 msgid "Images"
 msgstr ""
 
@@ -5242,7 +5269,7 @@ msgid "Last Login"
 msgstr ""
 
 #: packages/admin/src/components/MediaLibrary.tsx:1310
-#: packages/admin/src/components/MediaPickerModal.tsx:1296
+#: packages/admin/src/components/MediaPickerModal.tsx:1547
 msgid "Last page"
 msgstr ""
 
@@ -5276,7 +5303,7 @@ msgstr ""
 msgid "Leave unassigned"
 msgstr ""
 
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:163
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:224
 msgid "Left"
 msgstr ""
 
@@ -5284,8 +5311,8 @@ msgstr ""
 #: packages/admin/src/components/MediaLibrary.tsx:478
 #: packages/admin/src/components/MediaLibrary.tsx:751
 #: packages/admin/src/components/MediaLibrary.tsx:1352
-#: packages/admin/src/components/MediaPickerModal.tsx:298
-#: packages/admin/src/components/MediaPickerModal.tsx:315
+#: packages/admin/src/components/MediaPickerModal.tsx:358
+#: packages/admin/src/components/MediaPickerModal.tsx:375
 msgid "Library"
 msgstr ""
 
@@ -5335,7 +5362,7 @@ msgid "Links"
 msgstr ""
 
 #: packages/admin/src/components/MediaLibrary.tsx:950
-#: packages/admin/src/components/MediaPickerModal.tsx:999
+#: packages/admin/src/components/MediaPickerModal.tsx:1242
 msgid "List view"
 msgstr ""
 
@@ -5369,10 +5396,10 @@ msgstr ""
 msgid "Load More"
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1434
+#: packages/admin/src/components/MediaDetailPanel.tsx:1542
 #: packages/admin/src/components/MediaLibrary.tsx:1053
 #: packages/admin/src/components/MediaLibrary.tsx:1245
-#: packages/admin/src/components/MediaPickerModal.tsx:1125
+#: packages/admin/src/components/MediaPickerModal.tsx:1368
 msgid "Load more folders"
 msgstr ""
 
@@ -5407,15 +5434,15 @@ msgstr ""
 
 #: packages/admin/src/components/MediaLibrary.tsx:997
 #: packages/admin/src/components/MediaLibrary.tsx:1213
-#: packages/admin/src/components/MediaPickerModal.tsx:1094
+#: packages/admin/src/components/MediaPickerModal.tsx:1337
 msgid "Loading folders"
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1386
+#: packages/admin/src/components/MediaDetailPanel.tsx:1494
 msgid "Loading folders..."
 msgstr ""
 
-#: packages/admin/src/components/MediaPickerModal.tsx:1142
+#: packages/admin/src/components/MediaPickerModal.tsx:1385
 msgid "Loading media"
 msgstr ""
 
@@ -5473,10 +5500,10 @@ msgstr ""
 #: packages/admin/src/components/ContentList.tsx:801
 #: packages/admin/src/components/ContentPickerModal.tsx:225
 #: packages/admin/src/components/MarketplaceBrowse.tsx:200
-#: packages/admin/src/components/MediaDetailPanel.tsx:508
-#: packages/admin/src/components/MediaDetailPanel.tsx:524
-#: packages/admin/src/components/MediaDetailPanel.tsx:526
-#: packages/admin/src/components/MediaDetailPanel.tsx:1624
+#: packages/admin/src/components/MediaDetailPanel.tsx:596
+#: packages/admin/src/components/MediaDetailPanel.tsx:612
+#: packages/admin/src/components/MediaDetailPanel.tsx:614
+#: packages/admin/src/components/MediaDetailPanel.tsx:1729
 #: packages/admin/src/components/MediaLibrary.tsx:1345
 #: packages/admin/src/components/MediaUsedIn.tsx:204
 #: packages/admin/src/components/PortableTextEditor.tsx:2433
@@ -5509,21 +5536,22 @@ msgstr ""
 msgid "Locale"
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1323
-#: packages/admin/src/components/MediaDetailPanel.tsx:1351
-#: packages/admin/src/components/MediaDetailPanel.tsx:1442
+#: packages/admin/src/components/MediaDetailPanel.tsx:1431
+#: packages/admin/src/components/MediaDetailPanel.tsx:1459
+#: packages/admin/src/components/MediaDetailPanel.tsx:1550
+#: packages/admin/src/components/MediaDetailPanel.tsx:1552
 msgid "Location"
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:509
-#: packages/admin/src/components/MediaDetailPanel.tsx:526
+#: packages/admin/src/components/MediaDetailPanel.tsx:597
+#: packages/admin/src/components/MediaDetailPanel.tsx:614
 msgid "Location unavailable"
 msgstr ""
 
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:300
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:301
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:489
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:490
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:390
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:391
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:580
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:581
 msgid "Lock aspect ratio"
 msgstr ""
 
@@ -5565,8 +5593,8 @@ msgstr ""
 msgid "Lua"
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:477
-#: packages/admin/src/components/MediaPickerModal.tsx:947
+#: packages/admin/src/components/MediaDetailPanel.tsx:565
+#: packages/admin/src/components/MediaPickerModal.tsx:1190
 msgid "Main library"
 msgstr ""
 
@@ -5619,11 +5647,11 @@ msgstr ""
 msgid "Manage your passkeys and authentication"
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1281
+#: packages/admin/src/components/MediaDetailPanel.tsx:1389
 msgid "Managed by {providerName}"
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1282
+#: packages/admin/src/components/MediaDetailPanel.tsx:1390
 msgid "Managed by an external media provider"
 msgstr ""
 
@@ -5694,7 +5722,7 @@ msgstr ""
 msgid "Media"
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1001
+#: packages/admin/src/components/MediaDetailPanel.tsx:1109
 msgid "Media details"
 msgstr ""
 
@@ -5726,7 +5754,7 @@ msgid "Media Library"
 msgstr ""
 
 #: packages/admin/src/components/MediaLibrary.tsx:1306
-#: packages/admin/src/components/MediaPickerModal.tsx:1292
+#: packages/admin/src/components/MediaPickerModal.tsx:1543
 msgid "Media pagination"
 msgstr ""
 
@@ -5734,7 +5762,7 @@ msgstr ""
 msgid "Media Read"
 msgstr ""
 
-#: packages/admin/src/components/MediaPickerModal.tsx:1133
+#: packages/admin/src/components/MediaPickerModal.tsx:1376
 msgid "Media results"
 msgstr ""
 
@@ -5897,7 +5925,7 @@ msgstr ""
 msgid "More actions for {0}"
 msgstr ""
 
-#: packages/admin/src/components/ImageFieldRenderer.tsx:344
+#: packages/admin/src/components/ImageFieldRenderer.tsx:500
 msgid "More information about {label}"
 msgstr ""
 
@@ -5961,7 +5989,7 @@ msgstr ""
 msgid "Move media here from Media Details."
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:436
+#: packages/admin/src/components/MediaDetailPanel.tsx:524
 msgid "Move the focal point to choose what stays visible in cropped images."
 msgstr ""
 
@@ -5987,7 +6015,7 @@ msgid "Move up"
 msgstr ""
 
 #. placeholder {0}: to + 1
-#: packages/admin/src/components/MediaPickerModal.tsx:633
+#: packages/admin/src/components/MediaPickerModal.tsx:693
 msgid "Moved {filename} to position {0}."
 msgstr ""
 
@@ -6002,6 +6030,17 @@ msgstr ""
 #. placeholder {0}: folder.name
 #: packages/admin/src/components/MediaLibrary.tsx:632
 msgid "Moved to {0}"
+msgstr ""
+
+#. placeholder {0}: newIndex + 1
+#. placeholder {1}: images.length
+#: packages/admin/src/components/editor/GalleryDetailPanel.tsx:156
+msgid "Moving {label} to position {0} of {1}."
+msgstr ""
+
+#: packages/admin/src/components/editor/GalleryDetailPanel.tsx:169
+#: packages/admin/src/components/editor/GalleryDetailPanel.tsx:175
+msgid "Moving {label} was cancelled."
 msgstr ""
 
 #: packages/admin/src/components/FieldEditor.tsx:224
@@ -6152,7 +6191,7 @@ msgstr ""
 #: packages/admin/src/components/comments/CommentInbox.tsx:363
 #: packages/admin/src/components/ContentList.tsx:731
 #: packages/admin/src/components/MediaLibrary.tsx:1309
-#: packages/admin/src/components/MediaPickerModal.tsx:1295
+#: packages/admin/src/components/MediaPickerModal.tsx:1546
 msgid "Next page"
 msgstr ""
 
@@ -6291,7 +6330,7 @@ msgstr ""
 msgid "No files added"
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1394
+#: packages/admin/src/components/MediaDetailPanel.tsx:1502
 msgid "No folders found"
 msgstr ""
 
@@ -6299,7 +6338,7 @@ msgstr ""
 msgid "No headings in document"
 msgstr ""
 
-#: packages/admin/src/components/editor/GalleryDetailPanel.tsx:209
+#: packages/admin/src/components/editor/GalleryDetailPanel.tsx:270
 msgid "No images in this gallery yet."
 msgstr ""
 
@@ -6352,7 +6391,7 @@ msgid "No media available from this provider."
 msgstr ""
 
 #: packages/admin/src/components/MediaLibrary.tsx:1133
-#: packages/admin/src/components/MediaPickerModal.tsx:1163
+#: packages/admin/src/components/MediaPickerModal.tsx:1406
 msgid "No media found"
 msgstr ""
 
@@ -6409,7 +6448,7 @@ msgstr ""
 msgid "No provenance was supplied; the signed publisher policy permits this."
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1250
+#: packages/admin/src/components/MediaDetailPanel.tsx:1358
 msgid "No public URL available"
 msgstr ""
 
@@ -6486,7 +6525,7 @@ msgstr ""
 msgid "No widget areas yet. Create one to get started."
 msgstr ""
 
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:162
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:223
 msgid "None"
 msgstr ""
 
@@ -6566,10 +6605,10 @@ msgstr ""
 msgid "Open folder {0}"
 msgstr ""
 
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:383
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:384
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:572
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:573
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:473
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:474
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:663
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:664
 #: packages/admin/src/components/editor/PluginBlockNode.tsx:333
 #: packages/admin/src/components/editor/PluginBlockNode.tsx:334
 msgid "Open in new tab"
@@ -6590,16 +6629,16 @@ msgid ""
 "Option 3"
 msgstr ""
 
-#: packages/admin/src/components/editor/GalleryDetailPanel.tsx:390
+#: packages/admin/src/components/editor/GalleryDetailPanel.tsx:492
 msgid "Optional caption"
 msgstr ""
 
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:359
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:548
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:449
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:639
 msgid "Optional caption displayed below the image"
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1490
+#: packages/admin/src/components/MediaDetailPanel.tsx:1595
 msgid "Optional caption for display"
 msgstr ""
 
@@ -6607,8 +6646,8 @@ msgstr ""
 msgid "Optional description"
 msgstr ""
 
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:368
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:557
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:458
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:648
 msgid "Optional tooltip on hover"
 msgstr ""
 
@@ -6647,17 +6686,17 @@ msgstr ""
 msgid "Order saved"
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:440
+#: packages/admin/src/components/MediaDetailPanel.tsx:528
 msgid "Original"
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:687
+#: packages/admin/src/components/MediaDetailPanel.tsx:775
 msgid "Original image cropped."
 msgstr ""
 
-#: packages/admin/src/components/editor/GalleryDetailPanel.tsx:374
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:261
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:450
+#: packages/admin/src/components/editor/GalleryDetailPanel.tsx:476
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:351
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:541
 msgid "Original:"
 msgstr ""
 
@@ -6666,7 +6705,7 @@ msgstr ""
 msgid "Outline"
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1617
+#: packages/admin/src/components/MediaDetailPanel.tsx:1722
 msgid "Output size"
 msgstr ""
 
@@ -6688,12 +6727,12 @@ msgid "Page Not Found"
 msgstr ""
 
 #: packages/admin/src/components/MediaLibrary.tsx:1311
-#: packages/admin/src/components/MediaPickerModal.tsx:1297
+#: packages/admin/src/components/MediaPickerModal.tsx:1548
 msgid "Page number"
 msgstr ""
 
 #: packages/admin/src/components/MediaLibrary.tsx:1312
-#: packages/admin/src/components/MediaPickerModal.tsx:1298
+#: packages/admin/src/components/MediaPickerModal.tsx:1549
 msgid "Page size"
 msgstr ""
 
@@ -6855,6 +6894,10 @@ msgstr ""
 msgid "Pick any method to create your admin account."
 msgstr ""
 
+#: packages/admin/src/components/editor/GalleryDetailPanel.tsx:143
+msgid "Picked up {label}."
+msgstr ""
+
 #: packages/admin/src/components/Widgets.tsx:154
 msgid "Placeholder text"
 msgstr ""
@@ -6876,7 +6919,7 @@ msgstr ""
 msgid "Please enter a valid email address"
 msgstr ""
 
-#: packages/admin/src/components/MediaPickerModal.tsx:570
+#: packages/admin/src/components/MediaPickerModal.tsx:630
 msgid "Please enter a valid URL"
 msgstr ""
 
@@ -7035,9 +7078,13 @@ msgstr ""
 msgid "Preparing..."
 msgstr ""
 
+#: packages/admin/src/components/editor/GalleryDetailPanel.tsx:179
+msgid "Press Space to pick up an image. Use the Arrow keys to move it, then press Space to drop it."
+msgstr ""
+
 #: packages/admin/src/components/ContentSettingsPanel.tsx:387
 #: packages/admin/src/components/ContentTypeEditor.tsx:81
-#: packages/admin/src/components/MediaDetailPanel.tsx:1571
+#: packages/admin/src/components/MediaDetailPanel.tsx:1676
 #: packages/admin/src/components/MediaLibrary.tsx:1200
 msgid "Preview"
 msgstr ""
@@ -7057,7 +7104,7 @@ msgstr ""
 #: packages/admin/src/components/comments/CommentInbox.tsx:344
 #: packages/admin/src/components/ContentList.tsx:719
 #: packages/admin/src/components/MediaLibrary.tsx:1308
-#: packages/admin/src/components/MediaPickerModal.tsx:1294
+#: packages/admin/src/components/MediaPickerModal.tsx:1545
 msgid "Previous page"
 msgstr ""
 
@@ -7169,8 +7216,8 @@ msgstr ""
 msgid "Queued"
 msgstr ""
 
-#: packages/admin/src/components/editor/ImageNode.tsx:226
-#: packages/admin/src/components/editor/ImageNode.tsx:227
+#: packages/admin/src/components/editor/ImageNode.tsx:228
+#: packages/admin/src/components/editor/ImageNode.tsx:229
 msgid "Quick edit alt text"
 msgstr ""
 
@@ -7327,9 +7374,14 @@ msgstr ""
 
 #: packages/admin/src/components/BlockKitMediaPickerField.tsx:84
 #: packages/admin/src/components/BlockKitMediaPickerField.tsx:115
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:202
-#: packages/admin/src/components/ImageFieldRenderer.tsx:265
-#: packages/admin/src/components/ImageFieldRenderer.tsx:332
+#: packages/admin/src/components/ContentEditor.tsx:1989
+#: packages/admin/src/components/editor/GalleryDetailPanel.tsx:471
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:295
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:491
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:682
+#: packages/admin/src/components/ImageFieldRenderer.tsx:310
+#: packages/admin/src/components/ImageFieldRenderer.tsx:363
+#: packages/admin/src/components/ImageFieldRenderer.tsx:434
 #: packages/admin/src/components/media/MediaBrowserItems.tsx:221
 #: packages/admin/src/components/PortableTextEditor.tsx:4242
 #: packages/admin/src/components/settings/GeneralSettings.tsx:229
@@ -7367,7 +7419,7 @@ msgstr ""
 msgid "Remove assignment"
 msgstr ""
 
-#: packages/admin/src/components/ImageFieldRenderer.tsx:263
+#: packages/admin/src/components/ImageFieldRenderer.tsx:432
 msgid "Remove dark mode variant"
 msgstr ""
 
@@ -7383,25 +7435,18 @@ msgstr ""
 msgid "Remove from post"
 msgstr ""
 
-#: packages/admin/src/components/ImageFieldRenderer.tsx:330
-#: packages/admin/src/components/ImageFieldRenderer.tsx:376
-#: packages/admin/src/components/ImageFieldRenderer.tsx:406
+#: packages/admin/src/components/ImageFieldRenderer.tsx:308
 #: packages/admin/src/components/SeoImageField.tsx:65
 msgid "Remove image"
 msgstr ""
 
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:396
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:586
-msgid "Remove Image"
-msgstr ""
-
 #. placeholder {0}: index + 1
-#: packages/admin/src/components/editor/GalleryDetailPanel.tsx:325
+#: packages/admin/src/components/editor/GalleryDetailPanel.tsx:390
 msgid "Remove image {0}"
 msgstr ""
 
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:200
-msgid "Remove Image?"
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:293
+msgid "Remove image?"
 msgstr ""
 
 #. placeholder {0}: index + 1
@@ -7431,16 +7476,16 @@ msgstr ""
 msgid "Remove sub-field"
 msgstr ""
 
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:201
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:294
 msgid "Remove this image from the document?"
 msgstr ""
 
 #. placeholder {0}: selected.item.filename
-#: packages/admin/src/components/MediaPickerModal.tsx:638
+#: packages/admin/src/components/MediaPickerModal.tsx:698
 msgid "Removed {0} from selection."
 msgstr ""
 
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:203
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:296
 #: packages/admin/src/components/settings/AllowedDomainsSettings.tsx:384
 #: packages/admin/src/components/settings/PasskeyItem.tsx:203
 msgid "Removing..."
@@ -7478,52 +7523,62 @@ msgstr ""
 msgid "Repeating group of fields"
 msgstr ""
 
-#: packages/admin/src/components/ImageFieldRenderer.tsx:255
-#: packages/admin/src/components/ImageFieldRenderer.tsx:322
+#: packages/admin/src/components/ContentEditor.tsx:1979
+#: packages/admin/src/components/ContentEditor.tsx:2016
+#: packages/admin/src/components/editor/GalleryDetailPanel.tsx:447
+#: packages/admin/src/components/editor/GalleryDetailPanel.tsx:504
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:244
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:310
+#: packages/admin/src/components/ImageFieldRenderer.tsx:284
+#: packages/admin/src/components/ImageFieldRenderer.tsx:344
+#: packages/admin/src/components/ImageFieldRenderer.tsx:407
+#: packages/admin/src/components/ImageFieldRenderer.tsx:565
+#: packages/admin/src/components/ImageFieldRenderer.tsx:568
 msgid "Replace"
 msgstr ""
 
-#: packages/admin/src/components/ImageFieldRenderer.tsx:253
-msgid "Replace dark mode variant"
+#: packages/admin/src/components/ContentEditor.tsx:2015
+#: packages/admin/src/components/ImageFieldRenderer.tsx:559
+msgid "Replace {label}"
 msgstr ""
 
-#: packages/admin/src/components/editor/GalleryDetailPanel.tsx:368
-#: packages/admin/src/components/editor/GalleryDetailPanel.tsx:401
-#: packages/admin/src/components/editor/GalleryDetailPanel.tsx:402
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:216
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:217
-#: packages/admin/src/components/MediaDetailPanel.tsx:1699
-#: packages/admin/src/components/MediaDetailPanel.tsx:1823
+#: packages/admin/src/components/ImageFieldRenderer.tsx:405
+msgid "Replace dark mode image"
+msgstr ""
+
+#: packages/admin/src/components/ImageFieldRenderer.tsx:556
+msgid "Replace dark mode variant for {label}"
+msgstr ""
+
+#: packages/admin/src/components/editor/GalleryDetailPanel.tsx:503
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:309
+#: packages/admin/src/components/MediaDetailPanel.tsx:1815
+#: packages/admin/src/components/MediaDetailPanel.tsx:1943
 msgid "Replace image"
 msgstr ""
 
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:252
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:439
-msgid "Replace Image"
-msgstr ""
-
-#: packages/admin/src/components/MediaDetailPanel.tsx:1726
-#: packages/admin/src/components/MediaDetailPanel.tsx:1858
+#: packages/admin/src/components/MediaDetailPanel.tsx:1846
+#: packages/admin/src/components/MediaDetailPanel.tsx:1978
 msgid "Replace original"
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1815
-#: packages/admin/src/components/MediaDetailPanel.tsx:1850
+#: packages/admin/src/components/MediaDetailPanel.tsx:1935
+#: packages/admin/src/components/MediaDetailPanel.tsx:1970
 msgid "Replace original image?"
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1629
+#: packages/admin/src/components/MediaDetailPanel.tsx:1734
 msgid "Replace original is available with the Original aspect ratio."
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:819
-#: packages/admin/src/components/MediaDetailPanel.tsx:1824
+#: packages/admin/src/components/MediaDetailPanel.tsx:932
+#: packages/admin/src/components/MediaDetailPanel.tsx:1944
 msgid "Replacing image..."
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:838
-#: packages/admin/src/components/MediaDetailPanel.tsx:1859
-#: packages/admin/src/components/MediaDetailPanel.tsx:1879
+#: packages/admin/src/components/MediaDetailPanel.tsx:951
+#: packages/admin/src/components/MediaDetailPanel.tsx:1979
+#: packages/admin/src/components/MediaDetailPanel.tsx:1999
 msgid "Replacing original..."
 msgstr ""
 
@@ -7559,8 +7614,8 @@ msgstr ""
 msgid "Required fields:"
 msgstr ""
 
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:352
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:541
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:442
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:632
 msgid "Required for accessibility. Describes the image for screen readers."
 msgstr ""
 
@@ -7577,17 +7632,17 @@ msgstr ""
 msgid "Resend in {resendCooldown}s"
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1563
-#: packages/admin/src/components/MediaDetailPanel.tsx:1613
+#: packages/admin/src/components/MediaDetailPanel.tsx:1668
+#: packages/admin/src/components/MediaDetailPanel.tsx:1718
 msgid "Reset"
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1598
+#: packages/admin/src/components/MediaDetailPanel.tsx:1703
 msgid "Reset crop"
 msgstr ""
 
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:281
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:470
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:371
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:561
 msgid "Reset to original"
 msgstr ""
 
@@ -7664,13 +7719,13 @@ msgstr ""
 #: packages/admin/src/components/BylineCreditsEditor.tsx:471
 #: packages/admin/src/components/MarketplaceBrowse.tsx:143
 #: packages/admin/src/components/media/MediaBrowserItems.tsx:218
-#: packages/admin/src/components/MediaDetailPanel.tsx:1421
+#: packages/admin/src/components/MediaDetailPanel.tsx:1529
 #: packages/admin/src/components/MediaLibrary.tsx:1017
 #: packages/admin/src/components/MediaLibrary.tsx:1567
-#: packages/admin/src/components/MediaPickerModal.tsx:965
-#: packages/admin/src/components/MediaPickerModal.tsx:1061
-#: packages/admin/src/components/MediaPickerModal.tsx:1083
-#: packages/admin/src/components/MediaPickerModal.tsx:1156
+#: packages/admin/src/components/MediaPickerModal.tsx:1208
+#: packages/admin/src/components/MediaPickerModal.tsx:1304
+#: packages/admin/src/components/MediaPickerModal.tsx:1326
+#: packages/admin/src/components/MediaPickerModal.tsx:1399
 #: packages/admin/src/components/PluginFieldErrorBoundary.tsx:44
 #: packages/admin/src/components/ThemeMarketplaceBrowse.tsx:122
 #: packages/admin/src/lib/content-editor-panels.tsx:201
@@ -7777,7 +7832,7 @@ msgstr ""
 msgid "Rich text editor"
 msgstr ""
 
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:165
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:226
 msgid "Right"
 msgstr ""
 
@@ -7837,11 +7892,11 @@ msgstr ""
 msgid "Same window"
 msgstr ""
 
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:399
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:593
-#: packages/admin/src/components/editor/ImageNode.tsx:294
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:494
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:689
+#: packages/admin/src/components/editor/ImageNode.tsx:296
 #: packages/admin/src/components/editor/PluginBlockNode.tsx:417
-#: packages/admin/src/components/MediaDetailPanel.tsx:1746
+#: packages/admin/src/components/MediaDetailPanel.tsx:1866
 #: packages/admin/src/components/MediaFolderDialog.tsx:171
 #: packages/admin/src/components/MenuEditor.tsx:626
 #: packages/admin/src/components/Redirects.tsx:191
@@ -7855,7 +7910,7 @@ msgstr ""
 msgid "Save (Enter)"
 msgstr ""
 
-#: packages/admin/src/components/editor/ImageNode.tsx:295
+#: packages/admin/src/components/editor/ImageNode.tsx:297
 msgid "Save alt text"
 msgstr ""
 
@@ -7880,7 +7935,7 @@ msgstr ""
 msgid "Save name"
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1639
+#: packages/admin/src/components/MediaDetailPanel.tsx:1744
 msgid "Save or discard the other changes before cropping."
 msgstr ""
 
@@ -7903,7 +7958,7 @@ msgid "Saved \"{0}\"."
 msgstr ""
 
 #: packages/admin/src/components/FieldEditor.tsx:712
-#: packages/admin/src/components/MediaDetailPanel.tsx:1746
+#: packages/admin/src/components/MediaDetailPanel.tsx:1866
 #: packages/admin/src/components/MediaFolderDialog.tsx:171
 #: packages/admin/src/components/MenuEditor.tsx:626
 #: packages/admin/src/components/PluginSettings.tsx:166
@@ -8046,7 +8101,7 @@ msgid "Search {0}..."
 msgstr ""
 
 #: packages/admin/src/components/MediaLibrary.tsx:962
-#: packages/admin/src/components/MediaPickerModal.tsx:1012
+#: packages/admin/src/components/MediaPickerModal.tsx:1255
 msgid "Search by filename..."
 msgstr ""
 
@@ -8089,8 +8144,8 @@ msgstr ""
 msgid "Search engine optimization and verification"
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1374
-#: packages/admin/src/components/MediaDetailPanel.tsx:1375
+#: packages/admin/src/components/MediaDetailPanel.tsx:1482
+#: packages/admin/src/components/MediaDetailPanel.tsx:1483
 msgid "Search folders"
 msgstr ""
 
@@ -8099,7 +8154,7 @@ msgid "Search form"
 msgstr ""
 
 #: packages/admin/src/components/MediaLibrary.tsx:963
-#: packages/admin/src/components/MediaPickerModal.tsx:1014
+#: packages/admin/src/components/MediaPickerModal.tsx:1257
 msgid "Search media"
 msgstr ""
 
@@ -8147,7 +8202,7 @@ msgid "Search users"
 msgstr ""
 
 #: packages/admin/src/components/MediaLibrary.tsx:962
-#: packages/admin/src/components/MediaPickerModal.tsx:1012
+#: packages/admin/src/components/MediaPickerModal.tsx:1255
 msgid "Search..."
 msgstr ""
 
@@ -8252,7 +8307,7 @@ msgstr ""
 #: packages/admin/src/components/BylineFieldEditor.tsx:56
 #: packages/admin/src/components/FieldEditor.tsx:218
 #: packages/admin/src/components/FieldEditor.tsx:624
-#: packages/admin/src/components/MediaPickerModal.tsx:646
+#: packages/admin/src/components/MediaPickerModal.tsx:860
 #: packages/admin/src/components/Settings.tsx:149
 msgid "Select"
 msgstr ""
@@ -8260,7 +8315,7 @@ msgstr ""
 #: packages/admin/src/components/BlockKitMediaPickerField.tsx:140
 #: packages/admin/src/components/ContentEditor.tsx:1999
 #: packages/admin/src/components/ContentEditor.tsx:2015
-#: packages/admin/src/components/ImageFieldRenderer.tsx:438
+#: packages/admin/src/components/ImageFieldRenderer.tsx:560
 msgid "Select {label}"
 msgstr ""
 
@@ -8272,7 +8327,7 @@ msgstr ""
 msgid "Select a component..."
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1364
+#: packages/admin/src/components/MediaDetailPanel.tsx:1472
 msgid "Select a location"
 msgstr ""
 
@@ -8301,7 +8356,7 @@ msgstr ""
 msgid "Select Content"
 msgstr ""
 
-#: packages/admin/src/components/ImageFieldRenderer.tsx:437
+#: packages/admin/src/components/ImageFieldRenderer.tsx:557
 msgid "Select dark mode variant for {label}"
 msgstr ""
 
@@ -8318,7 +8373,7 @@ msgid "Select Favicon"
 msgstr ""
 
 #: packages/admin/src/components/ContentEditor.tsx:2003
-#: packages/admin/src/components/MediaPickerModal.tsx:208
+#: packages/admin/src/components/MediaPickerModal.tsx:228
 msgid "Select file"
 msgstr ""
 
@@ -8326,8 +8381,8 @@ msgstr ""
 msgid "Select gallery images"
 msgstr ""
 
-#: packages/admin/src/components/ImageFieldRenderer.tsx:422
-#: packages/admin/src/components/MediaPickerModal.tsx:208
+#: packages/admin/src/components/ImageFieldRenderer.tsx:540
+#: packages/admin/src/components/MediaPickerModal.tsx:228
 #: packages/admin/src/components/PortableTextEditor.tsx:3453
 msgid "Select image"
 msgstr ""
@@ -8367,12 +8422,12 @@ msgstr ""
 msgid "Selected {selectedItemTitle}"
 msgstr ""
 
-#: packages/admin/src/components/ImageFieldRenderer.tsx:201
-#: packages/admin/src/components/ImageFieldRenderer.tsx:216
+#: packages/admin/src/components/ImageFieldRenderer.tsx:245
+#: packages/admin/src/components/ImageFieldRenderer.tsx:260
 msgid "Selected image"
 msgstr ""
 
-#: packages/admin/src/components/MediaPickerModal.tsx:723
+#: packages/admin/src/components/MediaPickerModal.tsx:937
 msgid "Selected media"
 msgstr ""
 
@@ -8443,8 +8498,8 @@ msgstr ""
 msgid "SEO Title"
 msgstr ""
 
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:320
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:509
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:410
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:600
 msgid "Set a custom display size for this image instance."
 msgstr ""
 
@@ -8563,7 +8618,7 @@ msgstr ""
 #. placeholder {0}: count ?? 0
 #. placeholder {0}: totalCount ?? 0
 #: packages/admin/src/components/MediaLibrary.tsx:1317
-#: packages/admin/src/components/MediaPickerModal.tsx:1303
+#: packages/admin/src/components/MediaPickerModal.tsx:1554
 msgid "Showing {pageShowingRange} of {0}"
 msgstr ""
 
@@ -8571,8 +8626,8 @@ msgstr ""
 msgid "Shown to readers in this order."
 msgstr ""
 
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:369
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:558
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:459
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:649
 msgid "Shown when hovering over the image."
 msgstr ""
 
@@ -8678,7 +8733,7 @@ msgstr ""
 msgid "Size is not applicable to folders"
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1190
+#: packages/admin/src/components/MediaDetailPanel.tsx:1298
 msgid "Size:"
 msgstr ""
 
@@ -8766,8 +8821,8 @@ msgid "Sort themes"
 msgstr ""
 
 #: packages/admin/src/components/ContentTypeList.tsx:184
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:375
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:564
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:465
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:655
 #: packages/admin/src/components/MarketplacePluginDetail.tsx:225
 #: packages/admin/src/components/PluginManager.tsx:597
 #: packages/admin/src/components/Redirects.tsx:475
@@ -8805,7 +8860,7 @@ msgstr ""
 msgid "Square"
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:442
+#: packages/admin/src/components/MediaDetailPanel.tsx:530
 msgid "Square (1:1)"
 msgstr ""
 
@@ -8988,7 +9043,7 @@ msgstr ""
 msgid "Text formatting"
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:728
+#: packages/admin/src/components/MediaDetailPanel.tsx:822
 msgid "The cropped image could not be created."
 msgstr ""
 
@@ -9012,7 +9067,7 @@ msgstr ""
 msgid "The invited user will have this role once they complete registration."
 msgstr ""
 
-#: packages/admin/src/components/MediaPickerModal.tsx:1055
+#: packages/admin/src/components/MediaPickerModal.tsx:1298
 msgid "The latest media request failed. Showing the previous page."
 msgstr ""
 
@@ -9053,11 +9108,11 @@ msgstr ""
 msgid "The referenced logo is no longer available. Pick a new one or remove the reference."
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:723
+#: packages/admin/src/components/MediaDetailPanel.tsx:817
 msgid "The selected folder no longer exists. Choose another location and save again."
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:801
+#: packages/admin/src/components/MediaDetailPanel.tsx:914
 msgid "The selected image could not be read."
 msgstr ""
 
@@ -9099,9 +9154,9 @@ msgstr ""
 msgid "These tools remain disabled after installation until you explicitly enable agent access."
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1799
-#: packages/admin/src/components/MediaDetailPanel.tsx:1835
-#: packages/admin/src/components/MediaDetailPanel.tsx:1869
+#: packages/admin/src/components/MediaDetailPanel.tsx:1919
+#: packages/admin/src/components/MediaDetailPanel.tsx:1955
+#: packages/admin/src/components/MediaDetailPanel.tsx:1989
 msgid "This cannot be undone"
 msgstr ""
 
@@ -9121,12 +9176,12 @@ msgstr ""
 msgid "This field contains unsupported Portable Text marks: <0>{markList}</0>. Remove them through the API before editing or saving this content."
 msgstr ""
 
-#: packages/admin/src/components/MediaPickerModal.tsx:583
+#: packages/admin/src/components/MediaPickerModal.tsx:643
 msgid "This field does not accept {mimeType} files."
 msgstr ""
 
-#: packages/admin/src/components/ContentEditor.tsx:2018
-#: packages/admin/src/components/ImageFieldRenderer.tsx:442
+#: packages/admin/src/components/ContentEditor.tsx:2019
+#: packages/admin/src/components/ImageFieldRenderer.tsx:579
 msgid "This field is required"
 msgstr ""
 
@@ -9138,11 +9193,11 @@ msgstr ""
 msgid "This folder is empty"
 msgstr ""
 
-#: packages/admin/src/components/MediaPickerModal.tsx:1168
+#: packages/admin/src/components/MediaPickerModal.tsx:1411
 msgid "This folder is empty."
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1634
+#: packages/admin/src/components/MediaDetailPanel.tsx:1739
 msgid "This image could not be loaded for cropping."
 msgstr ""
 
@@ -9162,7 +9217,12 @@ msgstr ""
 msgid "This may take a while for large exports."
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:717
+#: packages/admin/src/components/media/useMediaAssetEditor.tsx:82
+msgid "This media item could not be loaded. Try again."
+msgstr ""
+
+#: packages/admin/src/components/media/useMediaAssetEditor.tsx:80
+#: packages/admin/src/components/MediaDetailPanel.tsx:811
 msgid "This media item no longer exists."
 msgstr ""
 
@@ -9283,8 +9343,8 @@ msgstr ""
 msgid "Title"
 msgstr ""
 
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:365
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:554
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:455
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:645
 msgid "Title (Tooltip)"
 msgstr ""
 
@@ -9431,7 +9491,7 @@ msgid "Try another code"
 msgstr ""
 
 #: packages/admin/src/components/MediaLibrary.tsx:1112
-#: packages/admin/src/components/MediaPickerModal.tsx:1166
+#: packages/admin/src/components/MediaPickerModal.tsx:1409
 msgid "Try another filename or clear your search."
 msgstr ""
 
@@ -9548,10 +9608,10 @@ msgstr ""
 msgid "Unknown role"
 msgstr ""
 
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:300
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:301
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:489
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:490
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:390
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:391
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:580
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:581
 msgid "Unlock aspect ratio"
 msgstr ""
 
@@ -9666,7 +9726,7 @@ msgstr ""
 msgid "Upload"
 msgstr ""
 
-#: packages/admin/src/components/MediaPickerModal.tsx:1170
+#: packages/admin/src/components/MediaPickerModal.tsx:1413
 msgid "Upload a file to get started"
 msgstr ""
 
@@ -9674,7 +9734,7 @@ msgstr ""
 msgid "Upload an export file"
 msgstr ""
 
-#: packages/admin/src/components/MediaPickerModal.tsx:1171
+#: packages/admin/src/components/MediaPickerModal.tsx:1414
 msgid "Upload an image to get started"
 msgstr ""
 
@@ -9697,7 +9757,7 @@ msgstr ""
 msgid "Upload failed"
 msgstr ""
 
-#: packages/admin/src/components/MediaPickerModal.tsx:832
+#: packages/admin/src/components/MediaPickerModal.tsx:1075
 msgid "Upload files"
 msgstr ""
 
@@ -9732,7 +9792,7 @@ msgstr ""
 msgid "Upload WordPress export file"
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1213
+#: packages/admin/src/components/MediaDetailPanel.tsx:1321
 msgid "Uploaded:"
 msgstr ""
 
@@ -9770,7 +9830,7 @@ msgstr ""
 msgid "URL-friendly identifier (e.g., \"primary\", \"footer\")"
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1240
+#: packages/admin/src/components/MediaDetailPanel.tsx:1348
 msgid "URL:"
 msgstr ""
 
@@ -9810,7 +9870,7 @@ msgstr ""
 msgid "Use [param] or [...rest] in paths for pattern matching."
 msgstr ""
 
-#: packages/admin/src/components/MediaPickerModal.tsx:579
+#: packages/admin/src/components/MediaPickerModal.tsx:639
 msgid "Use a URL ending in a recognized image extension, such as .jpg or .png."
 msgstr ""
 
@@ -9822,7 +9882,7 @@ msgstr ""
 msgid "Use lowercase letters, numbers, and hyphens, starting with a letter."
 msgstr ""
 
-#: packages/admin/src/components/MediaPickerModal.tsx:897
+#: packages/admin/src/components/MediaPickerModal.tsx:1140
 msgid "Use URL"
 msgstr ""
 
@@ -9846,12 +9906,12 @@ msgstr ""
 msgid "Used as the main visual for this post on listing pages and at the top of the post"
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:434
+#: packages/admin/src/components/MediaDetailPanel.tsx:522
 msgid "Used by screen readers and when image fails to load"
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1047
-#: packages/admin/src/components/MediaDetailPanel.tsx:1080
+#: packages/admin/src/components/MediaDetailPanel.tsx:1155
+#: packages/admin/src/components/MediaDetailPanel.tsx:1188
 #: packages/admin/src/components/MediaUsedIn.tsx:127
 msgid "Used in"
 msgstr ""
@@ -9939,7 +9999,7 @@ msgstr ""
 
 #: packages/admin/src/components/AllowedTypesEditor.tsx:70
 #: packages/admin/src/components/MediaLibrary.tsx:982
-#: packages/admin/src/components/MediaPickerModal.tsx:324
+#: packages/admin/src/components/MediaPickerModal.tsx:384
 msgid "Video"
 msgstr ""
 
@@ -9953,7 +10013,7 @@ msgid "View in Marketplace"
 msgstr ""
 
 #: packages/admin/src/components/MediaLibrary.tsx:928
-#: packages/admin/src/components/MediaPickerModal.tsx:972
+#: packages/admin/src/components/MediaPickerModal.tsx:1215
 msgid "View mode"
 msgstr ""
 
@@ -10090,7 +10150,7 @@ msgstr ""
 msgid "Why are bylines shown in this order?"
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:433
+#: packages/admin/src/components/MediaDetailPanel.tsx:521
 msgid "Why can't this be changed?"
 msgstr ""
 
@@ -10118,11 +10178,11 @@ msgstr ""
 msgid "Why is this important for social sharing?"
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:435
+#: packages/admin/src/components/MediaDetailPanel.tsx:523
 msgid "Why is this important?"
 msgstr ""
 
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:166
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:227
 msgid "Wide"
 msgstr ""
 
@@ -10163,8 +10223,8 @@ msgstr ""
 msgid "Widgets"
 msgstr ""
 
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:288
-#: packages/admin/src/components/editor/ImageDetailPanel.tsx:477
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:378
+#: packages/admin/src/components/editor/ImageDetailPanel.tsx:568
 msgid "Width"
 msgstr ""
 
@@ -10249,6 +10309,11 @@ msgstr ""
 
 #: packages/admin/src/components/users/UserDetail.tsx:175
 msgid "You cannot change your own role"
+msgstr ""
+
+#: packages/admin/src/components/media/useMediaAssetEditor.tsx:69
+#: packages/admin/src/components/media/useMediaAssetEditor.tsx:78
+msgid "You do not have permission to edit this asset."
 msgstr ""
 
 #: packages/admin/src/components/MediaLibrary.tsx:647
@@ -10375,7 +10440,7 @@ msgstr ""
 msgid "Your Twitter/X handle (e.g., @username)"
 msgstr ""
 
-#: packages/admin/src/components/MediaDetailPanel.tsx:1761
+#: packages/admin/src/components/MediaDetailPanel.tsx:1881
 msgid "Your unsaved media changes will be lost."
 msgstr ""
 
