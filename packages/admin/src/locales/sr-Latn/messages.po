@@ -86,7 +86,7 @@ msgid "{0, plural, one {# comment imported} other {# comments imported}}"
 msgstr "{0, plural, one {# komentar uvezen} few {# komentara uvezeno} other {# komentara uvezeno}}"
 
 #. placeholder {0}: result.affected
-#: packages/admin/src/router.tsx:1954
+#: packages/admin/src/router.tsx:1986
 msgid "{0, plural, one {# comment updated} other {# comments updated}}"
 msgstr "{0, plural, one {# komentar ažuriran} few {# komentara ažurirano} other {# komentara ažurirano}}"
 
@@ -293,17 +293,17 @@ msgid "{0} items will be imported"
 msgstr "{0} stavki će biti uvezeno"
 
 #. placeholder {0}: failedIds.length
-#: packages/admin/src/router.tsx:577
+#: packages/admin/src/router.tsx:581
 msgid "{0} of {total} could not be deleted"
 msgstr "{0} od {total} nije moglo biti obrisano"
 
 #. placeholder {0}: failedIds.length
-#: packages/admin/src/router.tsx:533
+#: packages/admin/src/router.tsx:537
 msgid "{0} of {total} could not be published"
 msgstr "{0} od {total} nije moglo biti objavljeno"
 
 #. placeholder {0}: failedIds.length
-#: packages/admin/src/router.tsx:556
+#: packages/admin/src/router.tsx:560
 msgid "{0} of {total} could not be updated"
 msgstr "{0} od {total} nije moglo biti ažurirano"
 
@@ -657,7 +657,7 @@ msgstr ""
 msgid "A publication time has not been selected"
 msgstr ""
 
-#: packages/admin/src/components/ContentEditor.tsx:650
+#: packages/admin/src/components/ContentEditor.tsx:668
 msgid "A publishing action is already in progress"
 msgstr ""
 
@@ -694,7 +694,7 @@ msgstr "Prihvati pozivnicu"
 msgid "Access denied"
 msgstr "Pristup odbijen"
 
-#: packages/admin/src/router.tsx:1974
+#: packages/admin/src/router.tsx:2006
 msgid "Access Denied"
 msgstr "Pristup odbijen"
 
@@ -1128,24 +1128,24 @@ msgstr "Alternativno, možete izvesti iz WordPress-a (Alati → Izvoz) i otpremi
 #: packages/admin/src/components/TaxonomySidebar.tsx:416
 #: packages/admin/src/components/TaxonomySidebar.tsx:476
 #: packages/admin/src/components/ThemeMarketplaceBrowse.tsx:114
-#: packages/admin/src/router.tsx:465
-#: packages/admin/src/router.tsx:480
-#: packages/admin/src/router.tsx:494
-#: packages/admin/src/router.tsx:508
-#: packages/admin/src/router.tsx:732
-#: packages/admin/src/router.tsx:1040
-#: packages/admin/src/router.tsx:1120
-#: packages/admin/src/router.tsx:1144
-#: packages/admin/src/router.tsx:1162
-#: packages/admin/src/router.tsx:1183
-#: packages/admin/src/router.tsx:1228
-#: packages/admin/src/router.tsx:1246
+#: packages/admin/src/router.tsx:469
+#: packages/admin/src/router.tsx:484
+#: packages/admin/src/router.tsx:498
+#: packages/admin/src/router.tsx:512
+#: packages/admin/src/router.tsx:736
+#: packages/admin/src/router.tsx:1064
+#: packages/admin/src/router.tsx:1150
+#: packages/admin/src/router.tsx:1174
+#: packages/admin/src/router.tsx:1192
+#: packages/admin/src/router.tsx:1214
+#: packages/admin/src/router.tsx:1259
 #: packages/admin/src/router.tsx:1277
-#: packages/admin/src/router.tsx:1297
-#: packages/admin/src/router.tsx:1919
-#: packages/admin/src/router.tsx:1935
-#: packages/admin/src/router.tsx:1960
-#: packages/admin/src/router.tsx:2466
+#: packages/admin/src/router.tsx:1308
+#: packages/admin/src/router.tsx:1328
+#: packages/admin/src/router.tsx:1951
+#: packages/admin/src/router.tsx:1967
+#: packages/admin/src/router.tsx:1992
+#: packages/admin/src/router.tsx:2498
 #: packages/admin/src/routes/byline-schema.tsx:103
 #: packages/admin/src/routes/byline-schema.tsx:123
 #: packages/admin/src/routes/byline-schema.tsx:139
@@ -1373,7 +1373,7 @@ msgstr "Automatske rezervne kopije"
 msgid "Automatic backups need a storage backend (R2, S3, or local storage). Configure storage in your EmDash config to enable them."
 msgstr "Automatske rezervne kopije zahtevaju skladišni backend (R2, S3 ili lokalno skladište). Konfigurišite skladište u EmDash konfiguraciji da ih omogućite."
 
-#: packages/admin/src/router.tsx:1119
+#: packages/admin/src/router.tsx:1149
 msgid "Autosave failed"
 msgstr "Automatsko čuvanje nije uspelo"
 
@@ -1408,7 +1408,7 @@ msgstr "Avatar"
 msgid "Back"
 msgstr "Nazad"
 
-#: packages/admin/src/components/ContentEditor.tsx:852
+#: packages/admin/src/components/ContentEditor.tsx:870
 msgid "Back to {collectionLabel} list"
 msgstr "Nazad na listu {collectionLabel}"
 
@@ -1758,7 +1758,7 @@ msgstr "Dnevnik promena"
 msgid "Changes apply everywhere this byline appears."
 msgstr ""
 
-#: packages/admin/src/router.tsx:1176
+#: packages/admin/src/router.tsx:1207
 msgid "Changes discarded"
 msgstr "Promene odbačene"
 
@@ -1968,7 +1968,7 @@ msgstr ""
 msgid "Close panel"
 msgstr "Zatvori panel"
 
-#: packages/admin/src/components/ContentEditor.tsx:1351
+#: packages/admin/src/components/ContentEditor.tsx:1382
 msgid "Close settings"
 msgstr "Zatvori podešavanja"
 
@@ -2111,7 +2111,7 @@ msgstr "Greške sadržaja ({0})"
 msgid "Content found:"
 msgstr "Pronađen sadržaj:"
 
-#: packages/admin/src/router.tsx:1222
+#: packages/admin/src/router.tsx:1253
 msgid "Content has been scheduled for publishing"
 msgstr "Sadržaj je zakazan za objavljivanje"
 
@@ -2123,7 +2123,7 @@ msgstr "Sadržaj je ažuriran na izabranu reviziju."
 msgid "Content ID:"
 msgstr "ID sadržaja:"
 
-#: packages/admin/src/router.tsx:1139
+#: packages/admin/src/router.tsx:1169
 msgid "Content is now live"
 msgstr "Sadržaj je sada objavljen"
 
@@ -2135,11 +2135,11 @@ msgstr ""
 msgid "Content Read"
 msgstr "Čitanje sadržaja"
 
-#: packages/admin/src/router.tsx:1157
+#: packages/admin/src/router.tsx:1187
 msgid "Content removed from public view"
 msgstr "Sadržaj uklonjen iz javnog prikaza"
 
-#: packages/admin/src/router.tsx:1240
+#: packages/admin/src/router.tsx:1271
 msgid "Content reverted to draft"
 msgstr "Sadržaj vraćen u nacrt"
 
@@ -2516,7 +2516,7 @@ msgid "Created {0}"
 msgstr "Kreirano {0}"
 
 #. placeholder {0}: result.locale?.toUpperCase() ?? t`new`
-#: packages/admin/src/router.tsx:1271
+#: packages/admin/src/router.tsx:1302
 msgid "Created {0} translation"
 msgstr "Kreiran prevod {0}"
 
@@ -3105,7 +3105,7 @@ msgstr "Prikaži oblak tagova"
 msgid "Displayed below the image as a visible caption."
 msgstr "Prikazano ispod slike kao vidljiv opis."
 
-#: packages/admin/src/components/ContentEditor.tsx:920
+#: packages/admin/src/components/ContentEditor.tsx:938
 msgid "Distraction-free mode (⌘⇧\\)"
 msgstr "Režim bez ometanja (⌘⇧\\)"
 
@@ -3311,7 +3311,7 @@ msgstr "Uredi {0}"
 msgid "Edit {0} field"
 msgstr "Uredi polje {0}"
 
-#: packages/admin/src/components/ContentEditor.tsx:859
+#: packages/admin/src/components/ContentEditor.tsx:877
 msgid "Edit {itemLabel}"
 msgstr ""
 
@@ -3560,7 +3560,7 @@ msgstr ""
 msgid "Enter a URL (https://…) or a relative path (/…)"
 msgstr "Unesite URL (https://…) ili relativnu putanju (/…)"
 
-#: packages/admin/src/components/ContentEditor.tsx:1760
+#: packages/admin/src/components/ContentEditor.tsx:1791
 msgid "Enter a valid URL (e.g. https://example.com)"
 msgstr "Unesite važeći URL (npr. https://example.com)"
 
@@ -3568,7 +3568,7 @@ msgstr "Unesite važeći URL (npr. https://example.com)"
 msgid "Enter credentials manually"
 msgstr "Unesite akreditive ručno"
 
-#: packages/admin/src/components/ContentEditor.tsx:919
+#: packages/admin/src/components/ContentEditor.tsx:937
 msgid "Enter distraction-free mode"
 msgstr "Uđi u režim bez ometanja"
 
@@ -3580,7 +3580,7 @@ msgstr "Unesite e-poštu"
 msgid "Enter HTML..."
 msgstr "Unesite HTML..."
 
-#: packages/admin/src/components/ContentEditor.tsx:1532
+#: packages/admin/src/components/ContentEditor.tsx:1563
 msgid "Enter markdown content..."
 msgstr "Unesite markdown sadržaj..."
 
@@ -3615,7 +3615,7 @@ msgstr "Unesite URL WordPress sajta"
 #: packages/admin/src/components/SetupWizard.tsx:539
 #: packages/admin/src/components/TaxonomyManager.tsx:947
 #: packages/admin/src/components/Widgets.tsx:769
-#: packages/admin/src/router.tsx:2681
+#: packages/admin/src/router.tsx:2713
 msgid "Error"
 msgstr "Greška"
 
@@ -3664,7 +3664,7 @@ msgstr ""
 msgid "Exists"
 msgstr "Postoji"
 
-#: packages/admin/src/components/ContentEditor.tsx:985
+#: packages/admin/src/components/ContentEditor.tsx:1003
 msgid "Exit distraction-free mode"
 msgstr "Izađi iz režima bez ometanja"
 
@@ -3760,14 +3760,14 @@ msgid "Failed to create term"
 msgstr "Kreiranje termina nije uspelo"
 
 #: packages/admin/src/components/TaxonomySidebar.tsx:475
-#: packages/admin/src/router.tsx:1276
+#: packages/admin/src/router.tsx:1307
 msgid "Failed to create translation"
 msgstr "Kreiranje prevoda nije uspelo"
 
-#: packages/admin/src/router.tsx:464
-#: packages/admin/src/router.tsx:493
-#: packages/admin/src/router.tsx:576
-#: packages/admin/src/router.tsx:1296
+#: packages/admin/src/router.tsx:468
+#: packages/admin/src/router.tsx:497
+#: packages/admin/src/router.tsx:580
+#: packages/admin/src/router.tsx:1327
 msgid "Failed to delete"
 msgstr "Brisanje nije uspelo"
 
@@ -3792,7 +3792,7 @@ msgid "Failed to delete collection"
 msgstr "Brisanje kolekcije nije uspelo"
 
 #: packages/admin/src/lib/api/comments.ts:111
-#: packages/admin/src/router.tsx:1934
+#: packages/admin/src/router.tsx:1966
 msgid "Failed to delete comment"
 msgstr "Brisanje komentara nije uspelo"
 
@@ -3862,7 +3862,7 @@ msgstr "Onemogućavanje pretrage nije uspelo"
 msgid "Failed to disable user"
 msgstr "Onemogućavanje korisnika nije uspelo"
 
-#: packages/admin/src/router.tsx:1182
+#: packages/admin/src/router.tsx:1213
 msgid "Failed to discard changes"
 msgstr "Odbacivanje izmena nije uspelo"
 
@@ -3870,7 +3870,7 @@ msgstr "Odbacivanje izmena nije uspelo"
 msgid "Failed to dismiss welcome"
 msgstr "Odbacivanje dobrodošlice nije uspelo"
 
-#: packages/admin/src/router.tsx:507
+#: packages/admin/src/router.tsx:511
 msgid "Failed to duplicate"
 msgstr "Dupliranje nije uspelo"
 
@@ -3989,8 +3989,8 @@ msgstr "Preuzimanje termina nije uspelo"
 #: packages/admin/src/lib/api/current-user.ts:22
 #: packages/admin/src/lib/api/users.ts:88
 #: packages/admin/src/lib/api/users.ts:93
-#: packages/admin/src/router.tsx:943
-#: packages/admin/src/router.tsx:1865
+#: packages/admin/src/router.tsx:947
+#: packages/admin/src/router.tsx:1897
 msgid "Failed to fetch user"
 msgstr "Preuzimanje korisnika nije uspelo"
 
@@ -4032,7 +4032,7 @@ msgstr "Instalacija dodatka nije uspela"
 msgid "Failed to list byline fields"
 msgstr "Listanje polja potpisa autora nije uspelo"
 
-#: packages/admin/src/router.tsx:304
+#: packages/admin/src/router.tsx:308
 msgid "Failed to load admin"
 msgstr "Učitavanje admina nije uspelo"
 
@@ -4101,7 +4101,7 @@ msgstr "Učitavanje korisnika nije uspelo: {0}"
 msgid "Failed to load widget"
 msgstr "Učitavanje vidžeta nije uspelo"
 
-#: packages/admin/src/router.tsx:1959
+#: packages/admin/src/router.tsx:1991
 msgid "Failed to perform bulk action"
 msgstr "Izvršavanje grupne akcije nije uspelo"
 
@@ -4113,8 +4113,8 @@ msgstr "Trajno brisanje sadržaja nije uspelo"
 msgid "Failed to prepare import"
 msgstr "Priprema uvoza nije uspela"
 
-#: packages/admin/src/router.tsx:532
-#: packages/admin/src/router.tsx:1143
+#: packages/admin/src/router.tsx:536
+#: packages/admin/src/router.tsx:1173
 msgid "Failed to publish"
 msgstr "Objavljivanje nije uspelo"
 
@@ -4160,7 +4160,7 @@ msgstr "Promena redosleda vidžeta nije uspela"
 msgid "Failed to replace media image"
 msgstr ""
 
-#: packages/admin/src/router.tsx:479
+#: packages/admin/src/router.tsx:483
 msgid "Failed to restore"
 msgstr "Vraćanje nije uspelo"
 
@@ -4181,9 +4181,9 @@ msgstr "Opoziv API tokena nije uspeo"
 msgid "Failed to rewrite URLs"
 msgstr "Prepisivanje URL-ova nije uspelo"
 
-#: packages/admin/src/router.tsx:731
-#: packages/admin/src/router.tsx:1039
-#: packages/admin/src/router.tsx:2465
+#: packages/admin/src/router.tsx:735
+#: packages/admin/src/router.tsx:1063
+#: packages/admin/src/router.tsx:2497
 msgid "Failed to save"
 msgstr "Čuvanje nije uspelo"
 
@@ -4202,7 +4202,7 @@ msgstr "Čuvanje polja nije uspelo"
 msgid "Failed to save settings"
 msgstr "Čuvanje podešavanja nije uspelo"
 
-#: packages/admin/src/router.tsx:1227
+#: packages/admin/src/router.tsx:1258
 msgid "Failed to schedule"
 msgstr "Zakazivanje nije uspelo"
 
@@ -4233,15 +4233,15 @@ msgstr "Postavljanje termina unosa nije uspelo"
 msgid "Failed to uninstall plugin"
 msgstr "Deinstalacija dodatka nije uspela"
 
-#: packages/admin/src/router.tsx:1161
+#: packages/admin/src/router.tsx:1191
 msgid "Failed to unpublish"
 msgstr "Povlačenje objave nije uspelo"
 
-#: packages/admin/src/router.tsx:1245
+#: packages/admin/src/router.tsx:1276
 msgid "Failed to unschedule"
 msgstr "Otkazivanje zakazivanja nije uspelo"
 
-#: packages/admin/src/router.tsx:555
+#: packages/admin/src/router.tsx:559
 msgid "Failed to update"
 msgstr "Ažuriranje nije uspelo"
 
@@ -4287,7 +4287,7 @@ msgstr "Ažuriranje sekcije nije uspelo"
 msgid "Failed to update settings"
 msgstr "Ažuriranje podešavanja nije uspelo"
 
-#: packages/admin/src/router.tsx:1918
+#: packages/admin/src/router.tsx:1950
 msgid "Failed to update status"
 msgstr "Ažuriranje statusa nije uspelo"
 
@@ -4464,7 +4464,7 @@ msgstr ""
 msgid "First-time commenters only"
 msgstr "Samo prvi komentatori"
 
-#: packages/admin/src/components/ContentEditor.tsx:653
+#: packages/admin/src/components/ContentEditor.tsx:671
 msgid "Fix invalid fields before changing the schedule"
 msgstr ""
 
@@ -4490,7 +4490,7 @@ msgstr ""
 msgid "Folder name must be between 1 and 200 characters"
 msgstr ""
 
-#: packages/admin/src/router.tsx:1588
+#: packages/admin/src/router.tsx:1620
 msgid "Folder no longer exists"
 msgstr ""
 
@@ -4615,7 +4615,7 @@ msgid "Go"
 msgstr "Idi"
 
 #: packages/admin/src/components/WordPressImport.tsx:2434
-#: packages/admin/src/router.tsx:2701
+#: packages/admin/src/router.tsx:2733
 msgid "Go to Dashboard"
 msgstr "Idi na kontrolnu tablu"
 
@@ -5114,7 +5114,7 @@ msgstr "Ceo broj"
 msgid "Invalid invite link"
 msgstr "Nevažeći link za pozivnicu"
 
-#: packages/admin/src/components/ContentEditor.tsx:1829
+#: packages/admin/src/components/ContentEditor.tsx:1860
 msgid "Invalid JSON"
 msgstr "Nevažeći JSON"
 
@@ -5396,8 +5396,8 @@ msgstr "Prikaz liste"
 msgid "Live version"
 msgstr ""
 
-#: packages/admin/src/components/ContentEditor.tsx:893
-#: packages/admin/src/components/ContentEditor.tsx:943
+#: packages/admin/src/components/ContentEditor.tsx:911
+#: packages/admin/src/components/ContentEditor.tsx:961
 #: packages/admin/src/components/ContentSettingsPanel.tsx:660
 msgid "Live View"
 msgstr "Prikaz uživo"
@@ -5426,7 +5426,7 @@ msgstr "Učitaj više"
 msgid "Load more folders"
 msgstr ""
 
-#: packages/admin/src/router.tsx:2656
+#: packages/admin/src/router.tsx:2688
 msgid "Loading"
 msgstr ""
 
@@ -5442,8 +5442,8 @@ msgstr "Učitavanje kolekcija..."
 msgid "Loading comments..."
 msgstr "Učitavanje komentara..."
 
-#: packages/admin/src/router.tsx:2658
-#: packages/admin/src/router.tsx:2670
+#: packages/admin/src/router.tsx:2690
+#: packages/admin/src/router.tsx:2702
 msgid "Loading configuration..."
 msgstr "Učitavanje konfiguracije..."
 
@@ -6048,11 +6048,11 @@ msgstr "Pomeri nagore"
 msgid "Moved {filename} to position {0}."
 msgstr ""
 
-#: packages/admin/src/router.tsx:552
+#: packages/admin/src/router.tsx:556
 msgid "Moved {total} items to draft"
 msgstr "Premešteno {total} stavki u nacrt"
 
-#: packages/admin/src/router.tsx:573
+#: packages/admin/src/router.tsx:577
 msgid "Moved {total} items to trash"
 msgstr "Premešteno {total} stavki u otpad"
 
@@ -6130,7 +6130,7 @@ msgstr ""
 msgid "Never"
 msgstr "Nikada"
 
-#: packages/admin/src/router.tsx:1271
+#: packages/admin/src/router.tsx:1302
 msgid "new"
 msgstr "novo"
 
@@ -6147,7 +6147,7 @@ msgstr "NOVO"
 msgid "New {0}"
 msgstr "Novo {0}"
 
-#: packages/admin/src/components/ContentEditor.tsx:859
+#: packages/admin/src/components/ContentEditor.tsx:877
 msgid "New {itemLabel}"
 msgstr ""
 
@@ -6757,7 +6757,7 @@ msgstr "Vlasništvo"
 msgid "Package"
 msgstr "Paket"
 
-#: packages/admin/src/router.tsx:2696
+#: packages/admin/src/router.tsx:2728
 msgid "Page Not Found"
 msgstr "Stranica nije pronađena"
 
@@ -7206,7 +7206,7 @@ msgstr ""
 #: packages/admin/src/components/ContentList.tsx:862
 #: packages/admin/src/components/ContentStatusBadge.tsx:59
 #: packages/admin/src/components/Dashboard.tsx:297
-#: packages/admin/src/router.tsx:1139
+#: packages/admin/src/router.tsx:1169
 msgid "Published"
 msgstr "Objavljeno"
 
@@ -7215,7 +7215,7 @@ msgstr "Objavljeno"
 msgid "Published {0}"
 msgstr "Objavljeno {0}"
 
-#: packages/admin/src/router.tsx:529
+#: packages/admin/src/router.tsx:533
 msgid "Published {total} items"
 msgstr "Objavljeno {total} stavki"
 
@@ -7409,7 +7409,7 @@ msgstr ""
 
 #: packages/admin/src/components/BlockKitMediaPickerField.tsx:84
 #: packages/admin/src/components/BlockKitMediaPickerField.tsx:115
-#: packages/admin/src/components/ContentEditor.tsx:1989
+#: packages/admin/src/components/ContentEditor.tsx:2020
 #: packages/admin/src/components/editor/GalleryDetailPanel.tsx:471
 #: packages/admin/src/components/editor/ImageDetailPanel.tsx:309
 #: packages/admin/src/components/editor/ImageDetailPanel.tsx:731
@@ -7445,7 +7445,7 @@ msgstr ""
 msgid "Remove {entry}"
 msgstr "Ukloni {entry}"
 
-#: packages/admin/src/components/ContentEditor.tsx:1987
+#: packages/admin/src/components/ContentEditor.tsx:2018
 msgid "Remove {label}"
 msgstr "Ukloni {label}"
 
@@ -7558,8 +7558,8 @@ msgstr "Ponavljač"
 msgid "Repeating group of fields"
 msgstr "Grupa polja koja se ponavlja"
 
-#: packages/admin/src/components/ContentEditor.tsx:1979
-#: packages/admin/src/components/ContentEditor.tsx:2016
+#: packages/admin/src/components/ContentEditor.tsx:2010
+#: packages/admin/src/components/ContentEditor.tsx:2047
 #: packages/admin/src/components/editor/GalleryDetailPanel.tsx:447
 #: packages/admin/src/components/editor/GalleryDetailPanel.tsx:504
 #: packages/admin/src/components/editor/ImageDetailPanel.tsx:250
@@ -7572,7 +7572,7 @@ msgstr "Grupa polja koja se ponavlja"
 msgid "Replace"
 msgstr ""
 
-#: packages/admin/src/components/ContentEditor.tsx:2015
+#: packages/admin/src/components/ContentEditor.tsx:2046
 #: packages/admin/src/components/ImageFieldRenderer.tsx:559
 msgid "Replace {label}"
 msgstr ""
@@ -7712,7 +7712,7 @@ msgstr ""
 msgid "Resize crop from top-right corner. Use the Arrow keys to resize."
 msgstr ""
 
-#: packages/admin/src/components/ContentEditor.tsx:1173
+#: packages/admin/src/components/ContentEditor.tsx:1204
 msgid "Resize settings panel"
 msgstr ""
 
@@ -7763,7 +7763,7 @@ msgstr "Vraćanje..."
 #: packages/admin/src/components/PluginFieldErrorBoundary.tsx:44
 #: packages/admin/src/components/ThemeMarketplaceBrowse.tsx:122
 #: packages/admin/src/lib/content-editor-panels.tsx:201
-#: packages/admin/src/router.tsx:2684
+#: packages/admin/src/router.tsx:2716
 #: packages/admin/src/routes/byline-schema.tsx:280
 msgid "Retry"
 msgstr "Pokušaj ponovo"
@@ -7801,7 +7801,7 @@ msgstr ""
 msgid "Reusable content blocks you can insert into any content"
 msgstr "Ponovo upotrebljivi blokovi sadržaja koje možete umetnuti u bilo koji sadržaj"
 
-#: packages/admin/src/router.tsx:1177
+#: packages/admin/src/router.tsx:1208
 msgid "Reverted to published version"
 msgstr "Vraćeno na objavljenu verziju"
 
@@ -7947,6 +7947,10 @@ msgstr "Sačuvaj (Enter)"
 msgid "Save alt text"
 msgstr "Sačuvaj alt tekst"
 
+#: packages/admin/src/components/ContentEditor.tsx:1025
+msgid "Save anyway"
+msgstr ""
+
 #: packages/admin/src/components/BylineCreditsEditor.tsx:1015
 #: packages/admin/src/components/BylineFieldEditor.tsx:318
 msgid "Save changes"
@@ -8040,7 +8044,7 @@ msgstr ""
 #: packages/admin/src/components/ContentList.tsx:853
 #: packages/admin/src/components/ContentSettingsPanel.tsx:545
 #: packages/admin/src/components/ContentStatusBadge.tsx:63
-#: packages/admin/src/router.tsx:1221
+#: packages/admin/src/router.tsx:1252
 msgid "Scheduled"
 msgstr "Zakazano"
 
@@ -8346,8 +8350,8 @@ msgid "Select"
 msgstr "Izaberi"
 
 #: packages/admin/src/components/BlockKitMediaPickerField.tsx:140
-#: packages/admin/src/components/ContentEditor.tsx:1999
-#: packages/admin/src/components/ContentEditor.tsx:2015
+#: packages/admin/src/components/ContentEditor.tsx:2030
+#: packages/admin/src/components/ContentEditor.tsx:2046
 #: packages/admin/src/components/ImageFieldRenderer.tsx:560
 msgid "Select {label}"
 msgstr "Izaberi {label}"
@@ -8405,7 +8409,7 @@ msgstr ""
 msgid "Select Favicon"
 msgstr "Izaberi favicon"
 
-#: packages/admin/src/components/ContentEditor.tsx:2003
+#: packages/admin/src/components/ContentEditor.tsx:2034
 #: packages/admin/src/components/MediaPickerModal.tsx:228
 msgid "Select file"
 msgstr "Izaberi fajl"
@@ -8577,8 +8581,8 @@ msgid "Setting up..."
 msgstr "Podešava se..."
 
 #: packages/admin/src/components/AdminCommandPalette.tsx:234
-#: packages/admin/src/components/ContentEditor.tsx:1041
-#: packages/admin/src/components/ContentEditor.tsx:1337
+#: packages/admin/src/components/ContentEditor.tsx:1072
+#: packages/admin/src/components/ContentEditor.tsx:1368
 #: packages/admin/src/components/ContentTypeEditor.tsx:382
 #: packages/admin/src/components/Header.tsx:101
 #: packages/admin/src/components/PluginManager.tsx:491
@@ -8904,7 +8908,7 @@ msgstr ""
 msgid "Start Import"
 msgstr "Započni uvoz"
 
-#: packages/admin/src/components/ContentEditor.tsx:1506
+#: packages/admin/src/components/ContentEditor.tsx:1537
 #: packages/admin/src/components/PortableTextEditor.tsx:2599
 #: packages/admin/src/components/PortableTextEditor.tsx:2600
 msgid "Start writing, or type '/' for commands"
@@ -9124,7 +9128,7 @@ msgstr "Meni je obrisan."
 msgid "The name of your site, used in the header and metadata"
 msgstr "Naziv tvog sajta, koristi se u zaglavlju i metapodacima"
 
-#: packages/admin/src/router.tsx:2698
+#: packages/admin/src/router.tsx:2730
 msgid "The page you're looking for doesn't exist."
 msgstr "Stranica koju tražiš ne postoji."
 
@@ -9208,6 +9212,10 @@ msgstr ""
 msgid "This doesn't look like a valid migration key. Generate a new one in the plugin and paste the full string starting with \"em1.\"."
 msgstr "Ovo ne izgleda kao validan ključ migracije. Generiši novi u dodatku i nalepi ceo string koji počinje sa \"em1.\"."
 
+#: packages/admin/src/components/ContentEditor.tsx:1021
+msgid "This entry changed somewhere else after you opened it."
+msgstr ""
+
 #: packages/admin/src/components/PortableTextEditor.tsx:3352
 msgid "This field contains unsupported Portable Text marks: <0>{markList}</0>. Remove them through the API before editing or saving this content."
 msgstr ""
@@ -9216,7 +9224,7 @@ msgstr ""
 msgid "This field does not accept {mimeType} files."
 msgstr ""
 
-#: packages/admin/src/components/ContentEditor.tsx:2019
+#: packages/admin/src/components/ContentEditor.tsx:2050
 #: packages/admin/src/components/ImageFieldRenderer.tsx:579
 msgid "This field is required"
 msgstr "Ovo polje je obavezno"
@@ -9462,7 +9470,7 @@ msgstr "Prevodi se..."
 #: packages/admin/src/components/MenuEditor.tsx:143
 #: packages/admin/src/components/TaxonomyManager.tsx:993
 #: packages/admin/src/components/TaxonomySidebar.tsx:471
-#: packages/admin/src/router.tsx:1270
+#: packages/admin/src/router.tsx:1301
 msgid "Translation created"
 msgstr "Prevod kreiran"
 
@@ -9661,7 +9669,7 @@ msgstr "Passkey bez naziva"
 msgid "Unpublish {itemLabel}"
 msgstr ""
 
-#: packages/admin/src/router.tsx:1157
+#: packages/admin/src/router.tsx:1187
 msgid "Unpublished"
 msgstr "Neobjavljeno"
 
@@ -9673,7 +9681,7 @@ msgstr "Pronađene neregistrovane tabele sadržaja"
 msgid "Unresolved assignment"
 msgstr ""
 
-#: packages/admin/src/router.tsx:1239
+#: packages/admin/src/router.tsx:1270
 msgid "Unscheduled"
 msgstr "Nezakazano"
 
@@ -9692,7 +9700,7 @@ msgstr ""
 msgid "Untitled"
 msgstr "Bez naslova"
 
-#: packages/admin/src/components/ContentEditor.tsx:1921
+#: packages/admin/src/components/ContentEditor.tsx:1952
 msgid "Untitled file"
 msgstr "Fajl bez naslova"
 
@@ -9939,7 +9947,7 @@ msgstr "Koristi se kao rezervna Open Graph slika kada stranica nema svoju. Prepo
 msgid "Used as the identifier. Lowercase letters, numbers, and underscores only."
 msgstr "Koristi se kao identifikator. Samo mala slova, brojevi i donje crte."
 
-#: packages/admin/src/components/ContentEditor.tsx:1609
+#: packages/admin/src/components/ContentEditor.tsx:1640
 msgid "Used as the main visual for this post on listing pages and at the top of the post"
 msgstr "Koristi se kao glavna vizuelna slika za ovu objavu na stranicama sa listingom i na vrhu objave"
 
@@ -10163,6 +10171,10 @@ msgstr "Šta se dešava pri uvozu:"
 msgid "What will happen when you import"
 msgstr "Šta će se desiti pri uvozu"
 
+#: packages/admin/src/components/ContentEditor.tsx:1022
+msgid "What you typed is still here. Saving replaces the newer version."
+msgstr ""
+
 #: packages/admin/src/components/ContentTypeEditor.tsx:125
 msgid "When the entry was created"
 msgstr "Kada je stavka kreirana"
@@ -10369,7 +10381,7 @@ msgstr "Potrebne su ti admin dozvole za upravljanje šemom potpisa autora."
 msgid "You need Admin permissions to manage media usage tracking."
 msgstr ""
 
-#: packages/admin/src/router.tsx:1975
+#: packages/admin/src/router.tsx:2007
 msgid "You need Editor permissions to moderate comments."
 msgstr "Potrebne su ti Editor dozvole za moderiranje komentara."
 
